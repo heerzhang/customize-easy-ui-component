@@ -1,0 +1,18 @@
+sancho  12-3:16.58 de家里版本  7c747af4b509f12a91a9a01dc88821f526678389     ；    newest=sancho--17-1209
+开始
+
+    "@types/storybook__react": "^4.0.1",
+   https://sancho-ui.com/components/icon/
+/// <reference types="@emotion/react/types/css-prop" />
+    "rollup-plugin-filesize": "^9.0.2",
+        "generate-icons": "create-react-icons  --source ./node_modules/feather-icons/dist/icons/*.svg  --destination
+
+https://github.com/heerzhang/customize-easy-ui-component.git
+    "@types/prop-types": "15.7.0",
+        "prop-types": "^15.7.2",
+ //头部标记    /** @jsx jsx */
+@emotion/react   @emotion/core
+https://github.com/ArmandDu/monorepo-yarn2-react-typescript-storybook6-issue/tree/main/packages/frontend/stories
+
+book jiu版本5.06   https://github.com/storybookjs/storybook/blob/next/MIGRATION.md
+@storybook/preset-create-react-app
