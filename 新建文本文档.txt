@@ -16,3 +16,11 @@ https://github.com/ArmandDu/monorepo-yarn2-react-typescript-storybook6-issue/tre
 
 book jiu版本5.06   https://github.com/storybookjs/storybook/blob/next/MIGRATION.md
 @storybook/preset-create-react-app
+If you're using CRA and migrating from an earlier Storybook version, please install @storybook/preset-create-react-app
+ts<3.8?ＴＳＸ版本https://github.com/tremby/storybook-ts-tsx-bug/blob/main/components/tsx-component.stories.tsx
+https://github.com/storybookjs/storybook/blob/master/examples/cra-ts-kitchen-sink/src/stories/1-Button.stories.tsx
+
+ function storiesOf(name: string, module: NodeModule): Story;
+  add(storyName: string, callback: RenderFunction, parameters?: DecoratorParameters): this;
+storiesOf(kind: StoryKind, module: NodeModule): StoryApi<StoryFnReturnType>;
+ add: (storyName: StoryName, storyFn: StoryFn<StoryFnReturnType>, parameters?: Parameters) => StoryApi<StoryFnReturnType>;

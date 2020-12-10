@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from "@emotion/react";
+//头部标记
+import { jsx, css } from "@emotion/core";
 import * as React from "react";
 import VisuallyHidden from "@reach/visually-hidden";
 import { Text } from "./Text";

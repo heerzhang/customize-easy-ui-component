@@ -1,0 +1,43 @@
+//头部标记
+import { jsx } from "@emotion/core";
+import * as React from "react";
+import { storiesOf } from "@storybook/react";
+import { Breadcrumbs, BreadcrumbItem } from "../Breadcrumbs";
+import { Link } from "../Link";
+//import { ToggleDarkMode } from "./ToggleDarkMode";
+import { Meta } from '@storybook/react/types-6-0';
+
+//export default { component: Breadcrumbs, title: 'Components / Breadcrumbs' } as Meta;
+export default {
+    title: "Components / Breadcrumbs",
+    component: Breadcrumbs,
+    argTypes: {},
+};
+
+
+export const Basic = () => ( <div css={{ display: "flex", justifyContent: "center" }}>
+    <Breadcrumbs>
+        <BreadcrumbItem>
+            <Link href="#">Watershed</Link>
+        </BreadcrumbItem>
+        <BreadcrumbItem>
+            <Link href="#">Visual Teaching Strategies</Link>
+        </BreadcrumbItem>
+        <BreadcrumbItem>Settings</BreadcrumbItem>
+    </Breadcrumbs>
+</div> );
+
+export const WithArgs = (args: any) => ( <div css={{ display: "flex", justifyContent: "center" }}>
+    <Breadcrumbs {...args}>
+        <BreadcrumbItem>
+            <Link href="#">Watershed</Link>
+        </BreadcrumbItem>
+        <BreadcrumbItem>
+            <Link href="#">Visual Teaching Strategies</Link>
+        </BreadcrumbItem>
+        <BreadcrumbItem>Settings</BreadcrumbItem>
+    </Breadcrumbs>
+</div> );
+
+
+WithArgs.args = { size: 'lg' };

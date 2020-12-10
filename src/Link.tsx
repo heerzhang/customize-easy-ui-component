@@ -1,4 +1,4 @@
-/** @jsx jsx */
+//头部标记
 import { jsx } from "@emotion/core";
 import * as React from "react";
 import PropTypes from "prop-types";
