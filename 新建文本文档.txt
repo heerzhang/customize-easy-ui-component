@@ -24,3 +24,5 @@ https://github.com/storybookjs/storybook/blob/master/examples/cra-ts-kitchen-sin
   add(storyName: string, callback: RenderFunction, parameters?: DecoratorParameters): this;
 storiesOf(kind: StoryKind, module: NodeModule): StoryApi<StoryFnReturnType>;
  add: (storyName: StoryName, storyFn: StoryFn<StoryFnReturnType>, parameters?: Parameters) => StoryApi<StoryFnReturnType>;
+组件定义前面 /** 注释特别的。
+/** @jsxImportSource @emotion/react */
