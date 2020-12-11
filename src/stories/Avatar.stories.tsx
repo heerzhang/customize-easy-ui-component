@@ -1,24 +1,43 @@
-//头部标记
-import { jsx, css } from "@emotion/core";
-import React from "react";
-import { Story } from "@storybook/react";
-import { Avatar ,AvatarProps, AvatarSizes } from "../Avatar";
-//import { Text } from "./Test";
+/** @jsxImportSource @emotion/react */
+import { jsx, css } from "@emotion/react";
+import * as React from "react";
+import { Avatar, AvatarSizes } from "../Avatar";
+import faker from "faker";
+import { storiesOf } from "@storybook/react";
+import { ToggleDarkMode } from "./ToggleDarkMode";
 
-export default {
-    title: "西溪",
-    component: Avatar,
-};
+export const AvatarStories = storiesOf("Avatar", module).add("basic", () => {
+  const names = new Array(10).fill(null).map(a => faker.name.findName());
+  const sizes: AvatarSizes[] = ["xs", "sm", "md", "lg", "xl"];
 
-const Template: Story<AvatarProps> = (props) => (
-    <Avatar {...props}>
-        <p>Lorem ipsum dolor sit amet</p>
-    </Avatar>
-);
+  return (
+    <div>
+      {sizes.map(size => (
+        <div css={{ display: "flex" }}>
+          {names.map(name => (
+            <Avatar
+              size={size}
+              name={name}
+              css={{ margin: "0.25rem" }}
+              key={name}
+            />
+          ))}
+        </div>
+      ))}
 
-export const Primaryfgh = Template.bind({});
-Primaryfgh.args = {
-    src: "that"
-};
-
-
+      {sizes.map(size => (
+        <div css={{ display: "flex" }}>
+          {names.map(name => (
+            <Avatar
+              size={size}
+              name={name}
+              src={faker.image.avatar()}
+              css={{ margin: "0.25rem" }}
+              key={name}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+});

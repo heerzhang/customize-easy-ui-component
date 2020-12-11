@@ -1,4 +1,4 @@
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 import { jsx, Global, css } from "@emotion/react";
 import * as React from "react";
 import toaster, { Position } from "toasted-notes";

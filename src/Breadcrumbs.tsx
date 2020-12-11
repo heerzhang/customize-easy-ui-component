@@ -1,5 +1,5 @@
-//头部标记
-import { jsx, css } from "@emotion/core";
+/** @jsxImportSource @emotion/react */
+import { jsx, css } from "@emotion/react";
 import * as React from "react";
 import { Text } from "./Text";
 import PropTypes from "prop-types";

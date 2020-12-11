@@ -1,12 +1,10 @@
-//头部标记
-import { jsx, css } from "@emotion/core";
-//import * as React from "react";
-import React from "react";
+/** @jsxImportSource @emotion/react */
+import { jsx, css } from "@emotion/react";
+import * as React from "react";
 import VisuallyHidden from "@reach/visually-hidden";
 import { Text } from "./Text";
 import PropTypes from "prop-types";
 import { useTheme } from "./Theme/Providers";
-import {TsxComponentProps} from "./stories/tsx-component";
 
 export type AvatarSizes = "xs" | "sm" | "md" | "lg" | "xl";
 
@@ -18,25 +16,21 @@ const sizes = () => ({
   xl: css({ width: "8.57rem", height: "8.57rem", fontSize: "3.70rem" })
 });
 
-export type AvatarProps = {
-    /** Determine the size of the avatar */
-    size?: AvatarSizes;
-    /** The image source */
-    src?: string;
-    /** An alternative to setting the src attribute. */
-    srcSet?: string;
-    /**The name of the user. Used as an alt attribute, or used to generate initials in the absence of an image. */
-    name?: string;
+interface AvatarProps {
+  /** Determine the size of the avatar */
+  size?: AvatarSizes;
+  /** The image source */
+  src?: string;
+  /** An alternative to setting the src attribute. */
+  srcSet?: string;
+  /**The name of the user. Used as an alt attribute, or used to generate initials in the absence of an image. */
+  name?: string;
 }
-
-export const Avatar: React.FC<AvatarProps> = ({ src, children }) => (
-    <div style={{color: "green"}}>{children}</div>
-);
 
 /**
  * Display a profile image to represent a user. Initials can be shown as a fallback
  */
-export const Avatar2: React.FunctionComponent<AvatarProps> = ({
+export const Avatar: React.FunctionComponent<AvatarProps> = ({
   src,
   name,
   size = "md",
