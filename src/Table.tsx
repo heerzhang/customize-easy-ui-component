@@ -1,4 +1,4 @@
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 import { jsx, css } from "@emotion/react";
 import * as React from "react";
 import { Layer } from "./Layer";
@@ -353,3 +353,4 @@ ExpandingRow.propTypes = {
   content: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   children: PropTypes.node
 };
+
