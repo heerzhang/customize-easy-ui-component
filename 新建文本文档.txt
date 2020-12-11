@@ -27,5 +27,7 @@ storiesOf(kind: StoryKind, module: NodeModule): StoryApi<StoryFnReturnType>;
 组件定义前面 /** 注释特别的。
 /** @jsxImportSource @emotion/react */
 
-//TODO: React Popper 2.×
+//TODO: React Popper 2.×   focus-trap
+
+yarn.lock删除再做导致报错：因为"@storybook/react":"5.0.6"依赖"@babel/preset-flow@^7.0.0":两次yarn命令获取更新不同的版本"7.0.0""7.12.1"导致变化巨大，内部生成依赖实际也升版本;问题大。
 
