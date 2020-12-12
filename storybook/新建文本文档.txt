@@ -28,6 +28,6 @@ storiesOf(kind: StoryKind, module: NodeModule): StoryApi<StoryFnReturnType>;
 /** @jsxImportSource @emotion/react */
 
 //TODO: React Popper 2.×   focus-trap
-
-yarn.lock删除再做导致报错：因为"@storybook/react":"5.0.6"依赖"@babel/preset-flow@^7.0.0":两次yarn命令获取更新不同的版本"7.0.0""7.12.1"导致变化巨大，内部生成依赖实际也升版本;问题大。
+两个工程yarn后的core-js版本也不一样，导致storybook无法运行父工程的src代码。编译还能和源代码存放路径扯上关系，只能找源代码目录及其上级目录的node_modules,子目录都不看。
+导致子目录工程若引用父目录工程的源代码，有可能就无法使用子目录的node_modules中的core-js包的高版本，编译报错。
 

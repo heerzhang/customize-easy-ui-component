@@ -1,6 +1,5 @@
 import * as React from "react";
-//import createFocusTrap, { FocusTrap } from "focus-trap";
-import { createFocusTrap  ,FocusTrap} from 'focus-trap';
+import createFocusTrap, { FocusTrap } from "focus-trap";
 
 interface Options {
   escapeDeactivates?: boolean;

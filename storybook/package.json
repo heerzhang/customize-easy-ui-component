@@ -1,0 +1,91 @@
+{
+  "name": "ui-component-storybook",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "说明":"和组件父工程有冲突，只好分开独立出新目录，避免相互影响",
+    "build-storybook": "build-storybook",
+    "storybook": "start-storybook -p 6006"
+  },
+  "dependencies": {
+    "react": "16.14.0",
+    "react-dom": "16.14.0",
+    "classnames": "^2.2.6",
+
+    "prop-types": "^15.7.2"
+
+  },
+  "devDependencies": {
+    "feather-icons": "^4.28.0",
+    "@babel/core": "^7.12.3",
+    "@storybook/addon-actions": "^6.1.10",
+    "@storybook/addon-essentials": "^6.1.10",
+    "@storybook/addon-links": "^6.1.10",
+    "@storybook/react": "^6.1.10",
+    "@types/node": "^13.13.30",
+    "@types/react": "^16.9.55",
+    "@types/react-dom": "^16.9.9",
+    "babel-loader": "^8.1.0",
+    "react-is": "^17.0.1",
+
+
+    "typescript": "^4.1.2",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+
+    "@storybook/addon-a11y": "^6.1.10",
+    "@storybook/addon-viewport": "^6.1.10",
+    "@emotion/core": "^10.1.1",
+    "@emotion/react": "^11.1.1",
+    "@emotion/css": "^11.0.0",
+
+    "@types/prop-types": "15.7.0",
+    "@types/color": "^3.0.1",
+    "color": "^3.1.3",
+    "open-color": "^1.7.0",
+    "@types/faker": "^4.1.7",
+    "faker": "^4.1.0",
+    "@reach/visually-hidden": "^0.12.0",
+
+    "react-page-controller": "^3.1.0",
+    "touchable-hook":"^1.3.0",
+    "use-media": "^1.4.0",
+    "@types/palx": "^1.0.1",
+    "palx": "^1.0.3",
+    "react-gesture-responder": "^2.1.0",
+    "is-mobile": "^2.2.2",
+    "react-spring": "^9.0.0-rc.3",
+    "toasted-notes": "^3.2.0",
+    "react-remove-scroll": "^2.4.1",
+    "react-gesture-stack": "^1.3.2",
+    "focus-trap":"^6.2.2",
+    "touchable-hook":"^1.3.0",
+    "raf-schd": "^4.0.2",
+    "@types/react-highlight-words": "^0.16.1",
+    "react-highlight-words": "^0.16.0",
+    "@reach/skip-nav": "^0.12.1",
+
+
+    "popper.js": "^1.14.7",
+
+    "@svgr/plugin-jsx": "^5.4.0",
+    "@svgr/webpack": "^5.4.0",
+
+    "create-react-icons": "^1.1.1",
+
+    "css-loader": "^4.3.0",
+    "next-svgr": "^0.0.2",
+    "next-compose-plugins": "^2.2.0",
+
+    "@storybook/preset-scss": "^1.0.3",
+    "sass": "^1.27.0",
+    "sass-loader": "^10.0.3",
+    "style-loader": "^2.0.0"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.1.1",
+    "@emotion/css": "^11.0.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
+  }
+}

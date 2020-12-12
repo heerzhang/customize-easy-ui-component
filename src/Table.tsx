@@ -353,4 +353,3 @@ ExpandingRow.propTypes = {
   content: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   children: PropTypes.node
 };
-

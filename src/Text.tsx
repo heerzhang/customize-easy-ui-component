@@ -249,4 +249,3 @@ Text.propTypes = {
   gutter: PropTypes.bool,
   component: PropTypes.elementType
 };
-
