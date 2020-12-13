@@ -1,0 +1,12 @@
+.git
+.storybook
+node_modules
+tsconfig.json
+stories
+storybook
+.idea
+cjs
+esm
+src
+scripts
+storybook-static
