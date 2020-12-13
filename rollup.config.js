@@ -1,13 +1,13 @@
 import babel from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
-import multi from '@rollup/plugin-multi-entry'
+//import multi from '@rollup/plugin-multi-entry'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
 //若只作tsc是不报错的，rollup -c 会报错
 import json from "@rollup/plugin-json";
 
 
-const input = "cjs/index.js";
+const input = "esm/index.js";
 //直接ts|tsx做输入,Error: Unexpected token (Note that you need plugins to import files that are not JavaScript)
 
 export default {
@@ -31,7 +31,7 @@ export default {
 			exclude: "node_modules/**",
 		}),
 		commonjs(),
-		multi(),
+	//	multi(),
 		nodeResolve(),
 		typescript(),
 	],
