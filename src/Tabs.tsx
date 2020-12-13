@@ -43,13 +43,15 @@ interface SliderPositions {
   value: number;
 }
 
+type VariantTabsType = "default" | "evenly-spaced";
+
 export interface TabsProps {
   /** The currently selected index */
   value: number;
   /** Toggle slider visibiliby */
   slider?: boolean;
   /** Whether tabs should be left-aligned or justified */
-  variant?: "default" | "evenly-spaced";
+  variant?:  VariantTabsType;
   /** Change callback to control which tab is selected */
   onChange: (value: number) => void;
   /** Tab elements */
@@ -266,8 +268,8 @@ Tabs.propTypes = {
   value: PropTypes.number.isRequired,
   onChange: PropTypes.func,
   slider: PropTypes.bool,
-  variant: PropTypes.oneOf(["default", "evenly-spaced"]),
-  children: PropTypes.node,
+  variant: PropTypes.oneOf(["default", "evenly-spaced"] as VariantTabsType[]),
+  children: PropTypes.element,
   animationConfig: PropTypes.shape({
     tension: PropTypes.number,
     friction: PropTypes.number,
@@ -303,10 +305,7 @@ export interface TabProps
  * A clickable tab item
  */
 
-export const Tab: React.RefForwardingComponent<
-  React.Ref<HTMLButtonElement>,
-  TabProps
-> = React.forwardRef(
+export const Tab = React.forwardRef(
   (
     {
       onParentSelect,
@@ -542,5 +541,5 @@ export const TabIcon: React.FunctionComponent<TabIconProps> = ({
 TabIcon.propTypes = {
   icon: PropTypes.node.isRequired,
   label: PropTypes.string.isRequired,
-  size: PropTypes.number
+  size: PropTypes.oneOf(["xs","sm","md","lg","xl"] as IconSizes[])
 };

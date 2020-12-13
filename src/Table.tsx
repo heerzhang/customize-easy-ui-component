@@ -4,6 +4,7 @@ import * as React from "react";
 import { Layer } from "./Layer";
 import PropTypes from "prop-types";
 import { useTheme } from "./Theme/Providers";
+import {ElementType} from "react";
 
 type SectionTypeVariants = "TableHead" | "TableBody";
 
@@ -166,16 +167,19 @@ const tableCellAlignments = {
   })
 };
 
+type AlignCellType = "right" | "left" | "center" | "justify";
+
 type tableCellVariants = "head" | "body";
 
 type TableCellBaseProps = React.ThHTMLAttributes<HTMLTableHeaderCellElement> &
   React.TdHTMLAttributes<HTMLTableDataCellElement>;
 
 interface TableCellProps extends TableCellBaseProps {
-  align?: keyof typeof tableCellAlignments;
+  align?: AlignCellType;
+  //align?: keyof typeof tableCellAlignments;
   variant?: tableCellVariants;
   ellipsis?: boolean;
-  component?: React.ReactType<TableCellBaseProps>;
+  component?: React.ElementType<TableCellBaseProps>;
 }
 
 export const TableCell: React.FunctionComponent<TableCellProps> = ({
@@ -242,9 +246,9 @@ export const TableCell: React.FunctionComponent<TableCellProps> = ({
 };
 
 TableCell.propTypes = {
-  align: PropTypes.oneOf(Object.keys(tableCellAlignments)),
-  variant: PropTypes.oneOf(["body", "head"]),
-  component: PropTypes.elementType,
+  align: PropTypes.oneOf(["right","left","center","justify"] as AlignCellType[]),
+  variant: PropTypes.oneOf(["body", "head"] as tableCellVariants[]),
+ // component: PropTypes.element,
   ellipsis: PropTypes.bool,
   children: PropTypes.node
 };
@@ -350,6 +354,6 @@ export const ExpandingRow: React.FunctionComponent<ExpandingRowProps> = ({
 };
 
 ExpandingRow.propTypes = {
-  content: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+  //content: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   children: PropTypes.node
 };

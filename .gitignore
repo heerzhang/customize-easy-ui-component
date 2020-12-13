@@ -1,5 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 lode_modules
 node_modules
@@ -17,6 +15,8 @@ cjs
 build
 esm
 umd
+dist
+storybook-static
 
 # misc
 .DS_Store
@@ -24,6 +24,7 @@ umd
 .env.development.local
 .env.test.local
 .env.production.local
+.idea
 
 npm-debug.log*
 yarn-debug.log*

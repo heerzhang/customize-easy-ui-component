@@ -82,9 +82,8 @@ export const Breadcrumbs: React.FunctionComponent<BreadcrumbsProps> = ({
 };
 
 Breadcrumbs.propTypes = {
-  children: PropTypes.node,
   size: PropTypes.oneOf(["md", "lg"]),
-  overflowX: PropTypes.bool
+  overflowX: PropTypes.number
 };
 
 function validChildrenCount(children: any) {

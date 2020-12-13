@@ -8,6 +8,7 @@ import { useTheme } from "./Theme/Providers";
 import { noOp } from "./misc/noop";
 import { OnPressFunction, useTouchable } from "touchable-hook";
 import { safeBind } from "./Hooks/compose-bind";
+import {ElementType} from "react";
 
 export interface ListProps extends React.HTMLAttributes<HTMLDivElement> {
   /** A series of ListItem elements */
@@ -27,7 +28,7 @@ List.propTypes = {
 
 interface ListItemProps extends React.HTMLAttributes<any> {
   onPress?: OnPressFunction;
-  component?: React.ReactType<any>;
+  component?: React.ElementType<any>;
   /** An icon or avatar to appear to the left of the text content */
   contentBefore?: React.ReactNode;
   /** an icon to appear to the right of the text content */
@@ -170,8 +171,7 @@ ListItem.propTypes = {
   wrap: PropTypes.bool,
   children: PropTypes.node,
   interactive: PropTypes.bool,
-  onPress: PropTypes.func,
-  component: PropTypes.elementType
+  onPress: PropTypes.func
 };
 
 interface ListSectionProps extends React.HTMLAttributes<HTMLDivElement> {

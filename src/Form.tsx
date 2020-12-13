@@ -257,10 +257,7 @@ export interface InputBaseProps
  * forms. Otherwise, stick with InputGroup
  */
 
-export const InputBase: React.RefForwardingComponent<
-  React.Ref<HTMLInputElement>,
-  InputBaseProps
-  > = React.forwardRef(
+export const InputBase = React.forwardRef(
   (
     { autoComplete, autoFocus, inputSize = "md",topDivStyle, ...other }: InputBaseProps,
     ref: React.Ref<HTMLInputElement>
@@ -309,10 +306,7 @@ export interface InputProps 　 extends InputBaseProps {
   fullWidth?: boolean;
 }
 //包裹一个div以便于控制宽度和对齐。
-export const Input: React.RefForwardingComponent<
-  React.Ref<HTMLInputElement>,
-  InputProps
-  > = React.forwardRef(
+export const Input = React.forwardRef(
   (
     { autoComplete, autoFocus, inputSize = "md",
       fullWidth=true,

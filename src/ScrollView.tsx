@@ -42,10 +42,7 @@ export interface ScrollViewProps extends React.HTMLAttributes<HTMLDivElement> {
 
 //export const ScrollView= React.forwardRef(ScrollViewForward);   // 报警！嵌套RefForwardingComponent 的forwardRef;
 
-export const ScrollView: React.RefForwardingComponent<
-    ScrollViewHandles,
-    ScrollViewProps
-    > = React.forwardRef(
+export const ScrollView  = React.forwardRef(
     (
         {
             overflowY,

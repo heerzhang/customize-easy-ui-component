@@ -25,48 +25,45 @@ export interface TouchableProps {
   pressExpandPx?: number;
   /** Whether active presses should be terminated when scrolling occurs. Typically this should be true. */
   terminateOnScroll?: boolean;
-  component?: React.ReactType<any>;
+  component?: React.ElementType<any>;
   [key: string]: any; // lame hack to allow component injection
 }
 
-export const Touchable: React.RefForwardingComponent<
-  React.Ref<any>,
-  TouchableProps
-> = React.forwardRef(
-  (
-    {
-      children,
-      className = "",
-      delay,
-      pressExpandPx,
-      terminateOnScroll = true,
-      component: Component = "button",
-      onPress,
-      disabled = false,
-      ...other
-    }: TouchableProps,
-    ref: React.Ref<any>
-  ) => {
-    const isLink = other.to || other.href;
-    const { bind, hover, active } = useTouchable({
-      onPress,
-      disabled,
-      delay,
-      terminateOnScroll,
-      pressExpandPx,
-      behavior: isLink ? "link" : "button"
-    });
+export const Touchable=
+    React.forwardRef((
+        {
+            children,
+            className = "",
+            delay,
+            pressExpandPx,
+            terminateOnScroll = true,
+            component: Component = "button",
+            onPress,
+            disabled = false,
+            ...other
+        }: TouchableProps,
+        ref: React.Ref<any>
+    ) => {
+        const isLink = other.to || other.href;
+        const { bind, hover, active } = useTouchable({
+            onPress,
+            disabled,
+            delay,
+            terminateOnScroll,
+            pressExpandPx,
+            behavior: isLink ? "link" : "button"
+        });
 
-    return (
-      <Component
-        className={cx("Touchable", className, {
-          "Touchable--hover": hover,
-          "Touchable--active": active
-        })}
-        {...safeBind({ ref }, bind, other)}
-      >
-        {children}
-      </Component>
-    );
-  }
-);
+        return (
+            <Component
+                className={cx("Touchable", className, {
+                    "Touchable--hover": hover,
+                    "Touchable--active": active
+                })}
+                {...safeBind({ ref }, bind, other)}
+            >
+                {children}
+            </Component>
+        );
+    } );
+

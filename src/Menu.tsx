@@ -139,8 +139,7 @@ export const MenuList: React.FunctionComponent<MenuListProps> = ({
 };
 
 MenuList.propTypes = {
-  children: PropTypes.node,
-  focusableChildren: PropTypes.arrayOf(PropTypes.elementType)
+  //focusableChildren: PropTypes.arrayOf(PropTypes.element)
 };
 
 
@@ -154,7 +153,7 @@ interface MenuItemProps extends React.HTMLAttributes<Element> {
   /** Pass in a string to use standard text styles. Otherwise, pass in any other node. */
   children: React.ReactNode;
   /** Provide a custom component. Eg., ReactRouter Link */
-  component?: React.ReactType<any>;
+  component?: React.ElementType<any>;
   /** optional content to appear to the right of the menu text */
   contentAfter?: React.ReactNode;
   /** optional content to appear to the left of the menu text */
@@ -294,7 +293,7 @@ export const MenuItem: React.FunctionComponent<MenuItemProps> = ({
 
 MenuItem.propTypes = {
   onSelect: PropTypes.func,
-  component: PropTypes.string,
+ // component: PropTypes.element,
   disabled: PropTypes.bool,
   children: PropTypes.node,
   contentBefore: PropTypes.node,

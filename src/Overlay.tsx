@@ -16,10 +16,7 @@ interface OverlayProps {
   onRequestClose: () => void;
 }
 
-export const Overlay: React.RefForwardingComponent<
-  React.Ref<HTMLDivElement>,
-  OverlayProps
-> = React.forwardRef(
+export const Overlay = React.forwardRef(
   (
     { isOpen, onRequestClose, children }: OverlayProps,
     ref: React.Ref<HTMLDivElement>
@@ -36,7 +33,6 @@ export const Overlay: React.RefForwardingComponent<
     return (
       <Portal>
         {transitions((style, item) => {
-          // @ts-ignore
         return (
       item &&  <div
               key={1}
@@ -67,15 +63,17 @@ export const Overlay: React.RefForwardingComponent<
               }}
             >
               <animated.div
-                style={{ opacity: style.opacity }}
-                css={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: theme.colors.background.overlay
-                }}
+                  style={{ opacity:  style.opacity } as any}
+                  css={[
+                      {
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: theme.colors.background.overlay
+                  }
+                  ]}
               />
 
               {children}

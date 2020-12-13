@@ -171,7 +171,7 @@ export const Popover: React.FunctionComponent<PopoverProps> = ({
 
 Popover.propTypes = {
   isOpen: PropTypes.bool,
-  children: PropTypes.node,
+  children: PropTypes.element,
   content: PropTypes.node,
   closeOnMenuItemClick: PropTypes.bool,
   placement: PropTypes.oneOf([

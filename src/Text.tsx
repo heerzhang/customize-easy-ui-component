@@ -4,6 +4,7 @@ import * as React from "react";
 import { Theme } from "./Theme";
 import PropTypes from "prop-types";
 import { useTheme } from "./Theme/Providers";
+import {ElementType} from "react";
 
 export const getVariantStyles = (theme: Theme, variant: TextVariants) => {
   switch (variant) {
@@ -192,7 +193,7 @@ export interface TextProps extends React.HTMLAttributes<HTMLElement> {
   muted?: boolean;
   /** Set to false to remove any bottom margins */
   gutter?: boolean;
-  component?: React.ReactType<TextProps>;
+  component?: React.ElementType<TextProps>;
 }
 
 export const Text: React.FunctionComponent<TextProps> = ({
@@ -243,9 +244,9 @@ Text.propTypes = {
     "display3",
     "display2",
     "display1"
-  ]),
+  ] as TextVariants[]),
   wrap: PropTypes.bool,
   muted: PropTypes.bool,
   gutter: PropTypes.bool,
-  component: PropTypes.elementType
+ // component: PropTypes.element
 };

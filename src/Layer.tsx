@@ -14,10 +14,7 @@ interface LayerProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
 }
 
-export const Layer: React.RefForwardingComponent<
-  React.Ref<HTMLDivElement>,
-  LayerProps
-> = React.forwardRef(
+export const Layer = React.forwardRef(
   (
     { elevation = "md", children, ...other }: LayerProps,
     ref: React.Ref<HTMLDivElement>

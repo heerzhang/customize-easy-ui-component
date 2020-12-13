@@ -16,6 +16,7 @@ import {
   IconAlertOctagon,
   IconHelpCircle
 } from "./Icons";
+import {ElementType} from "react";
 
 const alertIntentions = (theme: Theme) => ({
   info: theme.colors.intent.none,
@@ -54,7 +55,7 @@ export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   /** Changes the icon and colour of the alert. */
   intent?: AlertIntentions;
-  component?: React.ReactType<any>;
+  component?: React.ElementType<any>;
   type?: "polite" | "assertive";
 }
 
@@ -185,7 +186,7 @@ Alert.propTypes = {
   onRequestClose: PropTypes.func,
   subtitle: PropTypes.string,
   title: PropTypes.string,
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  id: PropTypes.oneOfType([PropTypes.string]),
   children: PropTypes.node,
   intent: PropTypes.oneOf([
     "info",
@@ -194,6 +195,5 @@ Alert.propTypes = {
     "danger",
     "question"
   ] as AlertIntentions[]),
-  elevation: PropTypes.oneOf(["xs", "sm", "md", "lg", "xl"]),
-  component: PropTypes.elementType
+  elevation: PropTypes.oneOf(["xs", "sm", "md", "lg", "xl"] as LayerElevations[])
 };

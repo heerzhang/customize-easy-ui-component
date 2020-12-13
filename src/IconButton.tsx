@@ -22,10 +22,7 @@ export interface IconButtonProps extends Partial<ButtonProps> {
  * A component which composes Button and Icon to provide
  * interactive icon elements.
  */
-export const IconButton: React.RefForwardingComponent<
-  React.Ref<HTMLButtonElement>,
-  IconButtonProps
-> = React.forwardRef(
+export const IconButton = React.forwardRef(
   (
     {
       label,

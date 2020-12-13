@@ -358,7 +358,7 @@ export const Sheet: React.FunctionComponent<SheetProps> = ({
         }}
       >
         <animated.div
-          style={{ opacity }}
+          style={{ opacity } as any}
           {...bindTouchable}
           css={{
             touchAction: "none",

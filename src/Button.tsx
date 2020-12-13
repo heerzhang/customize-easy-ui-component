@@ -12,6 +12,8 @@ import { useTouchable, OnPressFunction } from "touchable-hook";
 import cx from "classnames";
 import { safeBind } from "./Hooks/compose-bind";
 import { BreakPointType } from "./Theme/breakpoints";
+import {ForwardRefRenderFunction} from "react";
+import {ElementType} from "react";
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 
@@ -476,7 +478,7 @@ export interface ButtonProps
     React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   ref?: React.Ref<HTMLButtonElement>;
-  component?: React.ReactType<any>;
+  component?: React.ElementType<any>;
   //配合router路由使用的，跳转时unmount会导致报警。
   noBind?:boolean;
   [key: string]: any; // bad hack to permit component injection
@@ -486,10 +488,7 @@ export interface ButtonProps
  * Your standard Button element
  */
 
-export const Button: React.RefForwardingComponent<
-  React.Ref<HTMLButtonElement>,
-  ButtonProps
-> = React.forwardRef(
+export const Button = React.forwardRef(
   (
     {
       size = "md",

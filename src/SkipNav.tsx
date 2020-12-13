@@ -49,7 +49,7 @@ export const SkipNavLink: React.FunctionComponent<ISkipNavProps> = ({
 };
 
 SkipNavLink.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
 };
 
 export const SkipNavContent = ReachSkipNavContent;
