@@ -1,5 +1,6 @@
 ## 4.3.0
 - 大幅度修改，全面更新最新版本的依赖，故事书独立成一个子工程了。
+- 丢弃对commonjs规范的支持，保留ES Module的方式。
 ## 4.0.0
 - Compare the old and new versions, and modify theme.mediaqueries. Old version SM > = 567, MD > = 768, LG > = 992, XL > = 1200. But the new version SM < = 319, MD > = 629, LG > = 1120, XL > = 1440. The new version defaults to 320 to 628px, which just fits the width of the phone.
 

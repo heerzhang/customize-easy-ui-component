@@ -35,3 +35,9 @@ import multi from '@rollup/plugin-multi-entry'
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
     "name": "component-library-starter",
+   ES Module 规范
+~ "main": "dist/index.js"
+  "module": "es/index.js"
+  "types": "es/index.d.ts"
+
+丢弃对commonjs规范的支持，保留ES Module方式

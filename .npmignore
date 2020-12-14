@@ -6,8 +6,10 @@ stories
 storybook
 .idea
 cjs
-esm
 src
 scripts
 storybook-static
 ui_book
+dist
+
+新建文本文档.txt
