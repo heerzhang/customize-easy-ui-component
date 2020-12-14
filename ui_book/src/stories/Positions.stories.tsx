@@ -10,7 +10,8 @@ function Example() {
 
   return (
     <div>
-      <button ref={target.ref}>Attach to me</button>
+      <button css={{ position: "absolute", left: "280px" }}
+            ref={target.ref}>Attach to me</button>
       <div
         ref={popover.ref}
         style={popover.style}

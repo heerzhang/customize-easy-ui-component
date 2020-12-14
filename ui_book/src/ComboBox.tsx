@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { jsx,css, SerializedStyles} from "@emotion/react";
 import * as React from "react";
-//import { usePositioner } from "./Hooks/use-positioner";
 import { useUid } from "./Hooks/use-uid";
 import { safeBind } from "./Hooks/compose-bind";
 import { useTheme } from "./Theme/Providers";
@@ -12,6 +11,7 @@ import { Layer } from "./Layer";
 import Highlighter from "react-highlight-words";
 import { InputBase } from "./Form";
 import { usePopper } from 'react-popper';
+import {ElementType} from "react";
 
 /**
  * Combobox context
@@ -74,20 +74,13 @@ export const ComboBox: React.FunctionComponent<ComboBoxProps> = ({
   const listRef = React.useRef(null);
   const listId = `list${useUid()}`;
   const options = React.useRef<string[] | null>([]);
-  /*const position = usePositioner({
-    modifiers: {
-      flip: {
-        enabled: false
-      }
-    }
-  });*/
-    const [referenceElement, setReferenceElement] = React.useState(null);
-    const [popperElement, setPopperElement] = React.useState(null);
-    const [arrowElement, setArrowElement] = React.useState(null);
-    const { styles, attributes } = usePopper(referenceElement, popperElement, {
-        modifiers: [{ name: 'arrow', options: { element: arrowElement } }],
-    });
-
+  //替换掉const position = usePositioner() of ./Hooks/use-positioner"直接使用'react-popper'包。
+  const [referenceElement, setReferenceElement] = React.useState(null);
+  const [popperElement, setPopperElement] = React.useState(null);
+  const [arrowElement, setArrowElement] = React.useState(null);
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
+      modifiers: [{ name: 'arrow', options: { element: arrowElement } }],
+  });
 
   const [expanded, setExpanded] = React.useState(false);
   const [selected, setSelected] = React.useState<string | null>(null);
@@ -268,7 +261,7 @@ export const ComboBox: React.FunctionComponent<ComboBoxProps> = ({
         handleBlur,
         handleFocus,
         handleOptionSelect,
-        position:{ setReferenceElement, setPopperElement, setArrowElement, styles, attributes  },
+        position:{ setReferenceElement, setPopperElement, setArrowElement, styles, attributes },
         makeHash,
         expanded,
         inputSize: inputSize.bounds,
@@ -288,7 +281,7 @@ export const ComboBox: React.FunctionComponent<ComboBoxProps> = ({
 
 export interface ComboBoxInputProps extends React.HTMLAttributes<any> {
   "aria-label": string;
-  component?: React.ReactType<any>;
+  component?: React.ElementType<any>;
   [key: string]: any;
 }
 
@@ -411,7 +404,7 @@ export const ComboBoxList: React.FunctionComponent<ComboBoxListProps> = ({
           elevation="sm"
           key="1"
           style={position.styles.popper}
-          data-placement={...position.attributes.popper}
+          data-placement={position.attributes.popper}
           id={listId}
           role="listbox"
           onBlur={handleBlur}
@@ -553,3 +546,4 @@ export const ComboBoxOptionText: React.FunctionComponent<
     </Text>
   );
 };
+
