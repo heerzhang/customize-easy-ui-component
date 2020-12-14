@@ -6,7 +6,7 @@ import { Button } from "../Button";
 import { MenuList, MenuItem, MenuDivider } from "../Menu";
 import { IconButton } from "../IconButton";
 import { storiesOf } from "@storybook/react";
-import { Placement } from "popper.js";
+import { Placement } from "@popperjs/core";
 import {
   IconMoreHorizontal,
   IconUser,

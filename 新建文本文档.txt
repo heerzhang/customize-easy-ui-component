@@ -28,16 +28,9 @@ storiesOf(kind: StoryKind, module: NodeModule): StoryApi<StoryFnReturnType>;
 /** @jsxImportSource @emotion/react */
 
 删除src/stories目录后就不会报错TS2589: Type instantiation is excessively deep and possibly infinite，可能循环了，拆成两个工程得了。
-
-//TODO: React Popper 2.×   focus-trap
-import multi from '@rollup/plugin-multi-entry'
-  "main": "cjs/index.js",
-  "module": "dist/index.js",
-  "typings": "dist/index.d.ts",
-    "name": "component-library-starter",
-   ES Module 规范
-~ "main": "dist/index.js"
-  "module": "es/index.js"
-  "types": "es/index.d.ts"
-
+ES2015     "react-spring": "~9.0.0-rc.3"
+//TODO: React Popper 2.×
+    "@popperjs/core": "^2.5.4",
+    "react-popper": "^2.2.4",
+use-positioner.ts  ComboBox  ComboBoxInput ComboBoxList
 丢弃对commonjs规范的支持，保留ES Module方式

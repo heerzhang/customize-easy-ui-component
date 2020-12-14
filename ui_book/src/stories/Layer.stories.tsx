@@ -10,7 +10,7 @@ import { Text } from "../Text";
 import { ToggleDarkMode } from "./ToggleDarkMode";
 import { Tooltip } from "../Tooltip";
 import { Popover } from "../Popover";
-import { Placement } from "popper.js";
+import { Placement } from "@popperjs/core";
 import { MenuList, MenuItem, MenuDivider } from "../Menu";
 
 export const LayerStories = storiesOf("Layer", module)

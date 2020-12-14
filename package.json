@@ -1,6 +1,6 @@
 {
   "name": "customize-easy-ui-component",
-  "version": "4.3.0-apha-1",
+  "version": "4.3.0-beta",
   "description": "前端的通用组件库",
   "author": "heerzhang <herzhang@163.com>",
   "license": "MIT",
@@ -29,18 +29,15 @@
     "说明": "执行命令自动生成图标目录，https://feathericons.com/可查询所有图标及其名称",
     "generate-icons": "create-react-icons  --source ./node_modules/feather-icons/dist/icons/*.svg  --destination ./src/Icons --typescript --template ./scripts/icon-template.ejs",
     "build-esm": "rimraf esm && tsc --outDir esm",
-    "build-cjs废弃": "rimraf cjs && tsc --module commonjs --outDir cjs",
-    "依赖提醒": "rollup -c 可以对依赖包的缺失给出提示，其它两种tsc都不报错",
-    "build-rollup测试用": "rimraf dist && rollup -c",
-    "build旧版本": "yarn run build-esm && yarn run build-cjs && yarn run build-umd",
+    "依赖提醒": "rollup -c 可以对依赖包的缺失给出提示，而tsc就不报错;dist测试,esm发布",
+    "test-build": "rimraf dist && rollup -c",
     "build": "yarn run build-esm",
     "prepublishOnly": "yarn run build"
   },
   "peerDependencies": {
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "@emotion/react": "^11.1.2",
-    "react-spring": "~9.0.0-rc.3"
+    "@emotion/react": "^11.1.2"
   },
   "devDependencies": {
     "react": "^17.0.1",
@@ -66,7 +63,6 @@
     "babel-plugin-require-context-hook": "^1.0.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "jest": "^26.6.3",
-    "react-spring": "~9.0.0-rc.3",
     "rimraf": "^2.6.3",
     "rollup": "^2.34.2",
     "@rollup/plugin-babel": "^5.2.2",
@@ -86,14 +82,27 @@
     "@emotion/css": "^11.0.0",
     "@types/react-highlight-words": "^0.16.1",
     "@types/react-swipeable-views": "^0.12.2",
-    "classnames": "^2.2.6",
     "feather-icons": "^4.28.0",
     "create-react-icons": "^1.1.1",
-    "compute-scroll-into-view": "^1.0.11",
-    "focus-trap": "^5.1.0",
-    "is-mobile": "^2.2.2",
+    "@babel/runtime": "^7.12.5",
+    "tslib": "^2.0.3",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/prop-types": "15.7.3",
+    "prop-types": "^15.7.2"
+  },
+  "dependencies": {
+    "react-spring": "~9.0.0-rc.3",
+    "raf-schd": "^4.0.2",
+    "@reach/skip-nav": "^0.12.1",
+    "@reach/alert": "^0.12.1",
+    "@reach/visually-hidden": "^0.12.0",
     "open-color": "^1.7.0",
     "color": "^3.1.3",
+    "classnames": "^2.2.6",
+    "compute-scroll-into-view": "^1.0.11",
+    "focus-trap": "~6.2.3",
+    "is-mobile": "^2.2.2",
     "popper.js": "^1.14.7",
     "react-gesture-responder": "^2.1.0",
     "react-gesture-stack": "^1.3.2",
@@ -101,22 +110,11 @@
     "react-page-controller": "^3.1.0",
     "react-popper": "^1.3.7",
     "react-remove-scroll": "^2.4.1",
-    "raf-schd": "^4.0.2",
-    "@reach/skip-nav": "^0.12.1",
-    "@reach/alert": "^0.12.1",
-    "@reach/visually-hidden": "^0.12.0",
     "resize-observer-polyfill": "^1.5.1",
     "toasted-notes": "^3.2.0",
     "touchable-hook": "^1.3.0",
     "use-media": "^1.4.0",
     "use-scroll-lock": "^1.0.0"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.12.5",
-    "tslib": "^2.0.3",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "@types/prop-types": "15.7.3",
-    "prop-types": "^15.7.2"
   }
 }
+

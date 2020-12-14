@@ -13,7 +13,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": false,
-    "target": "es5",
+    "target": "ES2015",
     "resolveJsonModule": true,
     "isolatedModules": false,
     "allowJs": false,
