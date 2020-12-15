@@ -34,7 +34,7 @@ https://twitter.com/intent/follow?screen_name=benmcmahen
 Install Sancho and Emotion using yarn or npm:
 
 ```
-yarn add customize-easy-ui-component
+yarn add customize-easy-ui-component react react-dom @emotion/react
 ```
 
 And import your desired components into your React project.
@@ -82,6 +82,8 @@ function MyApp() {
 ```
 git clone https://github.com/heerzhang/customize-easy-ui-component.git
 cd customize-easy-ui-component
+yarn
+cd ui_book
 yarn
 yarn run storybook
 ```

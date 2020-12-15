@@ -29,7 +29,7 @@ storiesOf(kind: StoryKind, module: NodeModule): StoryApi<StoryFnReturnType>;
 
 删除src/stories目录后就不会报错TS2589: Type instantiation is excessively deep and possibly infinite，可能循环了，拆成两个工程得了。
 ES2015     "react-spring": "~9.0.0-rc.3"
-//TODO: React Popper 2.×
+没用webpack， rollup也可以省略，tsc后直接发布esm
     "@popperjs/core": "^2.5.4",
     "react-popper": "^2.2.4",
 use-positioner.ts  ComboBox  ComboBoxInput ComboBoxList
