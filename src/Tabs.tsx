@@ -55,7 +55,7 @@ export interface TabsProps {
   /** Change callback to control which tab is selected */
   onChange: (value: number) => void;
   /** Tab elements */
-  children: React.ReactElement<TabProps>[] | React.ReactElement<TabProps>;
+  children: React.ReactElement<TabProps>[];
   /** spring animation configuration */
   animationConfig?: SpringConfig;
 }
@@ -269,7 +269,7 @@ Tabs.propTypes = {
   onChange: PropTypes.func,
   slider: PropTypes.bool,
   variant: PropTypes.oneOf(["default", "evenly-spaced"] as VariantTabsType[]),
-  children: PropTypes.element,
+  children: PropTypes.arrayOf(PropTypes.element),
   animationConfig: PropTypes.shape({
     tension: PropTypes.number,
     friction: PropTypes.number,

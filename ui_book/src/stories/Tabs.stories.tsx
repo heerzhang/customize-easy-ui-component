@@ -42,10 +42,10 @@ const Example = () => {
     >
       <Tabs value={value} onChange={i => setValue(i)}>
         <Tab id="course">Course events</Tab>
-        <Tab id="settings">Settings</Tab>
-        <Tab id="templates">Templates</Tab>
-        <Tab id="courses">Courses</Tab>
-        <Tab id="members">Team members</Tab>
+          <Tab id="settings">Settings</Tab>
+          <Tab id="templates">Templates</Tab>
+          <Tab id="courses">Courses</Tab>
+          <Tab id="members">Team members</Tab>
       </Tabs>
     </div>
   );
