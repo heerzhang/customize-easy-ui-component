@@ -2,10 +2,12 @@
 import { jsx } from "@emotion/react";
 import * as React from "react";
 import { MenuList, MenuItem, MenuDivider, MenuLabel } from "../Menu";
+import { Touchable } from "../Touchable";
 import { storiesOf } from "@storybook/react";
 import { ToggleDarkMode } from "./ToggleDarkMode";
 import { Text } from "../Text";
-import { IconAirplay, IconUser, IconAlertCircle, IconDelete } from "../Icons";
+import { IconAirplay, IconUser, IconAlertCircle, IconDelete,IconPackage } from "../Icons";
+import { Link as RouterLink } from "wouter";
 
 export const MenuStories = storiesOf("MenuList", module)
   .add("keyboard controls", () => {
@@ -32,6 +34,13 @@ export const MenuStories = storiesOf("MenuList", module)
   .add("with icons", () => {
     return (
       <MenuList css={{ maxWidth: "400px", width: "100%" }}>
+          <MenuItem contentBefore={<IconPackage />} >
+              <RouterLink to={`https://www.baidu.com/`}>
+                  <Touchable component={'div'} css={{paddingLeft: "1rem"}}>
+                      增加个报告
+                  </Touchable>
+              </RouterLink>
+          </MenuItem>
         <MenuItem contentBefore={<IconUser />}>Share</MenuItem>
         <MenuItem contentBefore={<IconAlertCircle />}>Alert</MenuItem>
         <MenuDivider />
