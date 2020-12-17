@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { jsx, Global, css } from "@emotion/react";
 import * as React from "react";
-import toaster, { Position } from "toasted-notes";
+import toaster, { Position } from "react-toastnotes";
 import { Alert, AlertIntentions } from "./Alert";
 import { Theme } from "./Theme";
 import { useTheme, ThemeProvider } from "./Theme/Providers";

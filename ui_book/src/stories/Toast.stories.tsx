@@ -12,9 +12,9 @@ function Example() {
     <Button
       onClick={() => {
         toast({
-          duration: null,
+          duration: 2500,
           title: "Hello world",
-          subtitle: "Excepteur exercitation eu duis reprehenderit irure."
+          subtitle: "Excepteur exercitation 停留 2500 ms."
         });
       }}
     >
