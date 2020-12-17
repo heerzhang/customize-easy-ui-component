@@ -43,6 +43,7 @@ interface ListItemProps extends React.HTMLAttributes<any> {
   primary: string | React.ReactNode;
   /** the secondary text content */
   secondary?: string | React.ReactNode;
+  noBind?:boolean;  //防止Can't perform a React state update on an unmounted component
   [key: string]: any; // back hack to permit things like to='/page'
 }
 
@@ -56,6 +57,7 @@ export const ListItem: React.FunctionComponent<ListItemProps> = ({
   contentAfter,
   onPress = noOp,
   component: Component = "div",
+  noBind=false,
   ...other
 }) => {
   const interactiveProps = interactive
@@ -110,7 +112,7 @@ export const ListItem: React.FunctionComponent<ListItemProps> = ({
           }
       ]}
       {...interactiveProps}
-      {...safeBind(interactive ? bind : {}, other)}
+      {...safeBind(!noBind&&interactive ? bind : {}, other)}
     >
       <div
         className="ListItem__container"

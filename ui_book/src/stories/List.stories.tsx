@@ -10,6 +10,7 @@ import faker from "faker";
 import { Avatar } from "../Avatar";
 import { ToggleDarkMode } from "./ToggleDarkMode";
 import { Divider } from "../Divider";
+import { Link as RouterLink } from "wouter";
 
 export const CollapseStories = storiesOf("List", module)
   .add("basic", () => {
@@ -124,7 +125,7 @@ export const CollapseStories = storiesOf("List", module)
             }
             primary="Ben McMahen"
             wrap={false}
-            secondary="Minim do minim cupidatat veniam aliquip sunt exercitation enim nisi nulla."
+            secondary="Minim do minim cupidatat veniam 1."
           />
           <ListItem
             wrap={false}
@@ -134,14 +135,16 @@ export const CollapseStories = storiesOf("List", module)
             primary="Joe Chen"
             secondary="Proident irure cupidatat cupidatat elit eiusmod mollit."
           />
-          <ListItem
-            wrap={false}
-            contentBefore={
-              <Avatar name={"Ben McMahen"} src={faker.image.avatar()} />
-            }
-            primary="Joe Chen"
-            secondary="Proident irure cupidatat cupidatat elit eiusmod mollit."
-          />
+        <RouterLink to="/">
+            <ListItem noBind
+                wrap={false}
+                contentBefore={
+                    <Avatar name={"Heerzhang"} src={faker.image.avatar()} />
+                }
+                primary="跳转后报错"
+                secondary="Proident irure cupidatat cupidatat elit eiusmod mollit."
+            />
+        </RouterLink>
           <ListItem
             wrap={false}
             contentBefore={
