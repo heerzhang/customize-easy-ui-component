@@ -38,7 +38,7 @@ export function useToast() {
   const theme = useTheme();
 
   function notify({
-    position,
+    position ="bottom",
     duration,
     render,
     title,

@@ -14,7 +14,8 @@ function Example() {
         toast({
           duration: 2500,
           title: "Hello world",
-          subtitle: "Excepteur exercitation 停留 2500 ms."
+          subtitle: "Excepteur exercitation 停留 2500 ms.",
+          position: "top"
         });
       }}
     >
