@@ -15,6 +15,8 @@ import {
   IconActivity,
   IconArrowUpRight
 } from "../Icons";
+import {useLocation} from "wouter";
+import {useToast} from "../Toast";
 
 interface LinkProps {
   href: string;
@@ -145,11 +147,22 @@ export const PopoverStories = storiesOf("Popover", module)
     );
   })
   .add("ResponsivePopover", () => {
+      const toast = useToast();
+      const [, setLocation] = useLocation();
     return (
       <div css={{ padding: "1rem" }}>
         <ResponsivePopover
           content={
             <MenuList>
+                <MenuItem contentBefore={<IconPackage />}
+                      onPress={async () => {
+                          await toast({title: "提交一个网页链接"});
+                          setLocation(`/?path=/story/popover--positions`);
+                      } }
+                >
+                 提交审核
+                </MenuItem>
+                <MenuDivider />
               <MenuItem
                 contentBefore={<IconUser />}
                 onPress={() => alert("Hello 1")}
