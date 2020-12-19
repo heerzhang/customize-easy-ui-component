@@ -1,6 +1,4 @@
-sancho  12-3:16.58 de家里版本  7c747af4b509f12a91a9a01dc88821f526678389     ；    newest=sancho--17-1209
-开始
-
+副作用钩子useEffect( ()=>{return () => unsubcribe();} , ? ) 第二参数null是每次都要执行第一个参数的功能，第二参数若是[]空数组的就是只做一次的，[a,b]依赖a/b变化触发。
     "@types/storybook__react": "^4.0.1",
    https://sancho-ui.com/components/icon/
 /// <reference types="@emotion/react/types/css-prop" />
@@ -34,4 +32,11 @@ ES2015     "react-spring": "~9.0.0-rc.3"
     "react-popper": "^2.2.4",
 use-positioner.ts  ComboBox  ComboBoxInput ComboBoxList
 丢弃对commonjs规范的支持，保留ES Module方式 https://popper.js.org/react-popper/v2/
-toast似乎失效了？
+FocusTrap.propTypes = {
+  focusTrapOptions: PropTypes.shape({
+  children: PropTypes.oneOfType([
+    PropTypes.element, // React element
+    PropTypes.instanceOf(ElementType), // DOM element
+  ]),
+  }),
+};
