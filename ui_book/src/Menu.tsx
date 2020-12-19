@@ -142,14 +142,15 @@ MenuList.propTypes = {
   //focusableChildren: PropTypes.arrayOf(PropTypes.element)
 };
 
-
+//弹出菜单不能noBind；
+//MenuItem需要ref()切换，不能被RouterLink代替
+//手机ResponsivePopover+MenuItem还会遭遇点击点点透掉的问题；
 interface MenuItemProps extends React.HTMLAttributes<Element> {
   /** Called when the menu item is selected. Generally use this instead of onClick. */
   onPress?: OnPressFunction;
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   /** Disable this menu item */
   disabled?: boolean;
-  noBind?: boolean;
   /** Pass in a string to use standard text styles. Otherwise, pass in any other node. */
   children: React.ReactNode;
   /** Provide a custom component. Eg., ReactRouter Link */
@@ -169,7 +170,6 @@ export const MenuItem: React.FunctionComponent<MenuItemProps> = ({
                                                                    className = "",
                                                                    component: Component = "div",
                                                                    role = "menuitem",
-                                                                   noBind=true,
                                                                    children,
                                                                    disabled,
                                                                    onClick,

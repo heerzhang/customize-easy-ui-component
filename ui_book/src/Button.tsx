@@ -479,7 +479,7 @@ export interface ButtonProps
   children: React.ReactNode;
   ref?: React.Ref<HTMLButtonElement>;
   component?: React.ElementType<any>;
-  //配合router路由使用的，跳转时unmount会导致报警。
+  //配合router路由使用的，跳转后会导致Can't perform a React state update on an unmounted component。
   noBind?:boolean;
   [key: string]: any; // bad hack to permit component injection
 }
