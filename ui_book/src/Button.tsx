@@ -481,6 +481,11 @@ export interface ButtonProps
   component?: React.ElementType<any>;
   //配合router路由使用的，跳转后会导致Can't perform a React state update on an unmounted component。
   noBind?:boolean;
+  /** Whether active presses should be terminated when scrolling occurs. Typically this should be true.
+   * 跳转页面后,滚动爆出 unmounted 错误
+   * 原先默认是terminateOnScroll=true, 这里改成可用参数重载它,默认改成=false；
+   * */
+  terminateOnScroll?: boolean;
   [key: string]: any; // bad hack to permit component injection
 }
 
@@ -506,6 +511,7 @@ export const Button = React.forwardRef(
       pressExpandPx,
       onPress,
       noBind=false,
+      terminateOnScroll = false,
       ...other
     }: ButtonProps,
     ref: React.Ref<any>
@@ -516,6 +522,7 @@ export const Button = React.forwardRef(
       onPress,
       delay: pressDelay,
       pressExpandPx,
+      terminateOnScroll,
       disabled,
       behavior: isLink ? "link" : "button"
     });
