@@ -44,6 +44,7 @@ interface ListItemProps extends React.HTMLAttributes<any> {
   /** the secondary text content */
   secondary?: string | React.ReactNode;
   noBind?:boolean;  //防止Can't perform a React state update on an unmounted component
+  terminateOnScroll?: boolean;
   [key: string]: any; // back hack to permit things like to='/page'
 }
 
@@ -58,6 +59,7 @@ export const ListItem: React.FunctionComponent<ListItemProps> = ({
   onPress = noOp,
   component: Component = "div",
   noBind=false,
+  terminateOnScroll = false,
   ...other
 }) => {
   const interactiveProps = interactive
@@ -69,6 +71,7 @@ export const ListItem: React.FunctionComponent<ListItemProps> = ({
   const isLink = other.to || other.href;
   const { bind, hover, active } = useTouchable({
     onPress,
+    terminateOnScroll,
     behavior: isLink ? "link" : "button"
   });
   const theme = useTheme();
@@ -173,6 +176,8 @@ ListItem.propTypes = {
   wrap: PropTypes.bool,
   children: PropTypes.node,
   interactive: PropTypes.bool,
+  terminateOnScroll: PropTypes.bool,
+  noBind: PropTypes.bool,
   onPress: PropTypes.func
 };
 
