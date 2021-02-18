@@ -87,7 +87,7 @@ export const ComboBox: React.FunctionComponent<ComboBoxProps> = ({
   const inputSize = useMeasure(inputRef);
 
   /**
-   * Handle input change
+   * Handle input change 输入框输入变更
    */
 
   const onInputChange = React.useCallback(
@@ -229,12 +229,17 @@ export const ComboBox: React.FunctionComponent<ComboBoxProps> = ({
 
   /**
    * Handle item clicks
+   * ComboBoxOption列表unmounted报错{tounchable-OnEnd()}解决方式: 拖延更新  async {await setXXX}
    */
 
-  const handleOptionSelect = React.useCallback((value: string) => {
+  const handleOptionSelect = React.useCallback(async (value: string) => {
+    //onSelect 外部注入编辑setxxx()
     onSelect && onSelect(value);
+    await setSelected(null);
+    //setExpanded执行太快了，反而报错 useTouchable-onEnd-dispatch("RESPONDER_RELEASE")钩子，遇到unmounted了。
+    //直接在前面那个setSelected 做一个await;相当于出让一个运行render机会,拖延后面这个setExpanded的运行时间点到下一个render再做，拖延更新。
+    //console.log("onSelect进入 selected=",　value);
     setExpanded(false);
-    setSelected(null);
   }, []);
 
   /**
@@ -481,6 +486,7 @@ export const ComboBoxOption: React.FunctionComponent<ComboBoxOptionProps> = ({
       id={makeHash(value)}
       role="option"
       component="li"
+      terminateOnScroll={false}
       onPress={onClick}
       aria-selected={isSelected ? "true" : "false"}
       css={{

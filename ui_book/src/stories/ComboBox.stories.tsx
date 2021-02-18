@@ -42,7 +42,7 @@ function Example() {
   return (
     <div css={{ margin: "3rem auto", width: "30rem" }}>
       <ComboBox
-        autocomplete
+        autocomplete={false}
         query={query}
         onQueryChange={v => {
           setQuery(v);
