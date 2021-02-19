@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { MenuLabel } from "./Menu";
 import { useTheme } from "./Theme/Providers";
 import { noOp } from "./misc/noop";
-import { OnPressFunction, useTouchable } from "touchable-hook";
+import { OnPressFunction, useTouchable } from "./Hooks/touchable-hook";
 import { safeBind } from "./Hooks/compose-bind";
 import {ElementType} from "react";
 

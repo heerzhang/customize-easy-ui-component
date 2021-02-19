@@ -1,6 +1,6 @@
 {
   "name": "customize-easy-ui-storybook",
-  "version": "4.3.0",
+  "version": "4.3.5",
   "description": "前端的通用组件库-说明书",
   "author": "heerzhang <herzhang@163.com>",
   "license": "MIT",
@@ -84,7 +84,6 @@
     "@reach/skip-nav": "^0.12.1",
     "resize-observer-polyfill": "^1.5.1",
     "react-toastnotes": "^3.3.1",
-    "touchable-hook": "^1.3.0",
     "use-media": "^1.4.0",
     "use-scroll-lock": "^1.0.0",
     "wouter": "^2.6.0",
