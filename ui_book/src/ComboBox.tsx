@@ -235,11 +235,11 @@ export const ComboBox: React.FunctionComponent<ComboBoxProps> = ({
   const handleOptionSelect = React.useCallback(async (value: string) => {
     //onSelect 外部注入编辑setxxx()
     onSelect && onSelect(value);
-    setSelected(null);
+    await setSelected(null);
     //setExpanded执行太快了，反而报错 useTouchable-onEnd-dispatch("RESPONDER_RELEASE")钩子，遇到unmounted了。
     //直接在前面那个setSelected 做一个await;相当于出让一个运行render机会,拖延后面这个setExpanded的运行时间点到下一个render再做，拖延更新。
     //console.log("onSelect进入 selected=",　value);
-    await setExpanded(false);
+    setExpanded(false);
   }, []);
 
   /**
@@ -466,7 +466,7 @@ export const ComboBoxOption: React.FunctionComponent<ComboBoxOptionProps> = ({
     throw new Error("ComboBoxInput must be wrapped in a ComboBox component");
   }
 
-  const { makeHash, handleOptionSelect, options, selected, expanded} = context;
+  const { makeHash, handleOptionSelect, options, selected } = context;
 
   React.useEffect(() => {
     if (options.current) {
@@ -480,7 +480,7 @@ export const ComboBoxOption: React.FunctionComponent<ComboBoxOptionProps> = ({
     handleOptionSelect(value);
   }, [value]);
 
-  //<Touchable terminateOnScroll={false} 导致比较容易触发选定，感觉不慎重哦。
+  //加上terminateOnScroll={true}才能准确捕捉点击，否则容易误操作，没完全明确选定。
 
   return (
     <Touchable
@@ -488,8 +488,6 @@ export const ComboBoxOption: React.FunctionComponent<ComboBoxOptionProps> = ({
       id={makeHash(value)}
       role="option"
       component="li"
-      disabled={!expanded}
-      terminateOnScroll={expanded}
       onPress={onClick}
       aria-selected={isSelected ? "true" : "false"}
       css={{

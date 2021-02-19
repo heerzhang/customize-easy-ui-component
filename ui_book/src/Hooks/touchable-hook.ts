@@ -189,8 +189,11 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
     const delayTimer = React.useRef<number>();
     const longDelayTimer = React.useRef<number>();
     const bounds = React.useRef<ClientRect>();
+    //这两个完全不是一个含义， hover是鼠标点位置进 出来。
     const [hover, setHover] = React.useState(false);
+    //开始触摸的反馈showHover正常都是true,触摸点击的才会，相反掉。
     const [showHover, setShowHover] = React.useState(true);
+    //active表示被触摸选中了。
     const [active, setActive] = React.useState(false);
     const state = React.useRef<States>("NOT_RESPONDER");
 
@@ -211,7 +214,7 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
         } else {
             //状态机事件触发前后都是"NOT_RESPONDER"的说明组件可能已经卸载了！
             //首先 RESPONDER_RELEASE: 后面又来了 RESPONDER_TERMINATED:
-            if(state.current!=="NOT_RESPONDER" || (event !=="RESPONDER_RELEASE" && event !=="RESPONDER_TERMINATED") )
+            if(state.current!=="ERROR" || (event !=="RESPONDER_RELEASE" && event !=="RESPONDER_TERMINATED") )
                 setActive(false);
         }
 
@@ -328,10 +331,9 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
 
         //状态机事件触发前后都是"NOT_RESPONDER"的说明组件可能已经卸载了！
         //首先 RESPONDER_RELEASE: 后面又来了 RESPONDER_TERMINATED:
-        // @ts-ignore
-      // if(state.current!=="NOT_RESPONDER" && !showHover)
-         setShowHover(true);
-
+       if(state.current!=="ERROR" && !showHover){
+            setShowHover(true);
+       }
         unbindScroll();
     }
 
@@ -382,6 +384,10 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
 
     function onScroll() {
         unbindScroll();
+        //组件已经卸载？
+        if (state.current === "ERROR") {
+            return;
+        }
         dispatch("RESPONDER_TERMINATED");
     }
 
@@ -417,11 +423,12 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
 
     React.useEffect(() => {
         return () => {
+            //老是报错 unmounted, 特殊状态。
+            //state.current = "NOT_RESPONDER";
+            state.current = "ERROR";
             clearTimeout(delayTimer.current);
             clearTimeout(longDelayTimer.current);
             unbindScroll();
-            //老是报错 unmounted
-            state.current = "NOT_RESPONDER";
         };
     }, []);
 
