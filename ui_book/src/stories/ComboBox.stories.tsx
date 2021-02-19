@@ -110,7 +110,7 @@ function CustomExample() {
           aria-label="Query users"
           placeholder="Search for users"
           component={InputBase}
-          autocomplete
+          autoComplete={"true"}
         />
 
         {query && (
