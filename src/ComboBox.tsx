@@ -480,7 +480,7 @@ export const ComboBoxOption: React.FunctionComponent<ComboBoxOptionProps> = ({
     handleOptionSelect(value);
   }, [value]);
 
-  //<Touchable terminateOnScroll={false} 导致比较容易触发选定，感觉不慎重哦。
+  //加上terminateOnScroll={true}才能准确捕捉点击，否则容易误操作，没完全明确选定。
 
   return (
     <Touchable

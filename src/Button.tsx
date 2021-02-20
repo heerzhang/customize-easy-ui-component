@@ -8,7 +8,7 @@ import { Spinner } from "./Spinner";
 import { useTheme } from "./Theme/Providers";
 import { Theme } from "./Theme";
 import { IconWrapper } from "./IconWrapper";
-import { useTouchable, OnPressFunction } from "touchable-hook";
+import { useTouchable, OnPressFunction } from "./Hooks/touchable-hook";
 import cx from "classnames";
 import { safeBind } from "./Hooks/compose-bind";
 import { BreakPointType } from "./Theme/breakpoints";

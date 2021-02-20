@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { RequestCloseContext } from "./Sheet";
 import { useTheme } from "./Theme/Providers";
 import { noOp } from "./misc/noop";
-import { useTouchable, OnPressFunction } from "touchable-hook";
+import { useTouchable, OnPressFunction } from "./Hooks/touchable-hook";
 import cx from "classnames";
 import { safeBind } from "./Hooks/compose-bind";
 

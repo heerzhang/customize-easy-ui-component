@@ -62,7 +62,7 @@ type TransitionsType = { [key in States]: TransitionType };
 type TransitionType = { [key in Events]: States };
 
 //状态+事件：矩阵：  NOT_RESPONDER 意思： 没事情无效果。
-//直接利用旧的矩阵：
+//直接利用旧的 状态转移的矩阵：
 const transitions = {
     NOT_RESPONDER: {
         DELAY: "NOT_RESPONDER",
@@ -146,6 +146,8 @@ export interface TouchableOptions {
     onLongPress?: OnPressFunction;
 }
 
+//terminateOnScroll 缺省值可以取true 这下就不会卸载组件就报错了。
+
 const defaultOptions: TouchableOptions = {
     delay: HIGHLIGHT_DELAY_MS,
     pressExpandPx: PRESS_EXPAND_PX,
@@ -215,10 +217,10 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
         if(newResponder === "RESPONDER_PRESSED_IN" || newResponder === "RESPONDER_LONG_PRESSED_IN" ) {
             setActive(true);
         } else {
-            //状态机事件触发前后都是"NOT_RESPONDER"的说明组件可能已经卸载了！
+            //状态机事件ERROR的说明组件可能已经卸载了！
             //首先 RESPONDER_RELEASE: 后面又来了 RESPONDER_TERMINATED:
-            if(newResponder!=="ERROR" || (action.type !=="RESPONDER_RELEASE" && action.type !=="RESPONDER_TERMINATED") )
-                setActive(false);
+            //if(newResponder!=="ERROR" || (action.type !=="RESPONDER_RELEASE" && action.type !=="RESPONDER_TERMINATED") )
+            setActive(false);
         }
 
         if (newResponder === "NOT_RESPONDER") {
@@ -376,7 +378,8 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
 
         //状态机事件触发前后都是"NOT_RESPONDER"的说明组件可能已经卸载了！
         //首先 RESPONDER_RELEASE: 后面又来了 RESPONDER_TERMINATED:
-       if(responder!=="ERROR" && !showHover){
+        //if(responder!=="ERROR" && !showHover){
+       if(!showHover){
             setShowHover(true);
        }
         unbindScroll();
@@ -429,10 +432,12 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
 
     function onScroll() {
         unbindScroll();
-        //组件已经卸载？
+
+        /*组件已经卸载？
         if (responder === "ERROR") {
             return;
-        }
+        }*/
+
         dispatch({ type: "RESPONDER_TERMINATED" });
     }
 
@@ -469,7 +474,7 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
     React.useEffect(() => {
         return () => {
             //报错 unmounted, 针对组件被卸载情形：新版本直接dispatch就可以了，似乎React.useReducer内部自动避免 报错unmounted。
-            //旧版本用 特殊状态。  state.current = "ERROR";
+            //旧版本用，特殊状态来代表已经被卸载了。  state.current = "ERROR";
             dispatch( { type: "RESPONDER_TERMINATED" } );
             clearTimeout(delayTimer.current);
             clearTimeout(longDelayTimer.current);

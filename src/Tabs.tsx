@@ -15,7 +15,7 @@ import { IconSizes } from "./Icons/IconTypes";
 import computeScrollIntoView from "compute-scroll-into-view";
 import { noOp } from "./misc/noop";
 import { useMeasure } from "./Hooks/use-measure";
-import { OnPressFunction } from "touchable-hook";
+import { OnPressFunction } from "./Hooks/touchable-hook";
 import { mergeRefs } from "./Hooks/merge-refs";
 import { Touchable } from "./Touchable";
 import cx from "classnames";

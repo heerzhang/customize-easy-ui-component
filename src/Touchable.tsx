@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { jsx } from "@emotion/react";
 import * as React from "react";
-import { useTouchable, OnPressFunction } from "touchable-hook";
+import { useTouchable, OnPressFunction } from "./Hooks/touchable-hook";
 import cx from "classnames";
 import { safeBind } from "./Hooks/compose-bind";
 
