@@ -9,8 +9,9 @@
 
 import * as React from "react";
 import { isHoverEnabled } from "./hover-enabled";
-//类型ResponderEvent自动添加的
+//类型ResponderEvent自动添加进来的
 import {ResponderEvent, useGestureResponder} from "react-gesture-responder";
+//自动添加进来的，Partial<> 代表一部分可选的参数对象集合。
 import {Partial} from "rollup-plugin-typescript2/dist/partial";
 
 /**
@@ -57,8 +58,9 @@ type Events =
 type TransitionsType = { [key in States]: TransitionType };
 
 type TransitionType = { [key in Events]: States };
-//状态+事件：矩阵：  NOT_RESPONDER 意思： 没事情无效果。
 
+//状态+事件：矩阵：  NOT_RESPONDER 意思： 没事情无效果。
+//直接利用旧的矩阵：
 const transitions = {
     NOT_RESPONDER: {
         DELAY: "NOT_RESPONDER",
@@ -125,6 +127,8 @@ const transitions = {
     }
 } as TransitionsType;
 
+
+
 export type OnPressFunction = (
     e?: React.TouchEvent | React.MouseEvent | React.KeyboardEvent | Event
 ) => void;
@@ -151,7 +155,11 @@ const defaultOptions: TouchableOptions = {
     onLongPress: undefined
 };
 
-//返回的类型是 自动生成代码的
+/**
+ * Hook：原版乃是touchable-hook这个包的。
+ * @param options
+ * 本函数返回的类型声明的近20个参数对象实际是自动生成的代码，非人工编辑的。
+ */
 
 export function useTouchable(options: Partial<TouchableOptions> = {}):
 {
@@ -195,14 +203,45 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
     const [showHover, setShowHover] = React.useState(true);
     //active表示被触摸选中了。
     const [active, setActive] = React.useState(false);
-    const state = React.useRef<States>("NOT_RESPONDER");
 
-    /**
-     * Transition from one state to another
-     * @param event
-     */
+    //直接用React.useReducer替换旧的机制（useRef<States>("NOT_RESPONDER"), function dispatch(event: Events) {）
+    //原先是nextState = transitions[state.current][event];  state.current = nextState
+    //如今[{ responder }, dispatch] = React.useReducer( ；这里{ responder }, 实际代表state[旧代码是state.current];  dispatch({type:'Event',addParms:{} });
 
-    function dispatch(event: Events) {
+    const [{ responder }, dispatch] = React.useReducer( (state, action) => {
+        const newResponder = transitions[state.responder][action.type];
+        if(newResponder === "RESPONDER_PRESSED_IN" || newResponder === "RESPONDER_LONG_PRESSED_IN" ) {
+            setActive(true);
+        } else {
+            //状态机事件触发前后都是"NOT_RESPONDER"的说明组件可能已经卸载了！
+            //首先 RESPONDER_RELEASE: 后面又来了 RESPONDER_TERMINATED:
+            if(newResponder!=="ERROR" || (action.type !=="RESPONDER_RELEASE" && action.type !=="RESPONDER_TERMINATED") )
+                setActive(false);
+        }
+
+        if (newResponder === "NOT_RESPONDER") {
+            clearTimeout(delayTimer.current);
+            clearTimeout(longDelayTimer.current);
+        }
+
+        switch (action.type as Events) {
+            default:
+                return {
+                    ...state,
+                    responder: newResponder
+                };
+        }
+    }, {
+        responder: "NOT_RESPONDER" as States,
+    });
+
+
+    //旧代码useRef方式
+    //const state = React.useRef<States>("NOT_RESPONDER");
+    /*
+     Transition from one state to another
+         * @param event dispatch({ type: 'increment', someNews: { } });
+    function dispatch_old(event: Events) {
         const nextState = transitions[state.current][event];
         state.current = nextState;
 
@@ -223,6 +262,8 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
             clearTimeout(longDelayTimer.current);
         }
     }
+    */
+
 
     // create a pan responder to handle mouse / touch gestures
     const { bind, terminateCurrentResponder } = useGestureResponder({
@@ -267,7 +308,7 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
     }
 
     function afterDelay() {
-        dispatch("DELAY");
+        dispatch({ type: "DELAY" });
     }
 
     /**
@@ -277,7 +318,7 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
      */
 
     function onStart(delayPressMs = delay) {
-        dispatch("RESPONDER_GRANT");
+        dispatch({ type: "RESPONDER_GRANT" });
         bounds.current = ref.current!.getBoundingClientRect();
         delayTimer.current =
             delayPressMs > 0
@@ -285,7 +326,7 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
                 : undefined;
 
         if (delayPressMs === 0) {
-            dispatch("DELAY");
+            dispatch({ type: "DELAY" });
         }
 
         longDelayTimer.current = window.setTimeout(afterLongDelay, longPressDelay);
@@ -295,18 +336,18 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
     }
 
     function afterLongDelay() {
-        dispatch("LONG_PRESS_DETECTED");
+        dispatch({ type: "LONG_PRESS_DETECTED" });
         emitLongPress();
     }
 
     // onTerminate should be disambiguated from onRelease
     // because it should never trigger onPress events.
     function onTerminate() {
-        if (state.current === "NOT_RESPONDER") {
+        if (responder === "NOT_RESPONDER") {
             return;
         }
 
-        dispatch("RESPONDER_RELEASE");
+        dispatch({ type: "RESPONDER_RELEASE" });
         setShowHover(true);
         unbindScroll();
     }
@@ -315,23 +356,23 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
         e?: React.TouchEvent | React.MouseEvent | React.KeyboardEvent | Event
     ) {
         // consider unbinding the end event instead
-        if (state.current === "NOT_RESPONDER") {
+        if (responder === "NOT_RESPONDER") {
             return;
         }
 
         if (
             e &&
-            (state.current === "RESPONDER_ACTIVE_IN" ||
-                state.current === "RESPONDER_PRESSED_IN")
+            (responder === "RESPONDER_ACTIVE_IN" ||
+                responder === "RESPONDER_PRESSED_IN")
         ) {
             emitPress(e);
         }
 
-        dispatch("RESPONDER_RELEASE");
+        dispatch({ type: "RESPONDER_RELEASE" });
 
         //状态机事件触发前后都是"NOT_RESPONDER"的说明组件可能已经卸载了！
         //首先 RESPONDER_RELEASE: 后面又来了 RESPONDER_TERMINATED:
-       if(state.current!=="ERROR" && !showHover){
+       if(responder!=="ERROR" && !showHover){
             setShowHover(true);
        }
         unbindScroll();
@@ -357,7 +398,7 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
      */
 
     function onTouchMove(e: any) {
-        if (state.current === "NOT_RESPONDER" || state.current === "ERROR") {
+        if (responder === "NOT_RESPONDER" || responder === "ERROR") {
             return;
         }
 
@@ -371,9 +412,9 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
         );
 
         if (withinBounds) {
-            dispatch("ENTER_PRESS_RECT");
+            dispatch({ type: "ENTER_PRESS_RECT" });
         } else {
-            dispatch("LEAVE_PRESS_RECT");
+            dispatch({ type: "LEAVE_PRESS_RECT" });
         }
     }
 
@@ -385,10 +426,10 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
     function onScroll() {
         unbindScroll();
         //组件已经卸载？
-        if (state.current === "ERROR") {
+        if (responder === "ERROR") {
             return;
         }
-        dispatch("RESPONDER_TERMINATED");
+        dispatch({ type: "RESPONDER_TERMINATED" });
     }
 
     /**
@@ -405,7 +446,7 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
         if (!showHover) {
             setShowHover(true);
         }
-        if (state.current !== "NOT_RESPONDER") {
+        if (responder !== "NOT_RESPONDER") {
             terminateCurrentResponder();
         }
     }
@@ -425,7 +466,8 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
         return () => {
             //老是报错 unmounted, 特殊状态。
             //state.current = "NOT_RESPONDER";
-            state.current = "ERROR";
+            dispatch
+            //       responder = "ERROR";
             clearTimeout(delayTimer.current);
             clearTimeout(longDelayTimer.current);
             unbindScroll();
@@ -433,8 +475,8 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
     }, []);
 
     React.useEffect(() => {
-        if (disabled && state.current !== "NOT_RESPONDER") {
-            dispatch("RESPONDER_TERMINATED");
+        if (disabled && responder !== "NOT_RESPONDER") {
+            dispatch({ type: "RESPONDER_TERMINATED" });
             setShowHover(true);
         }
     }, [disabled]);
