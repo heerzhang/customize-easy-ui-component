@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { jsx } from "@emotion/react";
-import { InputGroup, Select, Input, TextArea, Check } from "../Form";
+import {InputGroup, Select, Input, TextArea, Check, InputDatalist} from "../Form";
 import { Button } from "../Button";
 import theme from "../Theme";
 import { Layer } from "../Layer";
 import { storiesOf } from "@storybook/react";
 import { IconArrowRight, IconAlignCenter } from "../Icons";
 import { IconButton } from "../IconButton";
+import * as React from "react";
 
 export const FormStories = storiesOf("Forms", module)
   .add("input types", () => (
@@ -46,6 +47,12 @@ export const FormStories = storiesOf("Forms", module)
           >
             <TextArea placeholder="Something about me" />
           </InputGroup>
+
+          <InputGroup error="输入错" label="组合框">
+            <InputDatalist placeholder="可输入也可选择" >
+            </InputDatalist>
+          </InputGroup>
+
           <div css={{ textAlign: "right", marginTop: `${theme.spaces.md}` }}>
             <Button intent="primary">Submit</Button>
           </div>

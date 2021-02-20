@@ -62,6 +62,18 @@ export interface ComboBoxProps {
   topDivStyle?: SerializedStyles;
 }
 
+/**
+ * 虽然直接用W3C浏览器提供的<datalist标签？list做关联id,来做组合输入框，请到Form.tsx找InputDatalist组件代替本组件，
+ * 但是还是这个定制的更好用。
+ * ComboBox
+ * @param children
+ * @param onSelect
+ * @param autocomplete
+ * @param query
+ * @param onQueryChange
+ * @param topDivStyle
+ * @constructor
+ */
 export const ComboBox: React.FunctionComponent<ComboBoxProps> = ({
   children,
   onSelect,

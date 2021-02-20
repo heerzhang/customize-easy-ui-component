@@ -255,6 +255,7 @@ export interface InputBaseProps
 /**
  * Our basic Input element. Use this when building customized
  * forms. Otherwise, stick with InputGroup
+ * 不对外开放使用的；外部引用请用Input
  */
 
 export const InputBase = React.forwardRef(
@@ -305,7 +306,10 @@ export interface InputProps 　 extends InputBaseProps {
    * */
   fullWidth?: boolean;
 }
-//包裹一个div以便于控制宽度和对齐。
+
+/**
+ * 比起里面的InputBase，外面多包裹一个div以便于控制宽度和对齐。
+ */
 export const Input = React.forwardRef(
   (
     { autoComplete, autoFocus, inputSize = "md",
@@ -858,4 +862,90 @@ InputGroupLine.propTypes = {
   switchPx: PropTypes.number,
   children: PropTypes.node
 };
+
+
+export interface InputDatalistProps 　 extends InputBaseProps {
+    /** 控制是否满上宽度;
+     *  需要在<input> 上 去控制大尺寸上限的width:  ，以及自适应屏幕大小后的 max-width: 缩小尺寸。
+     * */
+    fullWidth?: boolean;
+}
+
+/**底层浏览器已经做了现成的支持ComboBox，何必自己再搞那么麻烦呢。
+ * 直接用W3C浏览器提供的<datalist标签？list做关联id,来做组合输入框，代替ComboBox组件
+ *<datalist id=""> 实际上可以脱离<input 而存在的，比如作为全局的不改动的<datalist集合放在一起。 管理？分离掉了；
+ * 还是自己包含<datalist维护好了。
+ */
+export const InputDatalist = React.forwardRef(
+    (
+        { autoComplete, autoFocus, inputSize = "md",
+            fullWidth=true,
+            topDivStyle, ...other }: InputDatalistProps,
+        ref: React.Ref<HTMLInputElement>
+    ) => {
+        const { uid, error } = React.useContext(InputGroupContext);
+        const { bind, active } = useActiveStyle();
+        const {
+            baseStyles,
+            inputSizes,
+            activeBackground,
+            errorStyles
+        } = useSharedStyle();
+        const height = getHeight(inputSize);
+        return (
+            <div  css={[
+                {
+                    textAlign: 'left',
+                    width: "100%"
+                },
+                topDivStyle
+            ]}
+            >
+                <input
+                    id={uid}
+                    className="Input"
+                    autoComplete={autoComplete}
+                    autoFocus={autoFocus}
+                    {...bind}
+                    css={[
+                        baseStyles,
+                        inputSizes[inputSize],
+                        active && activeBackground,
+                        error && errorStyles,
+                        { height },
+                        !fullWidth &&{
+                            width: 'unset',
+                        }
+                    ]}
+                    {...safeBind({ ref }, other)}
+                    list="list1"
+                />
+                <datalist id="list1">
+                    <option label="W3School" value="http://www.w3school.c奥术大师单啥多啥多om.cn" />
+                    <option value="http://www.goo少时诵诗书所所所所所gle.com" />
+                    <option value="书所所所所所gle.com" />
+                    <option key='3' value={"实际vals"}>表面描述的模式</option>
+                    <option value="le.com" />
+                    <option value="sg是的发送到" />
+                    <option value="qweusx" />
+                    <option value="书所所所u所所gle.com" />
+                    <option value="le.ucom" />
+                    <option value="sg是的发u送到" />
+                    <option value="qwues2x" />
+                    <option value="书所所所2所所gle.com" />
+                    <option value="le.2com" />
+                    <option value="sg是的发2送到" />
+                    <option value="qwjesx" />
+                    <option value="书所所所所j所gle.com" />
+                    <option value="lej.com" />
+                    <option value="sg是的j发送到" />
+                    <option value="qawesx" />
+                    <option value="sg是x的发送到" />
+                    <option value="qwzesx" />
+                </datalist>
+            </div>
+        );
+    }
+);
+
 

@@ -255,6 +255,7 @@ export interface InputBaseProps
 /**
  * Our basic Input element. Use this when building customized
  * forms. Otherwise, stick with InputGroup
+ * 不对外开放使用的；外部引用请用Input
  */
 
 export const InputBase = React.forwardRef(
@@ -305,7 +306,10 @@ export interface InputProps 　 extends InputBaseProps {
    * */
   fullWidth?: boolean;
 }
-//包裹一个div以便于控制宽度和对齐。
+
+/**
+ * 比起里面的InputBase，外面多包裹一个div以便于控制宽度和对齐。
+ */
 export const Input = React.forwardRef(
   (
     { autoComplete, autoFocus, inputSize = "md",
@@ -463,6 +467,7 @@ export interface SelectProps
  * A styled select
  * 若触摸屏 不能支持multiple形态的的Select，只能单选。
  * multiple 只是摊开选择列表，onChange  .target.value无法提供多选数组，必须额外维护可以多选的被选中状态和数据数组。
+ *本来该用 children 的这个 <option></option> 也能够用...other直接复制<select 的底下标签去。
  */
 
 export const Select: React.FunctionComponent<SelectProps> = ({
@@ -858,4 +863,70 @@ InputGroupLine.propTypes = {
   switchPx: PropTypes.number,
   children: PropTypes.node
 };
+
+
+export interface InputDatalistProps 　 extends InputBaseProps {
+    /** 控制是否满上宽度;
+     *  需要在<input> 上 去控制大尺寸上限的width:  ，以及自适应屏幕大小后的 max-width: 缩小尺寸。
+     * */
+    fullWidth?: boolean;
+}
+
+/**底层浏览器已经做了现成的支持ComboBox，何必自己再搞那么麻烦呢。
+ * 直接用W3C浏览器提供的<datalist标签？list做关联id,来做组合输入框，代替ComboBox组件
+ *<datalist id=""> 实际上可以脱离<input 而存在的，比如作为全局的不改动的<datalist集合放在一起。 管理？分离掉了；
+ * 还是自己包含<datalist维护好了。
+ * InputDatalist对比ComboBox组件的弱点1不能点击就显示所有列表2手机上列表展开位置与窗口大小太矮了，但比ComboBox有个有优势就是能够记住用户过完的输入以后再用。
+ */
+export const InputDatalist = React.forwardRef(
+    (
+        {   children,
+            autoComplete, autoFocus, inputSize = "md",
+            fullWidth=true,
+            topDivStyle, ...other }: InputDatalistProps,
+        ref: React.Ref<HTMLInputElement>
+    ) => {
+        const { uid, error } = React.useContext(InputGroupContext);
+        const { bind, active } = useActiveStyle();
+        const {
+            baseStyles,
+            inputSizes,
+            activeBackground,
+            errorStyles
+        } = useSharedStyle();
+        const height = getHeight(inputSize);
+        return (
+            <div  css={[
+                {
+                    textAlign: 'left',
+                    width: "100%"
+                },
+                topDivStyle
+            ]}
+            >
+                <input
+                    id={uid}
+                    className="Input"
+                    autoComplete={autoComplete}
+                    autoFocus={autoFocus}
+                    {...bind}
+                    css={[
+                        baseStyles,
+                        inputSizes[inputSize],
+                        active && activeBackground,
+                        error && errorStyles,
+                        { height },
+                        !fullWidth &&{
+                            width: 'unset',
+                        }
+                    ]}
+                    {...safeBind({ ref }, other)}
+                    list="list1"
+                />
+                { children }
+            </div>
+        );
+    }
+);
+
 
