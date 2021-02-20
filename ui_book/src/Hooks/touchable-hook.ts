@@ -43,8 +43,10 @@ type States =
     | "RESPONDER_PRESSED_OUT"
     | "RESPONDER_LONG_PRESSED_IN";
 
-//触摸行为开始的=RESPONDER_GRANT；   触摸含义终止=RESPONDER_TERMINATED
-//完全清空{或者按钮函数执行完了之后}=RESPONDER_RELEASE；  矩形区域进出=ENTER_PRESS_RECT
+//触摸行为开始的=RESPONDER_GRANT；
+//滚动掉了或者屏蔽掉了=RESPONDER_TERMINATED
+//触摸随时可能取消的意思(不一定触发按钮回调执行函数)=RESPONDER_RELEASE；
+//矩形区域进出=ENTER_PRESS_RECT
 
 type Events =
     | "DELAY"
@@ -315,6 +317,7 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
      * Get our initial bounding box clientRect and set any delay
      * timers if necessary.
      * @param delayPressMs
+     * 底层的 onGrant 回调= 触摸启动了；
      */
 
     function onStart(delayPressMs = delay) {
@@ -341,7 +344,7 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
     }
 
     // onTerminate should be disambiguated from onRelease
-    // because it should never trigger onPress events.
+    // because it should never 没有触发按钮回调函数动作的 trigger onPress events.
     function onTerminate() {
         if (responder === "NOT_RESPONDER") {
             return;
@@ -352,6 +355,7 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
         unbindScroll();
     }
 
+    //这个才 真正触发 底层onRelease钩子，触摸结束，并且真正产生点击结果的， 执行按钮回调函数动作。
     function onEnd(
         e?: React.TouchEvent | React.MouseEvent | React.KeyboardEvent | Event
     ) {
@@ -464,16 +468,16 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
 
     React.useEffect(() => {
         return () => {
-            //老是报错 unmounted, 特殊状态。
-            //state.current = "NOT_RESPONDER";
-            dispatch
-            //       responder = "ERROR";
+            //报错 unmounted, 针对组件被卸载情形：新版本直接dispatch就可以了，似乎React.useReducer内部自动避免 报错unmounted。
+            //旧版本用 特殊状态。  state.current = "ERROR";
+            dispatch( { type: "RESPONDER_TERMINATED" } );
             clearTimeout(delayTimer.current);
             clearTimeout(longDelayTimer.current);
             unbindScroll();
         };
     }, []);
 
+    //外部参数disabled导致的
     React.useEffect(() => {
         if (disabled && responder !== "NOT_RESPONDER") {
             dispatch({ type: "RESPONDER_TERMINATED" });
@@ -482,7 +486,7 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
     }, [disabled]);
 
     /**
-     * Keyboard support
+     * Keyboard support 键盘模式
      * button:
      *   onEnterDown -> onPress
      *   onSpaceUp -> onPress
@@ -504,10 +508,11 @@ export function useTouchable(options: Partial<TouchableOptions> = {}):
         } else {
             return;
         }
-
+        //停止冒泡，就不会传递给上级组件Div了
         e.stopPropagation();
 
         if (!(e.which === ENTER && behavior === "link")) {
+            //阻止缺省行为
             e.preventDefault();
         }
     }
