@@ -49,7 +49,7 @@ export const FormStories = storiesOf("Forms", module)
           </InputGroup>
 
           <InputGroup error="输入错" label="组合框">
-            <InputDatalist placeholder="可输入也可选择" >
+            <InputDatalist placeholder="可输入也可选择" datalist={["实际vals","诗书所22gle.com"]} >
             </InputDatalist>
           </InputGroup>
 
@@ -177,7 +177,7 @@ export const FormStories = storiesOf("Forms", module)
               </Select>
             </InputGroup>
             <InputGroup error="This field is required" label="Gender">
-              <Select>
+              <Select multiple>
                 <option>Male</option>
                 <option>Female</option>
                 <option>Other</option>

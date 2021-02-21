@@ -60,7 +60,10 @@ function Example() {
           <ComboBoxList aria-label="Query users">
             {toRender.length ? (
               toRender.map(entry => {
-                return <ComboBoxOption value={entry.name} key={entry.id} />;
+                return (
+                  <ComboBoxOption value={entry.name} key={entry.id} >
+                  </ComboBoxOption>
+                );
               })
             ) : (
               <div>

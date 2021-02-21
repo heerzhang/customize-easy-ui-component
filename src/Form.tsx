@@ -13,6 +13,7 @@ import { IconAlertCircle, IconChevronDown } from "./Icons";
 import { safeBind } from "./Hooks/compose-bind";
 import { useMedia } from "use-media";
 
+//似乎<form action= omsubmit= /> 都不再需要使用了。
 
 /*
 自适应布局，容器父组件不应当设置width固定的px，否则内部组件元素{已经为屏幕宽度自适应适配的组件}都会被动拉伸宽度，失去了效果。
@@ -464,9 +465,13 @@ export interface SelectProps
 }
 
 /**
- * A styled select
- * 若触摸屏 不能支持multiple形态的的Select，只能单选。
+ * multiple在手机上可以不展开列表了，但是选择2个以上在编辑框上面只能显示数目，不会显示选择那些必须点击进入才能看见。在电脑上面还是列表全部展开的形式。
+ * 若multiple=true 导致直接拉开了，样式窗口高度都改变，失去UI一致性了『感觉不友好啊』。
+ * 光光靠w3c标准也行不通, 难以通用，必须自己定制。
+ * ComboBox不允许multiple；但是Select不允许自主添加新的列表项目，Select允许列表附加label描述文字代替value;
+ * 若触摸屏 不能支持multiple形态的的Select，只能单选。?浏览器版本升级，但是还会有返回的数据【】集合机制问题,value=[values1,2]。
  * multiple 只是摊开选择列表，onChange  .target.value无法提供多选数组，必须额外维护可以多选的被选中状态和数据数组。
+ *本来该用 children 的这个 <option></option> 也能够用...other直接复制<select 的底下标签去。
  */
 
 export const Select: React.FunctionComponent<SelectProps> = ({
@@ -869,17 +874,24 @@ export interface InputDatalistProps 　 extends InputBaseProps {
      *  需要在<input> 上 去控制大尺寸上限的width:  ，以及自适应屏幕大小后的 max-width: 缩小尺寸。
      * */
     fullWidth?: boolean;
+    //已经知道的列表
+    datalist?: any[];
 }
 
 /**底层浏览器已经做了现成的支持ComboBox，何必自己再搞那么麻烦呢。
  * 直接用W3C浏览器提供的<datalist标签？list做关联id,来做组合输入框，代替ComboBox组件
  *<datalist id=""> 实际上可以脱离<input 而存在的，比如作为全局的不改动的<datalist集合放在一起。 管理？分离掉了；
  * 还是自己包含<datalist维护好了。
+ * InputDatalist对比ComboBox组件的弱点1非空编辑不能点击就显示所有列表2手机上列表展开位置与窗口大小太矮了3<option的label与value都显示出来感觉不好。
+ * ，但比ComboBox有个有优势：1能够记住当前用户输入用过的以后再用。
+ * 不过一般输入完成后再做点击修改的概率也不大，手机版本显示区域太小问题以后浏览器版本可能改进的。
  */
 export const InputDatalist = React.forwardRef(
     (
-        { autoComplete, autoFocus, inputSize = "md",
+        {
+            autoComplete, autoFocus, inputSize = "md",
             fullWidth=true,
+            datalist=[],
             topDivStyle, ...other }: InputDatalistProps,
         ref: React.Ref<HTMLInputElement>
     ) => {
@@ -921,27 +933,9 @@ export const InputDatalist = React.forwardRef(
                     list="list1"
                 />
                 <datalist id="list1">
-                    <option label="W3School" value="http://www.w3school.c奥术大师单啥多啥多om.cn" />
-                    <option value="http://www.goo少时诵诗书所所所所所gle.com" />
-                    <option value="书所所所所所gle.com" />
-                    <option key='3' value={"实际vals"}>表面描述的模式</option>
-                    <option value="le.com" />
-                    <option value="sg是的发送到" />
-                    <option value="qweusx" />
-                    <option value="书所所所u所所gle.com" />
-                    <option value="le.ucom" />
-                    <option value="sg是的发u送到" />
-                    <option value="qwues2x" />
-                    <option value="书所所所2所所gle.com" />
-                    <option value="le.2com" />
-                    <option value="sg是的发2送到" />
-                    <option value="qwjesx" />
-                    <option value="书所所所所j所gle.com" />
-                    <option value="lej.com" />
-                    <option value="sg是的j发送到" />
-                    <option value="qawesx" />
-                    <option value="sg是x的发送到" />
-                    <option value="qwzesx" />
+                    { datalist.map((one,i) => {
+                        return <option value={one} />;
+                    }) }
                 </datalist>
             </div>
         );

@@ -466,6 +466,15 @@ export interface ComboBoxOptionProps
   value: string;
 }
 
+/** ComboBox不允许列表派生参数label，字面描述就是value。
+ * value才是选择输出数值， 但是ComboBoxOption组件可以内嵌子组件来表达诸如表面描述或者图片等与value有关联的东西label。
+ * 但是选择了之后，在Input框显示的还是value，不能显示出label表面描述文字。
+ * 类似这样用户可以修改的输入，应该不会在意关联的label表面描述文字，真的应该去掉，仅仅保留value；不像Select这样的固定的/用户无法主动输入只允许选择的才会搞出label名堂。
+ * @param value
+ * @param children
+ * @param other
+ * ComboBox不允许multiple；但是Select不允许自主添加新的列表项目，Select允许列表附加label描述文字代替value;
+ */
 export const ComboBoxOption: React.FunctionComponent<ComboBoxOptionProps> = ({
   value,
   children,
@@ -493,6 +502,7 @@ export const ComboBoxOption: React.FunctionComponent<ComboBoxOptionProps> = ({
   }, [value]);
 
   //加上terminateOnScroll={true}才能准确捕捉点击，否则容易误操作，没完全明确选定。
+  //Touchable在这里实际component="li"转换为<li />标签了；这里没用到<select> <option/>
 
   return (
     <Touchable
