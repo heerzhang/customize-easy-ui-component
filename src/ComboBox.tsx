@@ -9,7 +9,7 @@ import { Touchable } from "./Touchable";
 import { useMeasure, Bounds } from "./Hooks/use-measure";
 import { Layer } from "./Layer";
 import Highlighter from "react-highlight-words";
-import { InputBase } from "./Form";
+import { InputBase, InputBaseProps } from "./Form";
 import { usePopper } from 'react-popper';
 import {ElementType} from "react";
 
@@ -575,4 +575,79 @@ export const ComboBoxOptionText: React.FunctionComponent<
     </Text>
   );
 };
+
+
+
+export interface ComboBoxDatalistProps  extends InputBaseProps {
+  /** 控制是否满上宽度;
+   *  需要在<input> 上 去控制大尺寸上限的width:  ，以及自适应屏幕大小后的 max-width: 缩小尺寸。
+   * */
+  fullWidth?: boolean;
+  //已经知道的列表
+  datalist?: any[];
+  //底层input的 value?: string | ReadonlyArray<string> | number; 可重载类型定义，修改匹配为字符串
+  value?: string;
+  //底层input的onChange,参数类型是event:不能直接利用
+  onListChange: (value: string) => void;
+}
+
+/**类似InputDatalist组件，目的是：可以直接替换 repalce in files，能保持参数一致，移植修改简单切换。
+ * 对比InputDatalist,定做组合框的版本。
+ * 自主输入Enter完成就变空的。 ComboBoxInput无法使用safeBind({ ref }，单独有inputRef的；
+ * readOnly?: boolean; disabled?: boolean;
+ * onChange不能直接利用参数类型是event：e?.currentTarget，而ComboBox这都是string类型。
+ * @param onListChange:可选列表选定，或者编辑框修改,导致query={value}必然变更。
+ */
+export const ComboBoxDatalist = React.forwardRef(
+    (
+        {
+          autoComplete, autoFocus, inputSize = "md",
+          fullWidth=true,
+          datalist=[],
+          topDivStyle,
+          value,
+          onListChange,
+          ...other }: ComboBoxDatalistProps,
+        ref: React.Ref<HTMLInputElement>
+    ) => {
+
+      //ComboBoxInput无法使用safeBind({ ref }，单独有inputRef的；
+      return (
+          <ComboBox  autocomplete={false}
+                     topDivStyle={topDivStyle}
+                     query={value}
+                     onQueryChange={v => {
+                       onListChange(v);
+                     }}
+                     onSelect={v => {
+                       v && onListChange(v);
+                     }}
+          >
+            <ComboBoxInput aria-label="Select add"
+                           {...other }
+            />
+            <ComboBoxList >
+               {datalist.length ? (
+                   datalist.map((one,i) => {
+                     return <ComboBoxOption key={i} value={one} />;
+                   })
+               ) : (
+                   <div>
+                     <Text
+                         muted
+                         css={{ display: "block", padding: "0.5rem 0.75rem" }}
+                     >
+                       {value && datalist.length === 0 ? (
+                           <span>No entries found.</span>
+                       ) : (
+                           <span>{other.placeholder}</span>
+                       )}
+                     </Text>
+                   </div>
+               )}
+           </ComboBoxList>
+          </ComboBox>
+      );
+    }
+);
 

@@ -5,13 +5,13 @@ import { Avatar, AvatarSizes } from "../Avatar";
 import faker from "faker";
 import { storiesOf } from "@storybook/react";
 import {
-  ComboBox,
-  ComboBoxInput,
-  ComboBoxList,
-  ComboBoxOption,
-  ComboBoxOptionText
+    ComboBox, ComboBoxDatalist,
+    ComboBoxInput,
+    ComboBoxList,
+    ComboBoxOption,
+    ComboBoxOptionText
 } from "../ComboBox";
-import { Input, InputBase } from "../Form";
+import {Input, InputBase, InputDatalist, InputGroup} from "../Form";
 import { Text } from "../Text";
 import { ListItem } from "../List";
 
@@ -19,7 +19,8 @@ export const ComboBoxStories = storiesOf("ComboBox", module)
   .add("basic", () => {
     return <Example />;
   })
-  .add("list item", () => <CustomExample />);
+  .add("list item", () => <CustomExample />)
+    .add("Like InputDatalist", () => <ListExample />);
 
 const defaultEntries = new Array(100).fill(null).map(() => ({
   id: faker.random.uuid(),
@@ -29,7 +30,7 @@ const defaultEntries = new Array(100).fill(null).map(() => ({
 
 function Example() {
   const [entries, setEntries] = React.useState(defaultEntries);
-  const [query, setQuery] = React.useState("");
+  const [query, setQuery] = React.useState('初始文字' );
 
   const toRender = !query
     ? []
@@ -43,17 +44,18 @@ function Example() {
     <div css={{ margin: "3rem auto", width: "30rem" }}>
       <ComboBox
         autocomplete={false}
-        query={query}
+        query={query||''}
         onQueryChange={v => {
           setQuery(v);
         }}
         onSelect={v => {
-          setQuery(v);
+         v&&setQuery(v);
         }}
       >
         <ComboBoxInput
           aria-label="Query users"
           placeholder="Search for users"
+          readOnly
         />
 
         {query && (
@@ -155,4 +157,28 @@ function CustomExample() {
       </ComboBox>
     </div>
   );
+}
+
+function ListExample() {
+    const [entries, setEntries] = React.useState(defaultEntries);
+    const [query, setQuery] = React.useState("");
+
+    const toRender = !query
+        ? []
+        : entries
+            .filter(
+                entry => entry.name.toLowerCase().indexOf(query.toLowerCase()) > -1
+            )
+            .slice(0, 10);
+
+    return (
+        <div css={{ margin: "3rem auto", width: "30rem" }}>
+            <ComboBoxDatalist placeholder="可输入也可选择"
+                  value={ query || ''}
+                  onListChange={v => setQuery( v||undefined ) }
+                  datalist={["实际vals","22gle.com"]}
+            >
+            </ComboBoxDatalist>
+        </div>
+    );
 }

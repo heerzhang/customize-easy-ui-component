@@ -876,6 +876,8 @@ export interface InputDatalistProps 　 extends InputBaseProps {
     fullWidth?: boolean;
     //已经知道的列表
     datalist?: any[];
+    //为了和ComboBoxDatalist保证参数一致才引入的。 接替onChange(); 直接用底层onChange可行的
+    onListChange: (value: string) => void;
 }
 
 /**底层浏览器已经做了现成的支持ComboBox，何必自己再搞那么麻烦呢。
@@ -892,7 +894,9 @@ export const InputDatalist = React.forwardRef(
             autoComplete, autoFocus, inputSize = "md",
             fullWidth=true,
             datalist=[],
-            topDivStyle, ...other }: InputDatalistProps,
+            topDivStyle,
+            onListChange,
+            ...other }: InputDatalistProps,
         ref: React.Ref<HTMLInputElement>
     ) => {
         const { uid, error } = React.useContext(InputGroupContext);
@@ -913,6 +917,11 @@ export const InputDatalist = React.forwardRef(
                 topDivStyle
             ]}
             >
+                <datalist id={`list${uid}`}>
+                    { datalist.map((one,i) => {
+                        return <option key={i} value={one} />;
+                    }) }
+                </datalist>
                 <input
                     id={uid}
                     className="Input"
@@ -930,13 +939,9 @@ export const InputDatalist = React.forwardRef(
                         }
                     ]}
                     {...safeBind({ ref }, other)}
-                    list="list1"
+                    list={`list${uid}`}
+                    onChange={e => onListChange( e.currentTarget.value||undefined ) }
                 />
-                <datalist id="list1">
-                    { datalist.map((one,i) => {
-                        return <option value={one} />;
-                    }) }
-                </datalist>
             </div>
         );
     }

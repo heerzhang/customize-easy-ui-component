@@ -8,10 +8,13 @@ import { storiesOf } from "@storybook/react";
 import { IconArrowRight, IconAlignCenter } from "../Icons";
 import { IconButton } from "../IconButton";
 import * as React from "react";
+import {ComboBoxDatalist} from "../ComboBox";
 
 export const FormStories = storiesOf("Forms", module)
-  .add("input types", () => (
-    <div
+  .add("input types", () => {
+    const [query, setQuery] = React.useState('初始' );
+  return(
+      <div
       css={{
         display: "flex",
         justifyContent: "center",
@@ -49,7 +52,12 @@ export const FormStories = storiesOf("Forms", module)
           </InputGroup>
 
           <InputGroup error="输入错" label="组合框">
-            <InputDatalist placeholder="可输入也可选择" datalist={["实际vals","诗书所22gle.com"]} >
+            <InputDatalist placeholder="可输入也可选择"
+                              value={ query }
+                              onListChange={v => setQuery(v)}
+                              datalist={["实际vals","22gle.com"]}
+
+            >
             </InputDatalist>
           </InputGroup>
 
@@ -59,7 +67,8 @@ export const FormStories = storiesOf("Forms", module)
         </form>
       </Layer>
     </div>
-  ))
+    ) ;
+  } )
 
   .add("sizes", () => {
     return (
