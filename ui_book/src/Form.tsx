@@ -718,6 +718,61 @@ SuffixInput.propTypes = {
 };
 
 
+//带单位标注的输入框
+export interface InputFollowUnitProps
+    extends InputBaseProps {
+    textStyle?: SerializedStyles;
+    unit: string;
+}
+
+/**
+ * InputFollowUnit， 代替SuffixInput 看看能否提高性能
+ * 若children有，就是有附带单位后缀串的模式；
+ * 带单位后缀的说明，70%给输入框，后面30%给叙述单位字串{空格也算}
+ * 输入的 单位说明 字符串 放在 <Text className="Suffix__text"  >
+ */
+export const InputFollowUnit: React.FunctionComponent<InputFollowUnitProps> = ({
+        unit,
+        textStyle,
+        inputSize,
+        topDivStyle,
+        ...other
+    }) => {
+
+    return (
+        <div  css={[
+            {
+                textAlign: 'left'
+            },
+            topDivStyle
+        ]}
+        >
+            <InputBase inputSize={inputSize}
+                       css={{
+                           display: "inline-block",
+                           width:  "70%",
+                       }}
+                       {...other}
+            >
+            </InputBase>
+            <Text className="Suffix__text" variant={"subtitle"}
+                  css={[
+                      {
+                          display:  "inline-flex",
+                          paddingLeft: '0.2rem'
+                      },
+                      textStyle
+                  ]}
+            >{unit}</Text>
+        </div>
+    );
+};
+
+InputFollowUnit.propTypes = {
+    children: PropTypes.node
+};
+
+
 export interface InputGroupLineProps extends InputGroupProps {
   //对一整行的控制
   lineStyle?: SerializedStyles;
