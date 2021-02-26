@@ -90,6 +90,7 @@
     "@types/faker": "^4.1.7",
     "faker": "^4.1.0",
     "@types/palx": "^1.0.1",
+    "react-switch":"^6.0.0",
     "palx": "^1.0.3"
   },
   "dependencies": {

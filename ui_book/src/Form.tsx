@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css, SerializedStyles } from "@emotion/react";
+import {  css, SerializedStyles } from "@emotion/react";
 import * as React from "react";
 import { Text } from "./Text";
 import VisuallyHidden from "@reach/visually-hidden";
@@ -12,6 +12,8 @@ import { getHeight, focusShadow } from "./Button";
 import { IconAlertCircle, IconChevronDown } from "./Icons";
 import { safeBind } from "./Hooks/compose-bind";
 import { useMedia } from "use-media";
+import  Switch from "react-switch";
+import {useDebugValue} from "react";
 
 //似乎<form action= omsubmit= /> 都不再需要使用了。
 
@@ -947,4 +949,59 @@ export const InputDatalist = React.forwardRef(
     }
 );
 
+
+export interface CheckSwitchProps
+    extends React.InputHTMLAttributes<HTMLInputElement> {
+
+    topDivStyle?: SerializedStyles;
+}
+
+/**
+ * 从‘react-switch’导入组件,做个可替代Check的更加美观的开关组件。
+ * @param id
+ * @param disabled
+ * @param topDivStyle
+ */
+export const CheckSwitch: React.FunctionComponent<CheckSwitchProps> = ({
+                                                               id,
+                                                               disabled,
+                                                               topDivStyle,
+                                                                 checked,
+                                                                 onChange,
+                                                               ...other
+                                                           }) => {
+    const uid = useUid(id);
+    //不能用这个React.useCallback((checked,event,id) => {， 状态无法切换, 外面传递进来的onChange()还是旧的数据，无法更新成新数值。
+    //onHandleChange用了 useCallback（,[]）: 就是捕获函数， onChange就无法变化了,所以被锁住更新。
+    const onHandleChange = (checked,event,id) => {
+        console.log("参数onHandleChange前面=",checked,event,id);
+        onChange(checked);
+    };
+
+    return (
+        <div  className="Switch"
+              css={[
+                  {
+                      //  textAlign: 'left',
+                      display: "flex",
+                      alignItems: "center",
+                      //  width: "100%",
+                  },
+                  topDivStyle
+              ]}
+              {...other}
+        >
+            <Switch
+               checked={checked}
+               onChange={onHandleChange}
+            />
+        </div>
+    );
+};
+
+CheckSwitch.propTypes = {
+
+    id: PropTypes.string,
+    disabled: PropTypes.bool
+};
 

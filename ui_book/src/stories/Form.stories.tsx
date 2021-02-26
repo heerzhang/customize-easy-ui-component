@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { jsx } from "@emotion/react";
-import {InputGroup, Select, Input, TextArea, Check, InputDatalist} from "../Form";
+import {InputGroup, Select, Input, TextArea, Check, InputDatalist, CheckSwitch, InputGroupLine} from "../Form";
 import { Button } from "../Button";
 import theme from "../Theme";
 import { Layer } from "../Layer";
@@ -147,7 +147,9 @@ export const FormStories = storiesOf("Forms", module)
       </div>
     );
   })
-  .add("disabled states", () => (
+  .add("disabled states", () =>{
+        const [isCar, setisCar] = React.useState(true);
+    return (
     <div
       css={{
         display: "flex",
@@ -203,13 +205,22 @@ export const FormStories = storiesOf("Forms", module)
               </div>
             </InputGroup>
 
-            <InputGroup error="You must select a gender" label="Gender">
+            <InputGroup error="新的switch" label="Gender">
               <div>
                 <Check disabled label="Male" checked />
                 <Check label="Female" />
                 <Check label="Other" />
               </div>
             </InputGroup>
+            <InputGroupLine label={`是否汽车电梯:`}>
+              <CheckSwitch  checked= {isCar}
+                     onChange={e => {
+                       console.log("参数set汽车电梯前面=",isCar, e);
+                        setisCar(!isCar);
+                      }
+                     }
+              />
+            </InputGroupLine>
           </div>
           <div css={{ minWidth: "300px", margin: "1rem" }}>
             <InputGroup
@@ -240,4 +251,6 @@ export const FormStories = storiesOf("Forms", module)
         </form>
       </div>
     </div>
-  ));
+  );
+  }
+  );
