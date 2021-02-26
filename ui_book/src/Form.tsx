@@ -8,12 +8,12 @@ import { alpha } from "./Theme/colors";
 import { useUid } from "./Hooks/use-uid";
 import { Theme } from "./Theme";
 import { useTheme } from "./Theme/Providers";
-import { getHeight, focusShadow } from "./Button";
+import {getHeight, focusShadow, ButtonSize} from "./Button";
 import { IconAlertCircle, IconChevronDown } from "./Icons";
 import { safeBind } from "./Hooks/compose-bind";
 import { useMedia } from "use-media";
 import  Switch from "react-switch";
-import {useDebugValue} from "react";
+
 
 //似乎<form action= omsubmit= /> 都不再需要使用了。
 
@@ -950,31 +950,39 @@ export const InputDatalist = React.forwardRef(
 );
 
 
+const getSwitchHeight = (size: ButtonSize) => {
+    if (size === "xs") return 16;
+    else if (size === "sm") return 22;
+    else if (size === "lg") return 36;
+    else if (size === "xl") return 44;
+    else return 28;
+};
+
 export interface CheckSwitchProps
     extends React.InputHTMLAttributes<HTMLInputElement> {
-
     topDivStyle?: SerializedStyles;
+    /** The size of the Switch. 多大高度方向的尺寸 */
+    hsize?: ButtonSize;
 }
 
 /**
  * 从‘react-switch’导入组件,做个可替代Check的更加美观的开关组件。
- * @param id
  * @param disabled
  * @param topDivStyle
  */
 export const CheckSwitch: React.FunctionComponent<CheckSwitchProps> = ({
-                                                               id,
-                                                               disabled,
-                                                               topDivStyle,
-                                                                 checked,
-                                                                 onChange,
-                                                               ...other
-                                                           }) => {
-    const uid = useUid(id);
+        id,
+        disabled,
+        topDivStyle,
+        checked,
+        onChange,
+        hsize = "md" as ButtonSize,
+        ...other
+    }) => {
+    const { uid } = React.useContext(InputGroupContext);
     //不能用这个React.useCallback((checked,event,id) => {， 状态无法切换, 外面传递进来的onChange()还是旧的数据，无法更新成新数值。
     //onHandleChange用了 useCallback（,[]）: 就是捕获函数， onChange就无法变化了,所以被锁住更新。
-    const onHandleChange = (checked,event,id) => {
-        console.log("参数onHandleChange前面=",checked,event,id);
+    const onHandleChange = (checked) => {
         onChange(checked);
     };
 
@@ -982,26 +990,27 @@ export const CheckSwitch: React.FunctionComponent<CheckSwitchProps> = ({
         <div  className="Switch"
               css={[
                   {
-                      //  textAlign: 'left',
                       display: "flex",
                       alignItems: "center",
-                      //  width: "100%",
                   },
                   topDivStyle
               ]}
               {...other}
         >
-            <Switch
+            <Switch id={uid}
                checked={checked}
                onChange={onHandleChange}
+               disabled={disabled}
+               height={getSwitchHeight(hsize)}
+               width={getSwitchHeight(hsize)*2}
             />
         </div>
     );
 };
 
 CheckSwitch.propTypes = {
-
     id: PropTypes.string,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    hsize: PropTypes.oneOf(["xs", "sm", "md", "lg", "xl"])
 };
 

@@ -1,6 +1,6 @@
 {
   "name": "customize-easy-ui-component",
-  "version": "4.3.6",
+  "version": "4.3.7",
   "description": "前端的通用组件库",
   "author": "heerzhang <herzhang@163.com>",
   "license": "MIT",
@@ -109,6 +109,7 @@
     "resize-observer-polyfill": "^1.5.1",
     "react-toastnotes": "^3.3.1",
     "use-media": "^1.4.0",
+    "react-switch":"^6.0.0",
     "use-scroll-lock": "^1.0.0"
   }
 }

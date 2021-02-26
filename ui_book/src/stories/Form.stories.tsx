@@ -148,7 +148,7 @@ export const FormStories = storiesOf("Forms", module)
     );
   })
   .add("disabled states", () =>{
-        const [isCar, setisCar] = React.useState(true);
+        const [isCar, setisCar] = React.useState(undefined);
     return (
     <div
       css={{
@@ -213,14 +213,16 @@ export const FormStories = storiesOf("Forms", module)
               </div>
             </InputGroup>
             <InputGroupLine label={`是否汽车电梯:`}>
-              <CheckSwitch  checked= {isCar}
+              <CheckSwitch  disabled={false}
+                  checked= {isCar  || false}
                      onChange={e => {
-                       console.log("参数set汽车电梯前面=",isCar, e);
-                        setisCar(!isCar);
+                        setisCar(isCar? undefined:true);
                       }
-                     }
+                  }
               />
             </InputGroupLine>
+
+
           </div>
           <div css={{ minWidth: "300px", margin: "1rem" }}>
             <InputGroup
