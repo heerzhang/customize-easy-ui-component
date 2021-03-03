@@ -357,3 +357,120 @@ ExpandingRow.propTypes = {
   //content: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   children: PropTypes.node
 };
+
+
+/**
+ * 做报表用的样式
+ */
+export const Cell: React.FunctionComponent<TableCellProps> = ({
+                                                                  align = "left",
+                                                                  variant,
+                                                                  component,
+                                                                  ellipsis,
+                                                                  children,
+                                                                  ...other
+                                                              }) => {
+    const theme = useTheme();
+    const { type: tableSectionType } = React.useContext(TableSectionContext);
+
+    const Component =
+        component || (tableSectionType === "TableHead" ? "th" : "td");
+
+    const type = variant || (tableSectionType === "TableHead" ? "head" : "body");
+
+    return (
+        <Component
+            css={[
+                {
+                    zIndex: 4,
+                    position: "relative",
+                    border: "1px solid",
+                    display: "table-cell",
+                    padding: `${theme.spaces.xs} ${theme.spaces.xs}`,
+                },
+                ellipsis && {
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden"
+                },
+                type === "head"
+                    ? {
+                        fontWeight: 500,
+                        fontSize: theme.fontSizes[0],
+                        color: theme.colors.text.muted
+                    }
+                    : {
+                        fontWeight: 400,
+                        fontSize: theme.fontSizes[0],
+                        color: theme.colors.text.default
+                    },
+                tableCellAlignments[align]
+            ]}
+            scope="col"
+            {...other}
+        >
+            {children}
+        </Component>
+    );
+};
+
+
+/**
+大量重复的组件标签，简化: CCell代表居中显示的Cell
+ */
+export const CCell: React.FunctionComponent<TableCellProps> =
+(
+    {
+     align = "center",
+     variant,
+     component,
+     ellipsis,
+     children,
+     ...other
+ }) =>
+{
+
+    return (
+        Cell({
+            align,
+            variant,
+            component,
+            ellipsis,
+            children,
+            ...other
+        })
+    );
+};
+
+/*
+被删除的部分 xxx.propTypes = {  };  是和rollup.js相关，一个模块打包工具/发布工具库，使用ES6的模块标准。
+*/
+
+/**做点简化，免得看起来是一大堆重复性质代码：
+ * 代表靠右边 显示的Cell
+ */
+export const RCell: React.FunctionComponent<TableCellProps> =
+(
+    {
+     align = "right",
+     variant,
+     component,
+     ellipsis,
+     children,
+     ...other
+ }) =>
+{
+
+    return (
+        Cell({
+            align,
+            variant,
+            component,
+            ellipsis,
+            children,
+            ...other
+        })
+    );
+};
+
+

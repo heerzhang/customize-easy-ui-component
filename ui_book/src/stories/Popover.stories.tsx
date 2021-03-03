@@ -2,9 +2,9 @@
 import { jsx } from "@emotion/react";
 import * as React from "react";
 import { Popover, ResponsivePopover } from "../Popover";
-import { Button } from "../Button";
+import {Button, ButtonRefComp} from "../Button";
 import { MenuList, MenuItem, MenuDivider } from "../Menu";
-import { IconButton } from "../IconButton";
+import {IconButton, IconRefButton} from "../IconButton";
 import { storiesOf } from "@storybook/react";
 import { Placement } from "@popperjs/core";
 import {
@@ -23,6 +23,11 @@ interface LinkProps {
   children: React.ReactNode;
 }
 
+/**
+ * 使用 React.forwardRef 可以注入ref 但是有性能负担；假如绝大多数都用不上ref的话，浪费了。
+ * React.forwardRef 不要过度使用：
+ 有需要直接触达和 操作子孙组件 实例或者操作 子dom元素 的情况，这时候应该使用React？use? Ref。
+ */
 const Link = React.forwardRef((props: LinkProps, ref: React.Ref<any>) => (
   <div
     ref={ref}
@@ -38,18 +43,18 @@ const Link = React.forwardRef((props: LinkProps, ref: React.Ref<any>) => (
 ));
 
 export const PopoverStories = storiesOf("Popover", module)
-  .add("Focus management", () => {
+  .add("子组件必须能传递ref", () => {
     return (
       <div>
         <div css={{ padding: "300px", background: "#eee" }}>
           <Popover
             content={
               <div css={{ padding: "2rem" }}>
-                <Button>I should focus</Button>
+                <Button>I should focus不用传ref</Button>
               </div>
             }
           >
-            <Button>Hello world!</Button>
+            <ButtonRefComp>Hello要传ref world!</ButtonRefComp>
           </Popover>
         </div>
       </div>
@@ -117,7 +122,7 @@ export const PopoverStories = storiesOf("Popover", module)
             </MenuList>
           }
         >
-          <Button>I should trigger popover</Button>
+          <ButtonRefComp>I should trigger popover</ButtonRefComp>
         </Popover>
       </div>
     );
@@ -137,7 +142,7 @@ export const PopoverStories = storiesOf("Popover", module)
             </MenuList>
           }
         >
-          <IconButton
+          <IconRefButton
             variant="ghost"
             icon={<IconMoreHorizontal />}
             label="show more"
@@ -181,7 +186,7 @@ export const PopoverStories = storiesOf("Popover", module)
             </MenuList>
           }
         >
-          <IconButton
+          <IconRefButton
             variant="ghost"
             icon={<IconMoreHorizontal />}
             label="show more"

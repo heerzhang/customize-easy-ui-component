@@ -3,7 +3,7 @@ import { jsx } from "@emotion/react";
 import * as React from "react";
 import { ButtonProps } from "./Button";
 import { IconButtonProps } from "./IconButton";
-import { Layer } from "./Layer";
+import {Layer, LayerRefComp} from "./Layer";
 import { Positioner, Placements } from "./Positions";
 import { ReferenceChildrenProps } from "react-popper";
 import { arrowStyles } from "./Tooltip";
@@ -16,8 +16,11 @@ import { useTheme } from "./Theme/Providers";
 import { OnPressFunction } from "./Hooks/touchable-hook";
 import { mergeRefs } from "./Hooks/merge-refs";
 
-//动画效果
-const AnimatedLayer = animated(Layer) as React.FunctionComponent<any>;
+//动画效果;
+//const AnimatedLayer = animated(Layer) as React.FunctionComponent<any>;
+//必须要传递 ref，否则无法满足 Positioner内 react-popper:的 Popper 组件需要innerRef参数的要求。
+const AnimatedLayer = animated(LayerRefComp) as React.FunctionComponent<any>;
+
 
 interface PopoverProps {
     /** Whether the popover is currently open */
@@ -37,14 +40,16 @@ interface PopoverProps {
 
 /**
  弹出式，像个对话框的，用作菜单列表等。
+ Popover唯一儿子组件 按钮 必须能够接受 ref注入的。
  */
-export const Popover: React.FunctionComponent<PopoverProps> = ({
-                                                                   content,
-                                                                   children,
-                                                                   placement,
-                                                                   closeOnMenuItemClick = true,
-                                                                   isOpen: defaultShow = false
-                                                               }) => {
+export const Popover: React.FunctionComponent<PopoverProps> = (
+{
+    content,
+    children,
+    placement,
+    closeOnMenuItemClick = true,
+    isOpen: defaultShow = false
+}) => {
     const theme = useTheme();
     const [show, setShow] = React.useState(defaultShow);
     const child = React.Children.only(children);
@@ -129,6 +134,9 @@ export const Popover: React.FunctionComponent<PopoverProps> = ({
     }
 
     //弹出的对话框必须跟随这个按钮（=Trigger Button）
+    //唯一1个的儿子组件 =按钮，
+    //儿子必须能够接受 ref注入的。
+    //若去掉ref: mergeRefs(ref, 没注入的话，弹出列表位置不能跟随按钮的。 mergeRefs(ref, triggerRef)实际就是捆绑，2个都指向同一个dom;
     function renderTrigger({ ref }: ReferenceChildrenProps) {
         return React.cloneElement(child, {
             onPress: (e: OnPressFunction) => {
@@ -147,7 +155,10 @@ export const Popover: React.FunctionComponent<PopoverProps> = ({
     function onTriggerClicked() {
         return show ? close() : open();
     }
-
+    //本组件的 嵌套儿子组件 实际被抓到 renderTrigger 函数中。
+    //旧的特别模式：<Positioner 底下包裹的实际是render函数。{()=>(返回详细组件)}
+    //content = 列表组件。 外面再套个 <AnimatedLayer包裹一样外衣层。
+    //若改为ref={mergeRefs( popoverRef)}将导致弹出定位不能跟随按钮的 位置。
     return (
         <Positioner placement={placement} isOpen={show} target={renderTrigger}>
             {({ placement, ref, arrowProps, style }, animation) => (
@@ -209,6 +220,7 @@ Popover.propTypes = {
  * Display popover contents in a bottom sheet if
  * on mobile devices. I generally find that this provides a
  * better use experience on smaller screens. 手机电脑自适应的版本。
+ * ResponsivePopover底下按钮需要传递ref; 否则定位不能跟随按钮， 用IconRefButton代替普通IconButton
  */
 
 export const ResponsivePopover: React.FunctionComponent<PopoverProps> = (
@@ -229,6 +241,7 @@ export const ResponsivePopover: React.FunctionComponent<PopoverProps> = (
     }
 
     //手机版本走下面这样的
+    //针对 底下唯一的 按钮儿子组件， 添加参数onPress;
     return (
         <React.Fragment>
             {React.cloneElement(React.Children.only(props.children), {

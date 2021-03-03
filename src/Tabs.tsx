@@ -17,7 +17,7 @@ import { noOp } from "./misc/noop";
 import { useMeasure } from "./Hooks/use-measure";
 import { OnPressFunction } from "./Hooks/touchable-hook";
 import { mergeRefs } from "./Hooks/merge-refs";
-import { Touchable } from "./Touchable";
+import { TouchRefComp} from "./Touchable";
 import cx from "classnames";
 import { ScrollView, ScrollViewHandles } from "./ScrollView";
 
@@ -303,6 +303,7 @@ export interface TabProps
 
 /**
  * A clickable tab item
+ * 上级Tabs 将会隐形传递一个ref参数给 Tab的，所以只能上React.forwardRef()
  */
 
 export const Tab = React.forwardRef(
@@ -361,6 +362,9 @@ export const Tab = React.forwardRef(
     }
 
     const mounted = React.useRef(false);
+    //代表ref是按钮区域;  forwarded是开放给上一级的{forwardRef.Ref}
+    //Tabs会传递给Tab的forwarded是(el: HTMLButtonElement某元素| null) => {refs.current!.set(i, el);点选定这个tab} 传递ref()实际运行该函数。
+
     const ref = React.useRef<any>(null);
 
     /**
@@ -394,7 +398,7 @@ export const Tab = React.forwardRef(
     );
 
     return (
-      <Touchable
+      <TouchRefComp
         className={cx("Tab", {
           "Tab--active": isActive
         })}
@@ -479,7 +483,7 @@ export const Tab = React.forwardRef(
             )}
           </div>
         )}
-      </Touchable>
+      </TouchRefComp>
     );
   }
 );

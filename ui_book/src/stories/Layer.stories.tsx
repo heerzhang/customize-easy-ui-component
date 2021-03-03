@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { jsx } from "@emotion/react";
 import * as React from "react";
-import { LayerElevations, Layer, LayerLoading } from "../Layer";
+import {LayerElevations, Layer, LayerLoading, LayerRefComp} from "../Layer";
 import { storiesOf } from "@storybook/react";
 import theme from "../Theme";
-import { Button } from "../Button";
-import { DarkMode } from "../Theme/Providers";
+import {Button, ButtonRefComp} from "../Button";
+import {DarkMode, DarkRefMode} from "../Theme/Providers";
 import { Text } from "../Text";
 import { ToggleDarkMode } from "./ToggleDarkMode";
 import { Tooltip } from "../Tooltip";
@@ -57,7 +57,7 @@ export const LayerStories = storiesOf("Layer", module)
                     </MenuList>
                   }
                 >
-                  <Button>{placement}</Button>
+                  <ButtonRefComp>{placement}</ButtonRefComp>
                 </Popover>
               </div>
             ))}
@@ -70,9 +70,10 @@ export const LayerStories = storiesOf("Layer", module)
     return <Loading />;
   })
   .add("Dark", () => {
+      //没有实际传递入 ref 的。
     return (
-      <DarkMode>
-        <Layer
+      <DarkRefMode>
+        <LayerRefComp
           css={{
             padding: "2rem",
             width: "400px",
@@ -83,8 +84,8 @@ export const LayerStories = storiesOf("Layer", module)
         >
           <Text>Hello world. This is dark mode.</Text>
           <LayerLoading label="Loading in the dark" loading={true} />
-        </Layer>
-      </DarkMode>
+        </LayerRefComp>
+      </DarkRefMode>
     );
   });
 

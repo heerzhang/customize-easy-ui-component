@@ -1,6 +1,6 @@
 {
   "name": "customize-easy-ui-storybook",
-  "version": "4.3.5",
+  "version": "4.4.0",
   "description": "前端的通用组件库-说明书",
   "author": "heerzhang <herzhang@163.com>",
   "license": "MIT",
@@ -24,6 +24,7 @@
   },
   "scripts": {
     "test": "jest --watchAll",
+    "错误严重情景": "需用storybook debug，用其它不好使,http://localhost:6006/看报错",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

@@ -4,6 +4,7 @@ import * as React from "react";
 import { Spinner } from "./Spinner";
 import PropTypes from "prop-types";
 import { useTheme } from "./Theme/Providers";
+import {ComboBoxDatalistProps} from "./ComboBox";
 
 export type LayerElevations = "xs" | "sm" | "md" | "lg" | "xl";
 
@@ -14,16 +15,20 @@ interface LayerProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
 }
 
-export const Layer = React.forwardRef(
-  (
-    { elevation = "md", children, ...other }: LayerProps,
-    ref: React.Ref<HTMLDivElement>
+/**
+ * 实际就是div有周边边角，圆弧突出的div
+ */
+export const Layer: React.FunctionComponent<LayerProps> =(
+    {
+        elevation = "md",
+        children,
+        ...other
+    }
   ) => {
     const theme = useTheme();
 
     return (
       <div
-        ref={ref}
         css={{
           position: "relative",
           background: theme.colors.background.layer,
@@ -35,7 +40,33 @@ export const Layer = React.forwardRef(
         {children}
       </div>
     );
-  }
+  };
+
+/**
+ * 旧版本，可注入ref
+ */
+export const LayerRefComp = React.forwardRef(
+    (
+        { elevation = "md", children, ...other }: LayerProps,
+        ref: React.Ref<HTMLDivElement>
+    ) => {
+        const theme = useTheme();
+
+        return (
+            <div
+                ref={ref}
+                css={{
+                    position: "relative",
+                    background: theme.colors.background.layer,
+                    boxShadow: theme.shadows[elevation],
+                    borderRadius: theme.radii.lg
+                }}
+                {...other}
+            >
+                {children}
+            </div>
+        );
+    }
 );
 
 Layer.displayName = "Layer";

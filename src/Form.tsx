@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {  css, SerializedStyles } from "@emotion/react";
 import * as React from "react";
-import { Text } from "./Text";
+import { Text, LabelText } from "./Text";
 import VisuallyHidden from "@reach/visually-hidden";
 import PropTypes from "prop-types";
 import { alpha } from "./Theme/colors";
@@ -13,6 +13,7 @@ import { IconAlertCircle, IconChevronDown } from "./Icons";
 import { safeBind } from "./Hooks/compose-bind";
 import { useMedia } from "use-media";
 import  Switch from "react-switch";
+import {Touchable} from "./Touchable";
 
 
 //似乎<form action= omsubmit= /> 都不再需要使用了。
@@ -258,43 +259,86 @@ export interface InputBaseProps
 /**
  * Our basic Input element. Use this when building customized
  * forms. Otherwise, stick with InputGroup
- * 不对外开放使用的；外部引用请用Input
+ * 原先InputBase 改名成 InputRefBase; 比如ComboBox才会需要使用forwardRef形式的;
  */
 
-export const InputBase = React.forwardRef(
-  (
-    { autoComplete, autoFocus, inputSize = "md",topDivStyle, ...other }: InputBaseProps,
-    ref: React.Ref<HTMLInputElement>
-  ) => {
+export const InputRefBase = React.forwardRef(
+    (
+        { autoComplete, autoFocus, inputSize = "md",topDivStyle, ...other }: InputBaseProps,
+        ref: React.Ref<HTMLInputElement>
+    ) => {
+        const { uid, error } = React.useContext(InputGroupContext);
+        const { bind, active } = useActiveStyle();
+        const {
+            baseStyles,
+            inputSizes,
+            activeBackground,
+            errorStyles
+        } = useSharedStyle();
+        const height = getHeight(inputSize);
+        return (
+            <input
+                id={uid}
+                className="Input"
+                autoComplete={autoComplete}
+                autoFocus={autoFocus}
+                {...bind}
+                css={[
+                    baseStyles,
+                    inputSizes[inputSize],
+                    active && activeBackground,
+                    error && errorStyles,
+                    { height }
+                ]}
+                {...safeBind({ ref }, other)}
+            />
+        );
+    }
+);
+
+/**
+ * 正常都不需要使用forwardRef形式的，可大大地加快速度。 InputRefBase是ref版本;
+ * 性能优化，去掉了React.forwardRef 改成React.FunctionComponent
+ * InputSimple普通FunctionComponent代替React.forwardRef(safeBind({ ref }就能从365ms变240ms啦。
+ */
+export const InputBase: React.FunctionComponent<InputBaseProps>=
+(
+    {
+        autoComplete,
+        autoFocus,
+        inputSize = "md",
+        topDivStyle,
+        ...other
+    }
+) => {
     const { uid, error } = React.useContext(InputGroupContext);
     const { bind, active } = useActiveStyle();
     const {
-      baseStyles,
-      inputSizes,
-      activeBackground,
-      errorStyles
+        baseStyles,
+        inputSizes,
+        activeBackground,
+        errorStyles
     } = useSharedStyle();
     const height = getHeight(inputSize);
     return (
-      <input
-        id={uid}
-        className="Input"
-        autoComplete={autoComplete}
-        autoFocus={autoFocus}
-        {...bind}
-        css={[
-          baseStyles,
-          inputSizes[inputSize],
-          active && activeBackground,
-          error && errorStyles,
-          { height },
-          topDivStyle
-        ]}
-        {...safeBind({ ref }, other)}
-      />
+        <input
+            id={uid}
+            className="Input"
+            autoComplete={autoComplete}
+            autoFocus={autoFocus}
+            {...bind}
+            css={[
+                baseStyles,
+                inputSizes[inputSize],
+                active && activeBackground,
+                error && errorStyles,
+                { height }
+            ]}
+            {...other}
+        />
     );
-  }
-);
+};
+
 
 InputBase.propTypes = {
   inputSize: PropTypes.oneOf(["sm", "md", "lg"] as InputSize[]),
@@ -311,15 +355,18 @@ export interface InputProps 　 extends InputBaseProps {
 }
 
 /**
- * 比起里面的InputBase，外面多包裹一个div以便于控制宽度和对齐。
+ * Input 比起InputBase，外面多包裹一个div以便于控制宽度和对齐。
  */
-export const Input = React.forwardRef(
-  (
-    { autoComplete, autoFocus, inputSize = "md",
-      fullWidth=true,
-      topDivStyle, ...other }: InputProps,
-    ref: React.Ref<HTMLInputElement>
-  ) => {
+export const Input: React.FunctionComponent<InputProps> =
+(
+    {
+    autoComplete, autoFocus,
+        inputSize = "md",
+    fullWidth=true,
+    topDivStyle,
+        ...other
+    }
+) => {
     const { uid, error } = React.useContext(InputGroupContext);
     const { bind, active } = useActiveStyle();
     const {
@@ -329,6 +376,7 @@ export const Input = React.forwardRef(
       errorStyles
     } = useSharedStyle();
     const height = getHeight(inputSize);
+
     return (
       <div  css={[
         {
@@ -354,13 +402,63 @@ export const Input = React.forwardRef(
               width: 'unset',
             }
           ]}
-          {...safeBind({ ref }, other)}
+          {...other}
         />
       </div>
     );
-  }
-);
+};
 
+/**
+ * InputRefComp 是ref传递版本的Input,特别情况用
+ * InputRefComp 比起 InputRefBase多个一层<div>可以注入控制样式,外面多包裹一个div以便于控制宽度和对齐。。
+ */
+export const InputRefComp = React.forwardRef(
+    (
+        { autoComplete, autoFocus, inputSize = "md",
+            fullWidth=true,
+            topDivStyle, ...other }: InputProps,
+        ref: React.Ref<HTMLInputElement>
+    ) => {
+        const { uid, error } = React.useContext(InputGroupContext);
+        const { bind, active } = useActiveStyle();
+        const {
+            baseStyles,
+            inputSizes,
+            activeBackground,
+            errorStyles
+        } = useSharedStyle();
+        const height = getHeight(inputSize);
+        return (
+            <div  css={[
+                {
+                    textAlign: 'left',
+                    width: "100%"
+                },
+                topDivStyle
+            ]}
+            >
+                <input
+                    id={uid}
+                    className="Input"
+                    autoComplete={autoComplete}
+                    autoFocus={autoFocus}
+                    {...bind}
+                    css={[
+                        baseStyles,
+                        inputSizes[inputSize],
+                        active && activeBackground,
+                        error && errorStyles,
+                        { height },
+                        !fullWidth &&{
+                            width: 'unset',
+                        }
+                    ]}
+                    {...safeBind({ ref }, other)}
+                />
+            </div>
+        );
+    }
+);
 
 //export const Input = InputBase;   直接替换
 
@@ -667,20 +765,24 @@ export interface SuffixInputProps
   textStyle?: SerializedStyles;
 }
 
-/**
+/** SuffixInput 带单位标注的输入框
  * A styled Label to go along with input elements
  * 若children有，就是有附带单位后缀串的模式；
  * 带单位后缀的说明，70%给输入框，后面30%给叙述单位字串{空格也算}
  * 输入的 单位说明 字符串 放在 <Text className="Suffix__text"  >
+ * 没有ref注入的版本；
  */
-export const SuffixInput: React.FunctionComponent<SuffixInputProps> = ({
-                                                                         children,
-                                                                         textStyle,
-                                                                         inputSize,
-                                                                         topDivStyle,
-                                                                         ...other
-                                                                       }) => {
-  const theme = useTheme();
+export const SuffixInput: React.FunctionComponent<SuffixInputProps> = (
+    {
+        children,
+        textStyle,
+        inputSize,
+        topDivStyle,
+        ...other
+    }
+) => {
+  //const theme = useTheme();
+  //children可以是非字符串的, 按钮等。
   return (
     <div  css={[
       {
@@ -690,25 +792,28 @@ export const SuffixInput: React.FunctionComponent<SuffixInputProps> = ({
       topDivStyle
     ]}
     >
-      <InputBase inputSize={inputSize}
-                 css={{
-                   display: "inline-block",
-                   width:  children? "70%" : '100%',
-                 }}
-                 {...other}
-      >
-      </InputBase>
-      <Text className="Suffix__text" variant={"subtitle"}
-            css={[
-              {
-                display: children? "inline-flex" : 'none',
-                paddingLeft: '0.2rem'
-              },
-              textStyle
-            ]}
-      >
-        {children}
-      </Text>
+        <InputBase inputSize={inputSize}
+             css={{
+               display: "inline-block",
+               width:  children? "70%" : '100%',
+             }}
+             {...other}
+        />
+        {typeof children === "string" ? (
+            <Text className="Suffix__text" variant={"subtitle"}
+                  css={[
+                      {
+                          display: children? "inline-flex" : 'none',
+                          paddingLeft: '0.2rem'
+                      },
+                      textStyle
+                  ]}
+            >
+                {children}
+            </Text>
+        ) : (
+            children
+        )}
     </div>
   );
 };
@@ -718,204 +823,151 @@ SuffixInput.propTypes = {
 };
 
 
-//带单位标注的输入框
-export interface InputFollowUnitProps
-    extends InputBaseProps {
-    textStyle?: SerializedStyles;
-    unit: string;
-}
-
-/**
- * InputFollowUnit， 代替SuffixInput 看看能否提高性能
- * 若children有，就是有附带单位后缀串的模式；
- * 带单位后缀的说明，70%给输入框，后面30%给叙述单位字串{空格也算}
- * 输入的 单位说明 字符串 放在 <Text className="Suffix__text"  >
- */
-export const InputFollowUnit: React.FunctionComponent<InputFollowUnitProps> = ({
-        unit,
-        textStyle,
-        inputSize,
-        topDivStyle,
-        ...other
-    }) => {
-
-    return (
-        <div  css={[
-            {
-                textAlign: 'left'
-            },
-            topDivStyle
-        ]}
-        >
-            <InputBase inputSize={inputSize}
-                       css={{
-                           display: "inline-block",
-                           width:  "70%",
-                       }}
-                       {...other}
-            >
-            </InputBase>
-            <Text className="Suffix__text" variant={"subtitle"}
-                  css={[
-                      {
-                          display:  "inline-flex",
-                          paddingLeft: '0.2rem'
-                      },
-                      textStyle
-                  ]}
-            >{unit}</Text>
-        </div>
-    );
-};
-
-InputFollowUnit.propTypes = {
-    children: PropTypes.node
-};
-
-
 export interface InputGroupLineProps extends InputGroupProps {
   //对一整行的控制
   lineStyle?: SerializedStyles;
   //根据换行px数 ，来切换显示2个显示模式。 缺省>=360px 正常模式，否则紧凑模式。
   switchPx?: number;
 }
-/*
+/**
 自适应屏幕flexBox布局：不要设置固定的width和min-width，可以设置max-width；根据屏幕宽策划1列2列还是更多列的并列，或是更高层次嵌套或隐藏或显示一小半边天区域。
 不要对InputGroupLine的上一级div定义固定宽度，自适应和固定width: px只能二者选其一；宽度定了对小屏幕场景就有滚动条，而不是自适应缩小flexBox布局。
 修改InputGroup排版模式; 并排模式，根据屏幕自适应。支持 2 个模式的布局安排结构。
+ 性能优化，旧版本InputGroupLine=680ms; 新的InputLine=600ms;
 */
-export const InputGroupLine: React.FunctionComponent<InputGroupLineProps> = ({
-                                                                               id,
-                                                                               label,
-                                                                               children,
-                                                                               error,
-                                                                               helpText,
-                                                                               hideLabel,
-                                                                               labelStyle,
-                                                                               labelTextStyle,
-                                                                               lineStyle,
-                                                                               switchPx=360,
-                                                                               ...other
-                                                                             }) => {
-  const uid = useUid(id);
-  const theme = useTheme();
-  const isDark = theme.colors.mode === "dark";
-  const danger = isDark
-    ? theme.colors.intent.danger.light
-    : theme.colors.intent.danger.base;
+export const InputLine: React.FunctionComponent<InputGroupLineProps> = ({
+    id,
+    label,
+    children,
+    error,
+    helpText,
+    hideLabel,
+    labelTextStyle,
+    lineStyle,
+    switchPx=360,
+    ...other
+}) => {
+    const uid = useUid(id);
+    const theme = useTheme();
+    const isDark = theme.colors.mode === "dark";
+    const danger = isDark
+        ? theme.colors.intent.danger.light
+        : theme.colors.intent.danger.base;
 
-  //根据外部程序制定的px数，来决定用哪一个模式布局。紧凑的是2行显示；宽松的是并列在同一行。
-  const fitable = useMedia({ minWidth: `${switchPx}px` });
-
-  const labelDivCss = css({
-    flex: 1,
-    paddingRight: '0.8rem'
-  }, labelTextStyle);
-
-  //InputGroupLine包裹的下层的顶级组件的样式修改：下层顶级元素的display: block还算兼容可用; 但width: 100%影响较大。
-  const childNodeVar = (
-    <InputGroupContext.Provider
-      value={{
-        uid,
-        error
-      }}
-    >
-      {
-        React.cloneElement(children as React.ReactElement<any>, {
-          topDivStyle: { flex: '1 1 60%' },
-          //style: { flex: '1 1 60%' },      左边的项目文字描述　40%　右边输入框(含单位字符)占用60%
-        })
-      }
-    </InputGroupContext.Provider>
-  );
-
-  return (
-    <section
-      className="InputGroupLine"
-      css={{
-        marginTop: theme.spaces.md,
-        "&.InputGroupLine:first-of-type": {
-          marginTop: 0
-        },
-        textAlign: 'center'
-      }}
-      {...other}
-    >
-      <div  css={[
-        {
-          alignItems: "center",
-          justifyContent: "space-around",
-          display: "flex",
-          flexWrap: 'wrap',
-          maxWidth: '950px',
-          margin: '0 auto',
-          paddingRight: fitable? '0.5rem' :  'unset',
-        },
-        lineStyle
-      ]}
-      >
-        <Label hide={hideLabel} htmlFor={uid}  textStyle={labelDivCss}
-               css={[
-                 {
-                   display: "inline-flex",
-                   textAlign: fitable? "right" : "left",
-                   flex: '1 1 40%',
-                 },
-                 labelStyle
-               ]}
-        >
-          {label}
-        </Label>
-        { fitable &&   childNodeVar  }
-      </div>
-
-      { !fitable &&   childNodeVar  }
-
-      {error && typeof error === "string" ? (
-        <div
-          className="InputGroup__error"
-          css={{
-            alignItems: "center",
-            marginTop: theme.spaces.sm,
-            display: "flex",
-            justifyContent: 'center'
-          }}
-        >
-          <IconAlertCircle size="sm" color={danger} />
-          <Text
-            css={{
-              display: "block",
-              marginLeft: theme.spaces.xs,
-              fontSize: theme.fontSizes[0],
-              color: danger
+    //根据外部程序制定的px数，来决定用哪一个模式布局。紧凑的是2行显示；宽松的是并列在同一行。
+    const fitable = useMedia({ minWidth: `${switchPx}px` });
+    //InputGroupLine包裹的下层的顶级组件的样式修改：下层顶级元素的display: block还算兼容可用; 但width: 100%影响较大。
+    const childNodeVar = (
+        <InputGroupContext.Provider
+            value={{
+                uid,
+                error
             }}
-          >
-            {error}
-          </Text>
-        </div>
-      ) : (
-        error
-      )}
-
-      {helpText && (
-        <Text
-          className="InputGroup__help"
-          css={{
-            display: "inline-flex",
-            marginTop: theme.spaces.xs,
-            color: theme.colors.text.muted,
-            fontSize: theme.fontSizes[0]
-          }}
-          variant="body"
         >
-          {helpText}
-        </Text>
-      )}
-    </section>
-  );
+            {
+                React.cloneElement(children as React.ReactElement<any>, {
+                    topDivStyle: { flex: '1 1 60%' },
+                    //style: { flex: '1 1 60%' },      左边的项目文字描述　40%　右边输入框(含单位字符)占用60%
+                })
+            }
+        </InputGroupContext.Provider>
+    );
+
+    //这里htmlFor={uid}，标签label 和 input很可能分别属于不同div底下的。
+    const titleVar = (
+        <LabelText className="Label__text"  htmlFor={uid}
+                   css={[
+                       {
+                           //display: "inline-flex",
+                           textAlign: fitable? "right" : "left",
+                           flex: '1 1 40%',
+                           paddingRight: '0.8rem',
+                           marginBottom: hideLabel ? 0 : theme.spaces.sm
+                       },
+                       labelTextStyle
+                   ]}
+        >
+            {label}
+        </LabelText>
+    );
+
+    return (
+        <section
+            className="InputLine"
+            css={{
+                marginTop: theme.spaces.md,
+                "&.InputLine:first-of-type": {
+                    marginTop: 0
+                },
+                textAlign: 'center'
+            }}
+            {...other}
+        >
+            <div  css={[
+                {
+                    alignItems: "center",
+                    justifyContent: "space-around",
+                    display: "flex",
+                    // flexWrap: 'wrap',
+                    maxWidth: '950px',
+                    margin: '0 auto',
+                    paddingRight: fitable? '0.5rem' :  'unset',
+                },
+                lineStyle
+            ]}
+            >
+                {hideLabel ? <VisuallyHidden>{titleVar}</VisuallyHidden> : titleVar}
+
+                { fitable &&   childNodeVar  }
+            </div>
+
+            { !fitable &&   childNodeVar  }
+
+            {error && typeof error === "string" ? (
+                <div
+                    className="InputGroup__error"
+                    css={{
+                        alignItems: "center",
+                        marginTop: theme.spaces.sm,
+                        display: "flex",
+                        justifyContent: 'center'
+                    }}
+                >
+                    <IconAlertCircle size="sm" color={danger} />
+                    <Text
+                        css={{
+                            display: "block",
+                            marginLeft: theme.spaces.xs,
+                            fontSize: theme.fontSizes[0],
+                            color: danger
+                        }}
+                    >
+                        {error}
+                    </Text>
+                </div>
+            ) : (
+                error
+            )}
+
+            {helpText && (
+                <Text
+                    className="InputGroup__help"
+                    css={{
+                        display: "inline-flex",
+                        marginTop: theme.spaces.xs,
+                        color: theme.colors.text.muted,
+                        fontSize: theme.fontSizes[0]
+                    }}
+                    variant="body"
+                >
+                    {helpText}
+                </Text>
+            )}
+        </section>
+    );
 };
 
-InputGroupLine.propTypes = {
+InputLine.propTypes = {
   label: PropTypes.string.isRequired,
   hideLabel: PropTypes.bool,
   helpText: PropTypes.string,
@@ -945,64 +997,63 @@ export interface InputDatalistProps 　 extends InputBaseProps {
  * ，但比ComboBox有个有优势：1能够记住当前用户输入用过的以后再用。
  * 不过一般输入完成后再做点击修改的概率也不大，手机版本显示区域太小问题以后浏览器版本可能改进的。
  */
-export const InputDatalist = React.forwardRef(
-    (
-        {
-            autoComplete, autoFocus, inputSize = "md",
-            fullWidth=true,
-            datalist=[],
-            topDivStyle,
-            onListChange,
-            ...other }: InputDatalistProps,
-        ref: React.Ref<HTMLInputElement>
-    ) => {
-        const { uid, error } = React.useContext(InputGroupContext);
-        const { bind, active } = useActiveStyle();
-        const {
-            baseStyles,
-            inputSizes,
-            activeBackground,
-            errorStyles
-        } = useSharedStyle();
-        const height = getHeight(inputSize);
-        return (
-            <div  css={[
-                {
-                    textAlign: 'left',
-                    width: "100%"
-                },
-                topDivStyle
-            ]}
-            >
-                <datalist id={`list${uid}`}>
-                    { datalist.map((one,i) => {
-                        return <option key={i} value={one} />;
-                    }) }
-                </datalist>
-                <input
-                    id={uid}
-                    className="Input"
-                    autoComplete={autoComplete}
-                    autoFocus={autoFocus}
-                    {...bind}
-                    css={[
-                        baseStyles,
-                        inputSizes[inputSize],
-                        active && activeBackground,
-                        error && errorStyles,
-                        { height },
-                        !fullWidth &&{
-                            width: 'unset',
-                        }
-                    ]}
-                    {...safeBind({ ref }, other)}
-                    list={`list${uid}`}
-                    onChange={e => onListChange( e.currentTarget.value||undefined ) }
-                />
-            </div>
-        );
+export const InputDatalist: React.FunctionComponent<InputDatalistProps> = (
+    {
+        autoComplete, autoFocus, inputSize = "md",
+        fullWidth=true,
+        datalist=[],
+        topDivStyle,
+        onListChange,
+        ...other
     }
-);
+) => {
+    const { uid, error } = React.useContext(InputGroupContext);
+    const { bind, active } = useActiveStyle();
+    const {
+        baseStyles,
+        inputSizes,
+        activeBackground,
+        errorStyles
+    } = useSharedStyle();
+    const height = getHeight(inputSize);
+    //这个版本：不需要React.forwardRef(()=>{})的，注入ref性能损失， {...safeBind({ ref }, other)}
+    return (
+        <div  css={[
+            {
+                textAlign: 'left',
+                width: "100%"
+            },
+            topDivStyle
+        ]}
+        >
+            <datalist id={`list${uid}`}>
+                { datalist.map((one,i) => {
+                    return <option key={i} value={one} />;
+                }) }
+            </datalist>
+            <input
+                id={uid}
+                className="Input"
+                autoComplete={autoComplete}
+                autoFocus={autoFocus}
+                {...bind}
+                css={[
+                    baseStyles,
+                    inputSizes[inputSize],
+                    active && activeBackground,
+                    error && errorStyles,
+                    { height },
+                    !fullWidth &&{
+                        width: 'unset',
+                    }
+                ]}
+                {...other}
+                list={`list${uid}`}
+                onChange={e => onListChange( e.currentTarget.value||undefined ) }
+            />
+        </div>
+    );
+};
 
 
 const getSwitchHeight = (size: ButtonSize) => {

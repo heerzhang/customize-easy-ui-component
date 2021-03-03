@@ -88,6 +88,9 @@ interface TooltipProps extends React.HTMLAttributes<HTMLDivElement> {
   maxWidth?: string;
 }
 
+/**
+ * Tooltip唯一儿子 需要传递 ref的。
+ */
 export const Tooltip: React.FunctionComponent<TooltipProps> = ({
   placement,
   children,

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { jsx } from "@emotion/react";
 import * as React from "react";
-import { Button, ButtonProps, ButtonSize, getHeight } from "./Button";
+import {Button, ButtonProps, ButtonRefComp, ButtonSize, getHeight} from "./Button";
 import VisuallyHidden from "@reach/visually-hidden";
 import PropTypes from "prop-types";
 import { IconWrapper } from "./IconWrapper";
@@ -22,8 +22,7 @@ export interface IconButtonProps extends Partial<ButtonProps> {
  * A component which composes Button and Icon to provide
  * interactive icon elements.
  */
-export const IconButton = React.forwardRef(
-  (
+export const IconButton: React.FunctionComponent<IconButtonProps> =(
     {
       label,
       size = "md" as ButtonSize,
@@ -31,13 +30,11 @@ export const IconButton = React.forwardRef(
       onPress,
       color = "currentColor",
       ...other
-    }: IconButtonProps,
-    ref
+    }
   ) => {
     const theme = useTheme();
     return (
       <Button
-        ref={ref}
         size={size}
         css={{
           padding: 0,
@@ -58,8 +55,50 @@ export const IconButton = React.forwardRef(
         </IconWrapper>
       </Button>
     );
-  }
+  };
+
+/**
+ * 旧版本 可传递 ref
+ */
+export const IconRefButton = React.forwardRef(
+    (
+        {
+            label,
+            size = "md" as ButtonSize,
+            icon,
+            onPress,
+            color = "currentColor",
+            ...other
+        }: IconButtonProps,
+        ref
+    ) => {
+        const theme = useTheme();
+        return (
+            <ButtonRefComp
+                ref={ref}
+                size={size}
+                css={{
+                    padding: 0,
+                    [theme.mediaQueries.sm]: {
+                        padding: 0,
+                    },
+                    [theme.mediaQueries.lg]: {
+                        padding: 0,    //底层Button有设置[theme.xx.lg],这里就也得加[theme.xx.lg]，不然会被无情颠覆。优先级毛病？
+                    },
+                    width: getHeight(size)
+                }}
+                onPress={onPress}
+                {...other}
+            >
+                <VisuallyHidden>{label}</VisuallyHidden>
+                <IconWrapper color={color} size={size}>
+                    {icon}
+                </IconWrapper>
+            </ButtonRefComp>
+        );
+    }
 );
+
 
 IconButton.displayName = "IconButton";
 

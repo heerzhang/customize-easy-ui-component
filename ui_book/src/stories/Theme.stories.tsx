@@ -189,8 +189,8 @@ export const ThemeExamples = storiesOf("Theme", module)
   .add("contrast", () => {
     return <ContrastExample />;
   })
-  .add("DarkMode forwards ref", () => {
-    return <RefExample />;
+  .add("DarkMode forwards ref 删除", () => {
+    return null;
   })
   .add("Tooltip with DarkMode wrrapper", () => {
     return (
@@ -220,14 +220,14 @@ function SampleTheme() {
   );
 }
 
+//不支持 <DarkMode ref={ref}>
 function RefExample() {
   const ref = React.useRef();
-
   React.useEffect(() => {
     console.log(ref.current);
   }, []);
   return (
-    <DarkMode ref={ref}>
+    <DarkMode >
       <Button>Hello</Button>
     </DarkMode>
   );

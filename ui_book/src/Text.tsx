@@ -250,3 +250,46 @@ Text.propTypes = {
   gutter: PropTypes.bool,
  // component: PropTypes.element
 };
+
+
+export interface LabelTextProps extends TextProps {
+  /**关联的input ID*/
+  htmlFor?: string
+}
+
+/**
+ * 专门给label搞个Text,融合版本,可指定 for="input_id"
+ * htmlFor是个关键参数，用途较大。
+ * ...other包含文字string, 本来的纯粹文字或Text描述label 或 children。
+ * LabelText代替 <Label>嵌套<Text>的组合方式,减少少标签div嵌套层数可简化，功能替代，优化目的=提高性能。
+ */
+export const LabelText: React.FunctionComponent<LabelTextProps> = ({
+    variant = "subtitle",
+    wrap = true,
+    gutter = true,
+    muted,
+    htmlFor,
+    ...other
+  }) => {
+
+  const theme = useTheme();
+  const variantStyles = React.useMemo(() => getVariantStyles(theme, variant), [
+    theme,
+    variant
+  ]);
+  const styles = React.useMemo(() => basicStyles(theme), [theme]);
+
+  return (
+      <label htmlFor={htmlFor}
+             css={[
+               styles.base,
+               !wrap && styles.noWrap,
+               muted && styles.muted,
+               variantStyles,
+               !gutter && styles.noGutter
+             ]}
+             {...other}
+      />
+  );
+};
+

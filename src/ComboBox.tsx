@@ -7,9 +7,9 @@ import { useTheme } from "./Theme/Providers";
 import { Text } from "./Text";
 import { Touchable } from "./Touchable";
 import { useMeasure, Bounds } from "./Hooks/use-measure";
-import { Layer } from "./Layer";
+import {Layer, LayerRefComp} from "./Layer";
 import Highlighter from "react-highlight-words";
-import { InputBase, InputBaseProps } from "./Form";
+import { InputBaseProps, InputRefBase} from "./Form";
 import { usePopper } from 'react-popper';
 import {ElementType} from "react";
 
@@ -304,7 +304,7 @@ export interface ComboBoxInputProps extends React.HTMLAttributes<any> {
 
 //分解配套的模式ComboBoxInput必需加到ComboBox底下的，ComboBox本身没有实际的div元素,靠context管理传递参数。
 export const ComboBoxInput: React.FunctionComponent<ComboBoxInputProps> = ({
-  component: Component = InputBase,
+  component: Component = InputRefBase,
   ...other
 }) => {
   const context = React.useContext(ComboBoxContext);
@@ -413,10 +413,12 @@ export const ComboBoxList: React.FunctionComponent<ComboBoxListProps> = ({
     };
   });
 
+  //不能用<Layer 组件，这个实际要算 传入ref参数给Layer的。否则报错Function components cannot be given refs.
+
   return (
     <React.Fragment>
       {(expanded || !autoHide) && (
-        <Layer
+        <LayerRefComp
           tabIndex={-1}
           elevation="sm"
           key="1"
@@ -451,7 +453,7 @@ export const ComboBoxList: React.FunctionComponent<ComboBoxListProps> = ({
         >
           {children}
           <div ref={position.setArrowElement} style={position.styles.arrow} />
-        </Layer>
+        </LayerRefComp>
       )}
     </React.Fragment>
   );
@@ -598,56 +600,57 @@ export interface ComboBoxDatalistProps  extends InputBaseProps {
  * onChange不能直接利用参数类型是event：e?.currentTarget，而ComboBox这都是string类型。
  * @param onListChange:可选列表选定，或者编辑框修改,导致query={value}必然变更。
  */
-export const ComboBoxDatalist = React.forwardRef(
-    (
-        {
-          autoComplete, autoFocus, inputSize = "md",
-          fullWidth=true,
-          datalist=[],
-          topDivStyle,
-          value,
-          onListChange,
-          ...other }: ComboBoxDatalistProps,
-        ref: React.Ref<HTMLInputElement>
-    ) => {
+export const ComboBoxDatalist: React.FunctionComponent<ComboBoxDatalistProps>=
+  (
+      {
+        autoComplete,
+        autoFocus,
+        inputSize = "md",
+        fullWidth=true,
+        datalist=[],
+        topDivStyle,
+        value,
+        onListChange,
+        ...other
+      }
+  ) => {
+    //ComboBoxInput无法使用safeBind({ ref }，单独有inputRef的；
+  return (
+      <ComboBox  autocomplete={false}
+                 topDivStyle={topDivStyle}
+                 query={value}
+                 onQueryChange={v => {
+                   onListChange(v);
+                 }}
+                 onSelect={v => {
+                   v && onListChange(v);
+                 }}
+      >
+        <ComboBoxInput aria-label="Select add"
+                       {...other }
+        />
+        <ComboBoxList >
+           {datalist.length ? (
+               datalist.map((one,i) => {
+                 return <ComboBoxOption key={i} value={one} />;
+               })
+           ) : (
+               <div>
+                 <Text
+                     muted
+                     css={{ display: "block", padding: "0.5rem 0.75rem" }}
+                 >
+                   {value && datalist.length === 0 ? (
+                       <span>No entries found.</span>
+                   ) : (
+                       <span>{other.placeholder}</span>
+                   )}
+                 </Text>
+               </div>
+           )}
+       </ComboBoxList>
+      </ComboBox>
+  );
+};
 
-      //ComboBoxInput无法使用safeBind({ ref }，单独有inputRef的；
-      return (
-          <ComboBox  autocomplete={false}
-                     topDivStyle={topDivStyle}
-                     query={value}
-                     onQueryChange={v => {
-                       onListChange(v);
-                     }}
-                     onSelect={v => {
-                       v && onListChange(v);
-                     }}
-          >
-            <ComboBoxInput aria-label="Select add"
-                           {...other }
-            />
-            <ComboBoxList >
-               {datalist.length ? (
-                   datalist.map((one,i) => {
-                     return <ComboBoxOption key={i} value={one} />;
-                   })
-               ) : (
-                   <div>
-                     <Text
-                         muted
-                         css={{ display: "block", padding: "0.5rem 0.75rem" }}
-                     >
-                       {value && datalist.length === 0 ? (
-                           <span>No entries found.</span>
-                       ) : (
-                           <span>{other.placeholder}</span>
-                       )}
-                     </Text>
-                   </div>
-               )}
-           </ComboBoxList>
-          </ComboBox>
-      );
-    }
-);
 

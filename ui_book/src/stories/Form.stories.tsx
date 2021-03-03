@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { jsx } from "@emotion/react";
-import {InputGroup, Select, Input, TextArea, Check, InputDatalist, CheckSwitch, InputGroupLine} from "../Form";
+import {InputGroup, Select, Input, TextArea, Check, InputDatalist, CheckSwitch, InputLine} from "../Form";
 import { Button } from "../Button";
 import theme from "../Theme";
 import { Layer } from "../Layer";
@@ -212,7 +212,7 @@ export const FormStories = storiesOf("Forms", module)
                 <Check label="Other" />
               </div>
             </InputGroup>
-            <InputGroupLine label={`是否汽车电梯:`}>
+            <InputLine label={`是否汽车电梯:`}>
               <CheckSwitch  disabled={false}
                   checked= {isCar  || false}
                      onChange={e => {
@@ -220,7 +220,7 @@ export const FormStories = storiesOf("Forms", module)
                       }
                   }
               />
-            </InputGroupLine>
+            </InputLine>
 
 
           </div>

@@ -86,7 +86,7 @@ export const Avatar: React.FunctionComponent<AvatarProps> = ({
           }}
         />
       ) : (
-        <div>
+        <React.Fragment>
           <VisuallyHidden>{name}</VisuallyHidden>
           <Text
             css={{
@@ -97,7 +97,7 @@ export const Avatar: React.FunctionComponent<AvatarProps> = ({
           >
             {initials}
           </Text>
-        </div>
+        </React.Fragment>
       )}
     </div>
   );

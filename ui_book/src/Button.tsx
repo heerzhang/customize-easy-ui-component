@@ -14,6 +14,7 @@ import { safeBind } from "./Hooks/compose-bind";
 import { BreakPointType } from "./Theme/breakpoints";
 import {ForwardRefRenderFunction} from "react";
 import {ElementType} from "react";
+import {AvatarProps} from "./Avatar";
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 
@@ -491,10 +492,10 @@ export interface ButtonProps
 
 /**
  * Your standard Button element
+ * 新版本Button 不能传入ref; 若需要控制捕捉,ref传递的，请用ButtonRefComp;
  */
 
-export const Button = React.forwardRef(
-  (
+export const Button: React.FunctionComponent<ButtonProps>  = (
     {
       size = "md",
       block,
@@ -513,8 +514,7 @@ export const Button = React.forwardRef(
       noBind=false,
       terminateOnScroll = false,
       ...other
-    }: ButtonProps,
-    ref: React.Ref<any>
+    }
   ) => {
     const theme = useTheme();
     const isLink = other.to || other.href;
@@ -592,7 +592,7 @@ export const Button = React.forwardRef(
             paddingRight: "0.65rem"
           }
         ]}
-        {... (noBind? safeBind( { ref }, other) : safeBind(bind, { ref }, other)  ) }
+        {... (noBind?  other : safeBind(bind,  other)  ) }
       >
         {loading && (
           <div
@@ -653,8 +653,176 @@ export const Button = React.forwardRef(
         )}
       </Component>
     );
-  }
+  };
+
+
+/**
+ * 旧版本 可支持传入 ref 控制参数的。
+ * ButtonRefComp 比起 Button多个 ref需要绑定。 其余代码完全一致
+ */
+export const ButtonRefComp = React.forwardRef(
+    (
+        {
+          size = "md",
+          block,
+          variant = "default",
+          intent = "none",
+          className = "",
+          disabled = false,
+          loading = false,
+          component: Component = "div",
+          iconBefore,
+          iconAfter,
+          children,
+          pressDelay = 0,
+          pressExpandPx,
+          onPress,
+          noBind=false,
+          terminateOnScroll = false,
+          ...other
+        }: ButtonProps,
+        ref: React.Ref<any>
+    ) => {
+      const theme = useTheme();
+      const isLink = other.to || other.href;
+      const { bind, hover, active } = useTouchable({
+        onPress,
+        delay: pressDelay,
+        pressExpandPx,
+        terminateOnScroll,
+        disabled,
+        behavior: isLink ? "link" : "button"
+      });
+
+      // how necessary is this?
+      const intentStyle = React.useMemo(
+          () => getIntent(variant, intent, theme, hover, active),
+          [variant, intent, theme, hover, active]
+      );
+      //最终追溯到 DOM 的tag; 基础tag: div button 这些原生的html, 都可以支持ref参考传递。
+      if (other.type === "submit" && Component === "div") {
+        Component = "button";
+      }
+
+      return (
+          <Component
+              className={cx("Button", "Touchable", className, {
+                "Touchable--hover": hover,
+                "Touchable--active": active
+              })}
+              role={isLink ? "link" : "button"}
+              tabIndex={0}
+              css={[
+                buttonReset,
+                {
+                  width: block ? "100%" : undefined,
+                  fontWeight: 500,
+                  position: "relative",
+                  fontFamily: theme.fonts.base,
+                  borderRadius: theme.radii.sm,
+                  fontSize: getFontSize(size, theme),
+                  padding: getPadding(size, 'default'),
+                  [theme.mediaQueries.sm]: {
+                    padding: getPadding(size, 'sm'),
+                    whiteSpace: 'unset',
+                  },
+                  [theme.mediaQueries.lg]: {
+                    padding: getPadding(size, 'lg'),
+                  },
+                  height: getHeight(size),
+                  display: getDisplay(block),
+                  alignItems: "center",
+                  justifyContent: "center",
+                  ":focus": {
+                    outline: theme.outline
+                  },
+                  ":focus:not([data-focus-visible-added])": {
+                    outline: other.autoFocus ? "theme.outline" : "none"
+                  }
+                },
+                variants[variant],
+                intentStyle,
+                disabled && {
+                  opacity: 0.6,
+                  pointerEvents: "none"
+                },
+                loading && {
+                  "& > :not(.Spinner)": {
+                    opacity: 0,
+                    transition: "opacity 0.1s ease"
+                  }
+                },
+                (iconBefore || (block && iconAfter)) && {
+                  paddingLeft: "0.65rem"
+                },
+                (iconAfter || (block && iconBefore)) && {
+                  paddingRight: "0.65rem"
+                }
+              ]}
+              {... (noBind? safeBind( { ref }, other) : safeBind(bind, { ref }, other)  ) }
+          >
+            {loading && (
+                <div
+                    className="Spinner"
+                    css={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      transform: "translate(-50%, -50%)"
+                    }}
+                >
+                  <Spinner delay={1} size={size} />
+                </div>
+            )}
+
+            {iconBefore && (
+                <IconWrapper
+                    css={{ marginRight: theme.spaces.sm }}
+                    size={size}
+                    color="currentColor"
+                    aria-hidden
+                >
+                  {iconBefore}
+                </IconWrapper>
+            )}
+
+            {typeof children === "string" ? (
+                <span
+                    css={{
+                      flex: 1,
+                      // kinda lame hack to center our text in block
+                      // mode with icons before and after
+                      marginRight:
+                          block && iconBefore && !iconAfter
+                              ? iconSpaceForSize(theme)[size]
+                              : 0,
+                      marginLeft:
+                          block && iconAfter && !iconBefore
+                              ? iconSpaceForSize(theme)[size]
+                              : 0
+                    }}
+                    aria-hidden={loading}
+                >
+            {children}
+          </span>
+            ) : (
+                children
+            )}
+
+            {iconAfter && (
+                <IconWrapper
+                    color="currentColor"
+                    css={{ marginLeft: theme.spaces.sm }}
+                    size={size}
+                >
+                  {iconAfter}
+                </IconWrapper>
+            )}
+          </Component>
+      );
+    }
 );
+
 
 Button.displayName = "Button";
 

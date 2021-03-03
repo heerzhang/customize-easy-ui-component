@@ -11,7 +11,7 @@ import {
     ComboBoxOption,
     ComboBoxOptionText
 } from "../ComboBox";
-import {Input, InputBase, InputDatalist, InputGroup} from "../Form";
+import {Input, InputBase, InputDatalist, InputGroup, InputRefBase} from "../Form";
 import { Text } from "../Text";
 import { ListItem } from "../List";
 
@@ -55,7 +55,7 @@ function Example() {
         <ComboBoxInput
           aria-label="Query users"
           placeholder="Search for users"
-          readOnly
+          readOnly={false}
         />
 
         {query && (
@@ -114,7 +114,7 @@ function CustomExample() {
         <ComboBoxInput
           aria-label="Query users"
           placeholder="Search for users"
-          component={InputBase}
+          component={InputRefBase}
           autoComplete={"true"}
         />
 
