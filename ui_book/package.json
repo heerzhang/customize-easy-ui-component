@@ -23,7 +23,7 @@
     "url": "https://github.com/heerzhang/customize-easy-ui-component.git"
   },
   "scripts": {
-    "说明": "ui_book目录底下的src源代码和上级组件库src保持完全一致的，直接拷贝即可，storeis目录独有的",
+    "说明": "ui_book目录底下的src源代码和上级组件库src保持完全一致的，直接拷贝即可，storeis目录独有的,package.json要独立修改",
     "test": "jest --watchAll",
     "错误严重情景": "需用storybook debug，用其它不好使,http://localhost:6006/看报错",
     "storybook": "start-storybook -p 6006",
@@ -87,7 +87,6 @@
     "resize-observer-polyfill": "^1.5.1",
     "react-toastnotes": "^3.3.1",
     "use-media": "^1.4.0",
-    "use-scroll-lock": "^1.0.0",
     "wouter": "^2.6.0",
     "@types/faker": "^4.1.7",
     "faker": "^4.1.0",

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { jsx } from "@emotion/react";
-import {InputGroup, Select, Input, TextArea, Check, InputDatalist, CheckSwitch, InputLine} from "../Form";
+import {InputGroup, Select, Input, TextArea, Check, InputDatalist, CheckSwitch, InputLine, SuffixInput} from "../Form";
 import { Button } from "../Button";
 import theme from "../Theme";
 import { Layer } from "../Layer";
@@ -149,6 +149,7 @@ export const FormStories = storiesOf("Forms", module)
   })
   .add("disabled states", () =>{
         const [isCar, setisCar] = React.useState(undefined);
+        const [大修周期, set大修周期] = React.useState(`12`);
     return (
     <div
       css={{
@@ -221,7 +222,13 @@ export const FormStories = storiesOf("Forms", module)
                   }
               />
             </InputLine>
-
+            <InputLine  label='报告地址自动获得链接:' >
+              <SuffixInput
+                  type="number"
+                  value={ 大修周期 || ''}
+                  onChange={e => set大修周期( e.currentTarget.value||undefined ) }
+              >个月</SuffixInput>
+            </InputLine>
 
           </div>
           <div css={{ minWidth: "300px", margin: "1rem" }}>
@@ -255,4 +262,80 @@ export const FormStories = storiesOf("Forms", module)
     </div>
   );
   }
-  );
+  )
+  .add("测试Inputline", () => {
+      const [query, setQuery] = React.useState('初始' );
+      const [大修周期, set大修周期] = React.useState(`12`);
+      const [isCar, setisCar] = React.useState(undefined);
+      return(
+          <div
+              css={{
+                display: "flex",
+                justifyContent: "center",
+                paddingTop: theme.spaces.xl,
+                paddingBottom: theme.spaces.xl
+              }}
+          >
+            <Layer css={{ maxWidth: "400px", width: "100%" }} elevation={"lg"}>
+              <form css={{ padding: theme.spaces.lg }}>
+                <InputGroup error="Required field" label="Email address">
+                  <Input placeholder="ben.mcmahen@gmail.com" />
+                </InputGroup>
+
+                <InputGroup label="Gender">
+                  <Select>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </Select>
+                </InputGroup>
+
+                <InputGroup label="Gender">
+                  <div>
+                    <Check label="Male" checked readOnly />
+                    <Check label="Female" />
+                    <Check label="Other" />
+                  </div>
+                </InputGroup>
+
+                <InputGroup
+                    label="Example textarea"
+                    helpText="Please provide a brief description of yourself. This will go on your profile."
+                >
+                  <TextArea placeholder="Something about me" />
+                </InputGroup>
+                <InputLine label={`是否汽车电梯:`}>
+                  <CheckSwitch  disabled={false}
+                                checked= {isCar  || false}
+                                onChange={e => {
+                                  setisCar(isCar? undefined:true);
+                                }
+                                }
+                  />
+                </InputLine>
+                <InputLine  label='报告地址自动获得链接:' >
+                  <SuffixInput
+                      type="number"
+                      value={ 大修周期 || ''}
+                      onChange={e => set大修周期( e.currentTarget.value||undefined ) }
+                  >个月</SuffixInput>
+                </InputLine>
+                <InputGroup error="输入错" label="组合框">
+                  <InputDatalist placeholder="可输入也可选择"
+                                 value={ query }
+                                 onListChange={v => setQuery(v)}
+                                 datalist={["实际vals","22gle.com"]}
+
+                  >
+                  </InputDatalist>
+                </InputGroup>
+
+                <div css={{ textAlign: "right", marginTop: `${theme.spaces.md}` }}>
+                  <Button intent="primary">Submit</Button>
+                </div>
+              </form>
+            </Layer>
+          </div>
+      ) ;
+    } );
+

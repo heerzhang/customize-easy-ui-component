@@ -8,15 +8,16 @@ import {IconButton, IconRefButton} from "../IconButton";
 import { storiesOf } from "@storybook/react";
 import { Placement } from "@popperjs/core";
 import {
-  IconMoreHorizontal,
-  IconUser,
-  IconPackage,
-  IconMapPin,
-  IconActivity,
-  IconArrowUpRight
+    IconMoreHorizontal,
+    IconUser,
+    IconPackage,
+    IconMapPin,
+    IconActivity,
+    IconArrowUpRight, IconChevronDown
 } from "../Icons";
 import {useLocation} from "wouter";
 import {useToast} from "../Toast";
+import {DarkMode, DarkRefMode} from "../Theme/Providers";
 
 interface LinkProps {
   href: string;
@@ -194,4 +195,57 @@ export const PopoverStories = storiesOf("Popover", module)
         </ResponsivePopover>
       </div>
     );
-  });
+  })
+    .add("Popover传递ref", () => {
+        const toast = useToast();
+        const [, setLocation] = useLocation();
+        return (
+            <div css={{ padding: "1rem" }}>
+                <ResponsivePopover
+                    content={
+                        <MenuList>
+                            <MenuItem contentBefore={<IconPackage />}
+                                      onPress={async () => {
+                                          await toast({title: "提交一个网页链接"});
+                                          setLocation(`/?path=/story/popover--positions`);
+                                      } }
+                            >
+                                提交审核
+                            </MenuItem>
+                            <MenuDivider />
+                            <MenuItem
+                                contentBefore={<IconUser />}
+                                onPress={() => alert("Hello 1")}
+                            >
+                                Drink coffee
+                            </MenuItem>
+                            <MenuItem contentBefore={<IconPackage />}>Eat pancakes</MenuItem>
+                            <MenuDivider />
+                            <MenuItem contentBefore={<IconMapPin />}>Make pizza</MenuItem>
+                            <MenuItem contentBefore={<IconActivity />}>
+                                Dance my heart out
+                            </MenuItem>
+                            <MenuItem contentBefore={<IconArrowUpRight />}>
+                                Anything you ask
+                            </MenuItem>
+                        </MenuList>
+                    }
+                >
+                    <IconRefButton
+                        variant="ghost"
+                        icon={<IconMoreHorizontal />}
+                        label="show more"
+                    />
+                    <DarkRefMode>
+                        <ButtonRefComp
+                            size="md"
+                            iconAfter={<IconChevronDown />}
+                            variant="ghost"
+                        >
+                            {"show more"}
+                        </ButtonRefComp>
+                    </DarkRefMode>
+                </ResponsivePopover>
+            </div>
+        );
+    });

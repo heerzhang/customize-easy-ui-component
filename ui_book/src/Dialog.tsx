@@ -7,7 +7,7 @@ import { useTransition, animated } from "react-spring";
 import { Overlay } from "./Overlay";
 import { useFocusElement } from "./Hooks/use-focus-trap";
 import PropTypes from "prop-types";
-import useScrollLock from "use-scroll-lock";
+import {useScrollLock} from "./Hooks/use-scroll-lock";
 import { useTheme } from "./Theme/Providers";
 
 export interface DialogProps extends React.HTMLAttributes<HTMLDivElement> {
