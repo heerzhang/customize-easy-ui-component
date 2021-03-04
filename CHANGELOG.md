@@ -2,7 +2,7 @@
 React.forwardRef有性能负担，部分呈现数量较多的组件改成不传递ref的普通组件，原版本可注入ref的组件就改名字；
 注意ResponsivePopover/Popover/Tooltip组件唯一儿子须用能传入ref的按钮,比如IconButton改成IconRefButton，Button改成ButtonRefComp;
 ResponsivePopover底下按钮需要传递ref; 否则定位不能跟随按钮， 用IconRefButton代替普通IconButton;
-InputGroupLine改名InputLine, 加新组件LabelText等
+InputGroupLine改名InputLine, 加新组件LabelText,CCell等
 ## 4.3.6
  新增加组合框形式的InputDatalist组件，并且和ComboBoxDatalist组件保持一致，能简单替换
 ## 4.3.0

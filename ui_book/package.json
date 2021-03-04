@@ -1,7 +1,7 @@
 {
   "name": "customize-easy-ui-storybook",
   "version": "4.4.0",
-  "description": "前端的通用组件库-说明书",
+  "description": "前端的通用组件库-说明书,兼做UI测试调试工具",
   "author": "heerzhang <herzhang@163.com>",
   "license": "MIT",
   "main": "index.js",
@@ -23,6 +23,7 @@
     "url": "https://github.com/heerzhang/customize-easy-ui-component.git"
   },
   "scripts": {
+    "说明": "ui_book目录底下的src源代码和上级组件库src保持完全一致的，直接拷贝即可，storeis目录独有的",
     "test": "jest --watchAll",
     "错误严重情景": "需用storybook debug，用其它不好使,http://localhost:6006/看报错",
     "storybook": "start-storybook -p 6006",
