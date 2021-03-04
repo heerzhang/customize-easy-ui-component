@@ -1008,7 +1008,7 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = ({
         md: `${switchPx}`
     }
     //回调函数{SM, MD, LG, XL} ) => {}是按照从大到小排列if语句<><>，大的优先顺序触发。
-    //缺点：不能像Hook那样提前在函数体前面获得逻辑！只能直接做嵌套，可复用性较差,不得不重复！改成嵌入的函数
+    //缺点：不能像Hook那样提前在函数体前面获得逻辑！只能直接做嵌套;
     //回调{( { MD } ) => {， 实际执行频率很低的，切换时可能 有MD=undefined状态。
     const LayoutMediaQueryBootstrap = LayoutMediaQueryFactory(BREAKPOINTS)
 
@@ -1031,8 +1031,9 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = ({
 
     //这里htmlFor={uid}，标签label 和 input很可能分别属于不同div底下的。
     //const titleVar = (        );
-    const funcTitlevar=(fitable)=>{
-        <LabelText className="Label__text"  htmlFor={uid}
+    const funcTitlevar= (fitable) => {
+     return(
+         <LabelText className="Label__text"  htmlFor={uid}
                    css={[
                        {
                            //display: "inline-flex",
@@ -1046,6 +1047,7 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = ({
         >
             {label}
         </LabelText>
+     )
     };
 
     return (
@@ -1077,35 +1079,8 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = ({
                           lineStyle
                       ]}
                       >
-                          {hideLabel ? <VisuallyHidden>{ <LabelText className="Label__text"  htmlFor={uid}
-                                                                    css={[
-                                                                        {
-                                                                            //display: "inline-flex",
-                                                                            textAlign:  "right" ,
-                                                                            flex: '1 1 40%',
-                                                                            paddingRight: '0.8rem',
-                                                                            marginBottom: hideLabel ? 0 : theme.spaces.sm
-                                                                        },
-                                                                        labelTextStyle
-                                                                    ]}
-                          >
-                              {label}
-                          </LabelText>}</VisuallyHidden>
-                              :
-                              <LabelText className="Label__text"  htmlFor={uid}
-                                         css={[
-                                             {
-                                                 //display: "inline-flex",
-                                                 textAlign:  "right" ,
-                                                 flex: '1 1 40%',
-                                                 paddingRight: '0.8rem',
-                                                 marginBottom: hideLabel ? 0 : theme.spaces.sm
-                                             },
-                                             labelTextStyle
-                                         ]}
-                              >
-                                  {label}
-                              </LabelText>}
+                          {hideLabel ? <VisuallyHidden>{ funcTitlevar(true) }</VisuallyHidden>
+                                : funcTitlevar(true) }
 
                           {  childNodeVar  }
                       </div>
@@ -1124,34 +1099,8 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = ({
                               lineStyle
                           ]}
                           >
-                              {hideLabel ? <VisuallyHidden>{ <LabelText className="Label__text"  htmlFor={uid}
-                                                                        css={[
-                                                                            {
-                                                                                //display: "inline-flex",
-                                                                                textAlign:  "left",
-                                                                                flex: '1 1 40%',
-                                                                                paddingRight: '0.8rem',
-                                                                                marginBottom: hideLabel ? 0 : theme.spaces.sm
-                                                                            },
-                                                                            labelTextStyle
-                                                                        ]}
-                              >
-                                  {label}
-                              </LabelText>}</VisuallyHidden>
-                                  :  <LabelText className="Label__text"  htmlFor={uid}
-                                                css={[
-                                                    {
-                                                        //display: "inline-flex",
-                                                        textAlign:  "left",
-                                                        flex: '1 1 40%',
-                                                        paddingRight: '0.8rem',
-                                                        marginBottom: hideLabel ? 0 : theme.spaces.sm
-                                                    },
-                                                    labelTextStyle
-                                                ]}
-                                  >
-                                      {label}
-                                  </LabelText>}
+                              {hideLabel ? <VisuallyHidden>{ funcTitlevar(false) }</VisuallyHidden>
+                                  : funcTitlevar(false) }
 
                           </div>
 
