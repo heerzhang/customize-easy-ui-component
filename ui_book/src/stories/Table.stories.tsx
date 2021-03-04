@@ -4,12 +4,12 @@ import theme from "../Theme";
 import { storiesOf } from "@storybook/react";
 import { Layer } from "../Layer";
 import {
-  Table,
-  TableHead,
-  TableCell,
-  TableBody,
-  TableRow,
-  ExpandingRow
+    Table,
+    TableHead,
+    TableCell,
+    TableBody,
+    TableRow,
+    ExpandingRow, Cell, CCell,RCell
 } from "../Table";
 import { Text } from "../Text";
 import { Button } from "../Button";
@@ -232,4 +232,108 @@ export const TableExamples = storiesOf("Tables", module)
         />
       </Layer>
     </div>
-  ));
+  ))
+    .add("RCell对照版", () => (
+        <div
+            css={{
+                minHeight: "100vh",
+                background: theme.colors.background.tint2,
+                padding: "48px"
+            }}
+        >
+            <Layer elevation="sm">
+                <Toolbar
+                    css={{
+                        borderTopRightRadius: theme.radii.lg,
+                        borderTopLeftRadius: theme.radii.lg,
+                        borderBottom: `1px solid ${theme.colors.border.default}`,
+                        background: theme.colors.background.tint1,
+                        justifyContent: "space-between"
+                    }}
+                >
+                    <Text css={{ margin: 0 }} variant="h4">
+                        Ingredients
+                    </Text>
+
+                    <div>
+                        <Button intent="primary">Add ingredient</Button>
+                    </div>
+                </Toolbar>
+                <Table fixed={["200", "15%", "15%", "15%", "15%"]}>
+                    <TableHead>
+                        <TableRow>
+                            <RCell>Dessert (100g serving)</RCell>
+                            <CCell css={{border:'none',borderBottom:`1px dashed ${theme.colors.intent.primary.light}`}}>Calories</CCell>
+                            <Cell css={{border:'none',borderBottom:`1px dashed ${theme.colors.intent.primary.light}`}}>Fat (g)</Cell>
+                            <Cell css={{border:'none',borderBottom:`1px dashed ${theme.colors.intent.primary.light}`}}>Carbs (g)</Cell>
+                            <RCell css={{border:'none',borderBottom:`1px dashed ${theme.colors.intent.primary.light}`}}>Protein (g)</RCell>
+                        </TableRow>
+                    </TableHead>
+
+                    {rows.map(row => (
+                        <ExpandingRow
+                            content={close => {
+                                return (
+                                    <div
+                                        css={{
+                                            padding: theme.spaces.lg,
+                                            paddingTop: 0,
+                                            paddingBottom: 0
+                                        }}
+                                    >
+                                        <Text variant="body" css={{ fontSize: theme.fontSizes[0] }}>
+                                            Officia laborum deserunt adipisicing reprehenderit esse
+                                            elit exercitation consectetur ad non. Enim reprehenderit
+                                            mollit in commodo anim ex consequat magna laboris
+                                            adipisicing esse. Fugiat adipisicing ut consequat ea
+                                            cupidatat et excepteur sint excepteur cupidatat
+                                            reprehenderit minim. Labore reprehenderit sint enim cillum
+                                            exercitation ullamco nisi nostrud laboris ad magna magna
+                                            officia magna. Officia nisi eiusmod non ea do ullamco anim
+                                            fugiat proident commodo consectetur ut id. Ea cillum non
+                                            voluptate ullamco sunt dolore esse mollit.
+                                        </Text>
+                                        <div
+                                            css={{
+                                                display: "flex",
+                                                marginTop: "1rem",
+                                                justifyContent: "flex-end"
+                                            }}
+                                        >
+                                            <Button
+                                                variant="ghost"
+                                                css={{ marginRight: theme.spaces.sm }}
+                                                onClick={close}
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button intent="primary">Save</Button>
+                                        </div>
+                                    </div>
+                                );
+                            }}
+                            key={row.id}
+                        >
+                            <RCell component="th" scope="row">
+                                {row.name}
+                            </RCell>
+                            <CCell css={{border:'none'}}>{row.calories}</CCell>
+                            <Cell css={{border:'none',borderBottom:`1px solid ${theme.colors.border.muted}`}}>{row.fat}</Cell>
+                            <Cell css={{border:'none',borderBottom:`2px solid ${theme.colors.border.muted}`}}>{row.carbs}</Cell>
+                            <RCell css={{border:'none'}}>{row.protein}</RCell>
+                        </ExpandingRow>
+                    ))}
+                </Table>
+                <Toolbar
+                    compressed
+                    css={{
+                        borderBottomRightRadius: theme.radii.lg,
+                        borderBottomLeftRadius: theme.radii.lg,
+
+                        background: theme.colors.background.tint1
+                    }}
+                />
+            </Layer>
+        </div>
+    ));
+
