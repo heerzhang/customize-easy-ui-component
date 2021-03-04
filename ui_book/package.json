@@ -100,6 +100,8 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/prop-types": "15.7.3",
-    "prop-types": "^15.7.2"
+    "prop-types": "^15.7.2",
+    "@s-ui/react-layout-media-query": "^1.6.0",
+    "react-resize-reporter": "^1.0.2"
   }
 }

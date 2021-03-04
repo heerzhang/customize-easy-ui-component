@@ -14,6 +14,8 @@ import { safeBind } from "./Hooks/compose-bind";
 import { useMedia } from "use-media";
 import  Switch from "react-switch";
 import {Touchable} from "./Touchable";
+import { LayoutMediaQueryFactory } from '@s-ui/react-layout-media-query'
+import ResizeReporter from 'react-resize-reporter'
 
 
 //似乎<form action= omsubmit= /> 都不再需要使用了。
@@ -976,6 +978,234 @@ InputLine.propTypes = {
   switchPx: PropTypes.number,
   children: PropTypes.node
 };
+
+//第二版本： 回调函数转成 大写字母。
+
+
+export const InputLineL: React.FunctionComponent<InputGroupLineProps> = ({
+                                                                            id,
+                                                                            label,
+                                                                            children,
+                                                                            error,
+                                                                            helpText,
+                                                                            hideLabel,
+                                                                            labelTextStyle,
+                                                                            lineStyle,
+                                                                            switchPx=360,
+                                                                            ...other
+                                                                        }) => {
+    const uid = useUid(id);
+    const theme = useTheme();
+    const isDark = theme.colors.mode === "dark";
+    const danger = isDark
+        ? theme.colors.intent.danger.light
+        : theme.colors.intent.danger.base;
+
+    //根据外部程序制定的px数，来决定用哪一个模式布局。紧凑的是2行显示；宽松的是并列在同一行。
+    //const fitable = useMedia({ minWidth: `${switchPx}px` });
+    //父窗口的宽度：大于等于switchPx px就触发的{md}参数的回调。
+    const BREAKPOINTS = {
+        md: `${switchPx}`
+    }
+    //回调函数{SM, MD, LG, XL} ) => {}是按照从大到小排列if语句<><>，大的优先顺序触发。
+    //缺点：不能像Hook那样提前在函数体前面获得逻辑！只能直接做嵌套，可复用性较差,不得不重复！改成嵌入的函数
+    //回调{( { MD } ) => {， 实际执行频率很低的，切换时可能 有MD=undefined状态。
+    const LayoutMediaQueryBootstrap = LayoutMediaQueryFactory(BREAKPOINTS)
+
+    //InputGroupLine包裹的下层的顶级组件的样式修改：下层顶级元素的display: block还算兼容可用; 但width: 100%影响较大。
+    const childNodeVar = (
+        <InputGroupContext.Provider
+            value={{
+                uid,
+                error
+            }}
+        >
+            {
+                React.cloneElement(children as React.ReactElement<any>, {
+                    topDivStyle: { flex: '1 1 60%' },
+                    //style: { flex: '1 1 60%' },      左边的项目文字描述　40%　右边输入框(含单位字符)占用60%
+                })
+            }
+        </InputGroupContext.Provider>
+    );
+
+    //这里htmlFor={uid}，标签label 和 input很可能分别属于不同div底下的。
+    //const titleVar = (        );
+    const funcTitlevar=(fitable)=>{
+        <LabelText className="Label__text"  htmlFor={uid}
+                   css={[
+                       {
+                           //display: "inline-flex",
+                           textAlign: fitable? "right" : "left",
+                           flex: '1 1 40%',
+                           paddingRight: '0.8rem',
+                           marginBottom: hideLabel ? 0 : theme.spaces.sm
+                       },
+                       labelTextStyle
+                   ]}
+        >
+            {label}
+        </LabelText>
+    };
+
+    return (
+        <section
+            className="InputLine"
+            css={{
+                marginTop: theme.spaces.md,
+                "&.InputLine:first-of-type": {
+                    marginTop: 0
+                },
+                textAlign: 'center'
+            }}
+            {...other}
+        >
+            <LayoutMediaQueryBootstrap>
+                {( { MD } ) => {
+                    console.log("伪LayoutMediaQueryBootstrap回调=MD=",MD);
+                  return(MD?
+                      <div  css={[
+                          {
+                              alignItems: "center",
+                              justifyContent: "space-around",
+                              display: "flex",
+                              // flexWrap: 'wrap',
+                              maxWidth: '950px',
+                              margin: '0 auto',
+                              paddingRight:  '0.5rem' ,
+                          },
+                          lineStyle
+                      ]}
+                      >
+                          {hideLabel ? <VisuallyHidden>{ <LabelText className="Label__text"  htmlFor={uid}
+                                                                    css={[
+                                                                        {
+                                                                            //display: "inline-flex",
+                                                                            textAlign:  "right" ,
+                                                                            flex: '1 1 40%',
+                                                                            paddingRight: '0.8rem',
+                                                                            marginBottom: hideLabel ? 0 : theme.spaces.sm
+                                                                        },
+                                                                        labelTextStyle
+                                                                    ]}
+                          >
+                              {label}
+                          </LabelText>}</VisuallyHidden>
+                              :
+                              <LabelText className="Label__text"  htmlFor={uid}
+                                         css={[
+                                             {
+                                                 //display: "inline-flex",
+                                                 textAlign:  "right" ,
+                                                 flex: '1 1 40%',
+                                                 paddingRight: '0.8rem',
+                                                 marginBottom: hideLabel ? 0 : theme.spaces.sm
+                                             },
+                                             labelTextStyle
+                                         ]}
+                              >
+                                  {label}
+                              </LabelText>}
+
+                          {  childNodeVar  }
+                      </div>
+                          :
+                      <React.Fragment>
+                          <div  css={[
+                              {
+                                  alignItems: "center",
+                                  justifyContent: "space-around",
+                                  display: "flex",
+                                  // flexWrap: 'wrap',
+                                  maxWidth: '950px',
+                                  margin: '0 auto',
+                                  paddingRight:  'unset',
+                              },
+                              lineStyle
+                          ]}
+                          >
+                              {hideLabel ? <VisuallyHidden>{ <LabelText className="Label__text"  htmlFor={uid}
+                                                                        css={[
+                                                                            {
+                                                                                //display: "inline-flex",
+                                                                                textAlign:  "left",
+                                                                                flex: '1 1 40%',
+                                                                                paddingRight: '0.8rem',
+                                                                                marginBottom: hideLabel ? 0 : theme.spaces.sm
+                                                                            },
+                                                                            labelTextStyle
+                                                                        ]}
+                              >
+                                  {label}
+                              </LabelText>}</VisuallyHidden>
+                                  :  <LabelText className="Label__text"  htmlFor={uid}
+                                                css={[
+                                                    {
+                                                        //display: "inline-flex",
+                                                        textAlign:  "left",
+                                                        flex: '1 1 40%',
+                                                        paddingRight: '0.8rem',
+                                                        marginBottom: hideLabel ? 0 : theme.spaces.sm
+                                                    },
+                                                    labelTextStyle
+                                                ]}
+                                  >
+                                      {label}
+                                  </LabelText>}
+
+                          </div>
+
+                        {  childNodeVar  }
+                      </React.Fragment>
+                  )
+                }}
+            </LayoutMediaQueryBootstrap>
+
+
+            {error && typeof error === "string" ? (
+                <div
+                    className="InputGroup__error"
+                    css={{
+                        alignItems: "center",
+                        marginTop: theme.spaces.sm,
+                        display: "flex",
+                        justifyContent: 'center'
+                    }}
+                >
+                    <IconAlertCircle size="sm" color={danger} />
+                    <Text
+                        css={{
+                            display: "block",
+                            marginLeft: theme.spaces.xs,
+                            fontSize: theme.fontSizes[0],
+                            color: danger
+                        }}
+                    >
+                        {error}
+                    </Text>
+                </div>
+            ) : (
+                error
+            )}
+
+            {helpText && (
+                <Text
+                    className="InputGroup__help"
+                    css={{
+                        display: "inline-flex",
+                        marginTop: theme.spaces.xs,
+                        color: theme.colors.text.muted,
+                        fontSize: theme.fontSizes[0]
+                    }}
+                    variant="body"
+                >
+                    {helpText}
+                </Text>
+            )}
+        </section>
+    );
+};
+
 
 
 export interface InputDatalistProps 　 extends InputBaseProps {

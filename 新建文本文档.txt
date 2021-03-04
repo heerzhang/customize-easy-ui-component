@@ -82,5 +82,5 @@ export const InputSimple : React.FunctionComponent<InputBaseProps>=
   };
 
 line 360px优化
-,
-    "use-scroll-lock": "^1.0.0"
+@s-ui/react-layout-media-query
+react-resize-reporter

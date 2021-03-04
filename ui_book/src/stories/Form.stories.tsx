@@ -1,6 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { jsx } from "@emotion/react";
-import {InputGroup, Select, Input, TextArea, Check, InputDatalist, CheckSwitch, InputLine, SuffixInput} from "../Form";
+import {
+  InputGroup,
+  Select,
+  Input,
+  TextArea,
+  Check,
+  InputDatalist,
+  CheckSwitch,
+  InputLine,
+  SuffixInput,
+  InputLineL
+} from "../Form";
 import { Button } from "../Button";
 import theme from "../Theme";
 import { Layer } from "../Layer";
@@ -276,7 +287,7 @@ export const FormStories = storiesOf("Forms", module)
                 paddingBottom: theme.spaces.xl
               }}
           >
-            <Layer css={{ maxWidth: "400px", width: "100%" }} elevation={"lg"}>
+            <Layer css={{ width: "100%" }} elevation={"lg"}>
               <form css={{ padding: theme.spaces.lg }}>
                 <InputGroup error="Required field" label="Email address">
                   <Input placeholder="ben.mcmahen@gmail.com" />
@@ -313,13 +324,20 @@ export const FormStories = storiesOf("Forms", module)
                                 }
                   />
                 </InputLine>
-                <InputLine  label='报告地址自动获得链接:' >
+                <InputLine  label='自动获得链接报告地址:' >
                   <SuffixInput
                       type="number"
                       value={ 大修周期 || ''}
                       onChange={e => set大修周期( e.currentTarget.value||undefined ) }
                   >个月</SuffixInput>
                 </InputLine>
+                <InputLineL  label='第二版本获得接报告地址:' >
+                  <SuffixInput
+                      type="number"
+                      value={ 大修周期 || ''}
+                      onChange={e => set大修周期( e.currentTarget.value||undefined ) }
+                  >个月</SuffixInput>
+                </InputLineL>
                 <InputGroup error="输入错" label="组合框">
                   <InputDatalist placeholder="可输入也可选择"
                                  value={ query }
