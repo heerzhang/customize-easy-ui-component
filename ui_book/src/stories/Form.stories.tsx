@@ -20,6 +20,9 @@ import { IconArrowRight, IconAlignCenter } from "../Icons";
 import { IconButton } from "../IconButton";
 import * as React from "react";
 import {ComboBoxDatalist} from "../ComboBox";
+import {Line1Column, Line1ColumnR} from "../Column";
+
+
 
 export const FormStories = storiesOf("Forms", module)
   .add("input types", () => {
@@ -36,11 +39,13 @@ export const FormStories = storiesOf("Forms", module)
       <Layer css={{ maxWidth: "400px", width: "100%" }} elevation={"lg"}>
         <form css={{ padding: theme.spaces.lg }}>
           <InputGroup error="Required field" label="Email address">
-            <Input placeholder="ben.mcmahen@gmail.com" />
+            <Input placeholder="ben.mcmahen@gmail.com"
+                   required
+            />
           </InputGroup>
 
           <InputGroup label="Gender">
-            <Select>
+            <Select required >
               <option>Male</option>
               <option>Female</option>
               <option>Other</option>
@@ -59,7 +64,9 @@ export const FormStories = storiesOf("Forms", module)
             label="Example textarea"
             helpText="Please provide a brief description of yourself. This will go on your profile."
           >
-            <TextArea placeholder="Something about me" />
+            <TextArea placeholder="Something about me"
+                      required
+            />
           </InputGroup>
 
           <InputGroup error="输入错" label="组合框">
@@ -71,9 +78,18 @@ export const FormStories = storiesOf("Forms", module)
             >
             </InputDatalist>
           </InputGroup>
+          <InputGroup  label="看Email address">
+            <Input placeholder="必填字段ben.mcmahen@gmail.com"
+                   required
+            />
+          </InputGroup>
 
           <div css={{ textAlign: "right", marginTop: `${theme.spaces.md}` }}>
-            <Button intent="primary">Submit</Button>
+            <Button intent="primary" type="submit">提交</Button>
+          </div>
+          <div css={{ textAlign: "right", marginTop: `${theme.spaces.md}` }}>
+            <Input     type={'submit'}
+            />
           </div>
         </form>
       </Layer>
@@ -158,7 +174,7 @@ export const FormStories = storiesOf("Forms", module)
       </div>
     );
   })
-  .add("disabled states", () =>{
+  .add("组参数 states", () =>{
         const [isCar, setisCar] = React.useState(undefined);
         const [大修周期, set大修周期] = React.useState(`12`);
     return (
@@ -256,11 +272,11 @@ export const FormStories = storiesOf("Forms", module)
               <TextArea disabled placeholder="Something about me" />
             </InputGroup>
             <InputGroup
-              error="This field is required"
-              label="Example textarea"
-              helpText="Please provide a brief description of yourself. This will go on your profile."
+              error="必须输入该字段；没错不显示"
+              label="标签抬头extarea，基本都应该有的！"
+              helpText="Please provide a brief 说明解释文本； 没的说明就不显示."
             >
-              <TextArea placeholder="Something about me" />
+              <TextArea placeholder="输入框还也是能自带说明提示" />
             </InputGroup>
             <div css={{ textAlign: "right", marginTop: `${theme.spaces.md}` }}>
               <Button disabled intent="primary">
@@ -324,30 +340,34 @@ export const FormStories = storiesOf("Forms", module)
                                 }
                   />
                 </InputLine>
-                <InputLine  label='自动获得链接报告地址:' >
+                <InputLine  label='外部的获得链接报告地址:' >
                   <SuffixInput
                       type="number"
                       value={ 大修周期 || ''}
                       onChange={e => set大修周期( e.currentTarget.value||undefined ) }
                   >个月</SuffixInput>
                 </InputLine>
-                <InputLineL  label='第二版本获得接报告地址:' >
-                  <SuffixInput
-                      type="number"
-                      value={ 大修周期 || ''}
-                      onChange={e => set大修周期( e.currentTarget.value||undefined ) }
-                  >个月</SuffixInput>
-                </InputLineL>
-                <InputGroup error="输入错" label="组合框">
-                  <InputDatalist placeholder="可输入也可选择"
-                                 value={ query }
-                                 onListChange={v => setQuery(v)}
-                                 datalist={["实际vals","22gle.com"]}
+                <Line1ColumnR switchPx={420}>
 
-                  >
-                  </InputDatalist>
-                </InputGroup>
+                  <InputLineL  label='第二版本获得接报告,内部的:' >
+                    <SuffixInput
+                        type="number"
+                        value={ 大修周期 || ''}
+                        onChange={e => set大修周期( e.currentTarget.value||undefined ) }
+                    >个月</SuffixInput>
+                  </InputLineL>
 
+                  <InputLineL error="输入错" label="组合框">
+                    <InputDatalist placeholder="可输入也可选择"
+                                   value={ query }
+                                   onListChange={v => setQuery(v)}
+                                   datalist={["实际vals","22gle.com"]}
+
+                    >
+                    </InputDatalist>
+                  </InputLineL>
+
+                </Line1ColumnR>
                 <div css={{ textAlign: "right", marginTop: `${theme.spaces.md}` }}>
                   <Button intent="primary">Submit</Button>
                 </div>

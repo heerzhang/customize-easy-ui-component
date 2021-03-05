@@ -14,9 +14,11 @@ import { safeBind } from "./Hooks/compose-bind";
 import { useMedia } from "use-media";
 import  Switch from "react-switch";
 import {Touchable} from "./Touchable";
+import { LayoutMediaQueryFactory } from '@s-ui/react-layout-media-query'
+import ResizeReporter from 'react-resize-reporter'
 
 
-//似乎<form action= omsubmit= /> 都不再需要使用了。
+
 
 /*
 自适应布局，容器父组件不应当设置width固定的px，否则内部组件元素{已经为屏幕宽度自适应适配的组件}都会被动拉伸宽度，失去了效果。
@@ -828,12 +830,16 @@ export interface InputGroupLineProps extends InputGroupProps {
   lineStyle?: SerializedStyles;
   //根据换行px数 ，来切换显示2个显示模式。 缺省>=360px 正常模式，否则紧凑模式。
   switchPx?: number;
+  //是否开启宽度紧凑模式的局部布局，意味着无法满足最小宽度要求了。
+    fitable?: boolean;
 }
 /**
 自适应屏幕flexBox布局：不要设置固定的width和min-width，可以设置max-width；根据屏幕宽策划1列2列还是更多列的并列，或是更高层次嵌套或隐藏或显示一小半边天区域。
 不要对InputGroupLine的上一级div定义固定宽度，自适应和固定width: px只能二者选其一；宽度定了对小屏幕场景就有滚动条，而不是自适应缩小flexBox布局。
 修改InputGroup排版模式; 并排模式，根据屏幕自适应。支持 2 个模式的布局安排结构。
  性能优化，旧版本InputGroupLine=680ms; 新的InputLine=600ms;
+这两个布局占位参数 error, helpText感觉意义不大。
+ InputGroupContext才是最关键的，子孙组件uid和LabelText标签挂接。
 */
 export const InputLine: React.FunctionComponent<InputGroupLineProps> = ({
     id,
@@ -976,6 +982,152 @@ InputLine.propTypes = {
   switchPx: PropTypes.number,
   children: PropTypes.node
 };
+
+/**
+一般<section>出现在文档文章大纲中。一般通过是否包含一个标题 <h1>-<h6>作为子节点 来辨识<section>。
+
+ */
+//第二版本： 回调函数转成 大写字母。
+//这是单个输入包裹组件，外部再多搞一层布局组件L2Column来配合。
+
+export const InputLineL: React.FunctionComponent<InputGroupLineProps> = (
+{
+    id,
+    label,
+    children,
+    error,
+    helpText,
+    hideLabel,
+    labelTextStyle,
+    lineStyle,
+     fitable=true,
+    ...other
+}) => {
+    const uid = useUid(id);
+    const theme = useTheme();
+    const isDark = theme.colors.mode === "dark";
+    const danger = isDark
+        ? theme.colors.intent.danger.light
+        : theme.colors.intent.danger.base;
+
+
+
+    //InputGroupLine包裹的下层的顶级组件的样式修改：下层顶级元素的display: block还算兼容可用; 但width: 100%影响较大。
+    const childNodeVar = (
+        <InputGroupContext.Provider
+            value={{
+                uid,
+                error
+            }}
+        >
+            {
+                React.cloneElement(children as React.ReactElement<any>, {
+                    topDivStyle: { flex: '1 1 60%' },
+                    //style: { flex: '1 1 60%' },      左边的项目文字描述　40%　右边输入框(含单位字符)占用60%
+                })
+            }
+        </InputGroupContext.Provider>
+    );
+
+    //这里htmlFor={uid}，标签label 和 input很可能分别属于不同div底下的。
+    //const titleVar = (        );
+    const TitleVar= <LabelText className="Label__text"  htmlFor={uid}
+                       css={[
+                           {
+                               //display: "inline-flex",
+                               textAlign: fitable? "right" : "left",
+                               flex: '1 1 40%',
+                               paddingRight: '0.8rem',
+                               marginBottom: hideLabel ? 0 : theme.spaces.sm
+                           },
+                           labelTextStyle
+                       ]}
+                       >
+                        {label}
+                </LabelText>;
+
+    //子孙的宽度没有固定px的，布局组件的子孙都是可在宽度上做自适应的。只有目标多少列排列是敲定固定的，也就是预期最大父窗口宽度场合可以安排最多几个列的元素。
+    //布局子孙都是平等的，宽度都平均分配，预期高度在同一行排列也是均衡整齐或高度一致的，
+    //输入Line组件的断线折腰宽度在布局组件上就的设置switchPx参数。
+    //这外部还得搞个布局组件嵌套，布局组件来传递进来布局紧凑与否参数fitable。也就是遇到最小最小的父窗口宽度情形，在只安排单列元素场合下的，给输入Line组件紧凑提示。
+    return (
+        <div
+            className="InputLine"
+            css={{
+                marginTop: theme.spaces.md,
+                "&.InputLine:first-of-type": {
+                    marginTop: 0
+                },
+                textAlign: 'center'
+            }}
+            {...other}
+        >
+
+            <div  css={[
+              {
+                  alignItems: "center",
+                  justifyContent: "space-around",
+                  display: "flex",
+                  // flexWrap: 'wrap',
+                  maxWidth: '950px',
+                  margin: '0 auto',
+                  paddingRight:  'unset',
+              },
+              lineStyle
+            ]}
+            >
+              {hideLabel ? <VisuallyHidden>{ TitleVar }</VisuallyHidden>
+                  : TitleVar }
+
+              {fitable && childNodeVar }
+            </div>
+
+            {!fitable && childNodeVar }
+
+            {error && typeof error === "string" ? (
+                <div
+                    className="InputGroup__error"
+                    css={{
+                        alignItems: "center",
+                        marginTop: theme.spaces.sm,
+                        display: "flex",
+                        justifyContent: 'center'
+                    }}
+                >
+                    <IconAlertCircle size="sm" color={danger} />
+                    <Text
+                        css={{
+                            display: "block",
+                            marginLeft: theme.spaces.xs,
+                            fontSize: theme.fontSizes[0],
+                            color: danger
+                        }}
+                    >
+                        {error}
+                    </Text>
+                </div>
+            ) : (
+                error
+            )}
+
+            {helpText && (
+                <Text
+                    className="InputGroup__help"
+                    css={{
+                        display: "inline-flex",
+                        marginTop: theme.spaces.xs,
+                        color: theme.colors.text.muted,
+                        fontSize: theme.fontSizes[0]
+                    }}
+                    variant="body"
+                >
+                    {helpText}
+                </Text>
+            )}
+        </div>
+    );
+};
+
 
 
 export interface InputDatalistProps 　 extends InputBaseProps {
