@@ -1,17 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { jsx } from "@emotion/react";
 import * as React from "react";
-import { Spinner } from "./Spinner";
 import PropTypes from "prop-types";
-import { useTheme } from "./Theme/Providers";
-import {ComboBoxDatalistProps} from "./ComboBox";
-import {useUid} from "./Hooks/use-uid";
-import {LabelText, Text} from "./Text";
-import VisuallyHidden from "@reach/visually-hidden";
-import {IconAlertCircle} from "./Icons";
-import {InputGroupLineProps} from "./Form";
 import { LayoutMediaQueryFactory } from '@s-ui/react-layout-media-query'
 import ResizeReporter from 'react-resize-reporter'
+import {LayerElevations} from "./Layer";
 
 /*
  列式布局: column
@@ -27,7 +19,7 @@ import ResizeReporter from 'react-resize-reporter'
  最多列数是应用场景 程序敲定， 大概会放得下几个列啊{已经考虑了需求上级大的布局切换需求后，反正就是最大可能性几个列}。
 */
 
-export type LayerElevations = "xs" | "sm" | "md" | "lg" | "xl";
+
 
 function validChildrenCount(children: any) {
     return React.Children.toArray(children).filter(child =>
@@ -53,7 +45,7 @@ export const Line1Column: React.FunctionComponent<LineColumnProps> =(
     {
         elevation = "md",
         children,
-        switchPx=360,
+        switchPx=336,
         ...other
     }
   ) => {
@@ -70,7 +62,6 @@ export const Line1Column: React.FunctionComponent<LineColumnProps> =(
     return (
       <LayoutMediaQueryBootstrap>
           {( { MD } ) => {
-              console.log("伪LayoutMediaQueryBootstrap回调=MD=",MD);
               return(
                   <React.Fragment>
                   {
@@ -104,7 +95,7 @@ export const Line1ColumnR: React.FunctionComponent<LineColumnProps> =(
     {
         elevation = "md",
         children,
-        switchPx=360,
+        switchPx=336,
         ...other
     }
 ) => {
