@@ -44,22 +44,6 @@ ListItem interactive=f 去掉bind(),可不报错，但是无hover效果;
 <ListItem onPress改成onClick={ async(e) => 也没作用；最后terminateOnScroll=false参数解决。
 
 
-line 360px优化
-@s-ui/react-layout-media-query
 react-resize-reporter
 
-    "aria-hidden": true,
-    style: { display: "block" },
-    ...other
-    topDivStyle: { flex: '1 1 60%' },
-    //style: { flex: '1 1 60%' },
-      size?: "md" | "lg";
-        {React.Children.map(children, (child, i) => {
-          if (!React.isValidElement(child)) {
-            return child;
-          }
-          return React.cloneElement(child as any, {
-            size,
-            "aria-current": i === validChildrenCount(children) - 1 ? "page" : undefined
-          });
-        })}
+InputLineL InputGroup section padding:48px 20px

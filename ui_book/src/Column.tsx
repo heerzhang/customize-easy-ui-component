@@ -1,17 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { jsx } from "@emotion/react";
 import * as React from "react";
-import { Spinner } from "./Spinner";
 import PropTypes from "prop-types";
-import { useTheme } from "./Theme/Providers";
-import {ComboBoxDatalistProps} from "./ComboBox";
-import {useUid} from "./Hooks/use-uid";
-import {LabelText, Text} from "./Text";
-import VisuallyHidden from "@reach/visually-hidden";
-import {IconAlertCircle} from "./Icons";
-import {InputGroupLineProps} from "./Form";
 import { LayoutMediaQueryFactory } from '@s-ui/react-layout-media-query'
 import ResizeReporter from 'react-resize-reporter'
+import {LayerElevations} from "./Layer";
+import {Button} from "./Button";
 
 /*
  列式布局: column
@@ -27,7 +20,7 @@ import ResizeReporter from 'react-resize-reporter'
  最多列数是应用场景 程序敲定， 大概会放得下几个列啊{已经考虑了需求上级大的布局切换需求后，反正就是最大可能性几个列}。
 */
 
-export type LayerElevations = "xs" | "sm" | "md" | "lg" | "xl";
+
 
 function validChildrenCount(children: any) {
     return React.Children.toArray(children).filter(child =>
@@ -36,9 +29,7 @@ function validChildrenCount(children: any) {
 }
 
 
-interface LineColumnProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** The size of the shadow to use */
-  elevation?: LayerElevations;
+interface Line1ColumnProps extends React.HTMLAttributes<HTMLDivElement> {
   /** The contents of the layer */
   children: React.ReactNode;
     //根据换行px数 ，来切换显示2个显示模式。 缺省>=360px 正常模式，否则紧凑模式。
@@ -49,62 +40,10 @@ interface LineColumnProps extends React.HTMLAttributes<HTMLDivElement> {
  * 父辈窗口屏幕宽度就算再大，也是只安排1个列的，布局思路。
  * Line1Column,... Line5Column
  */
-export const Line1Column: React.FunctionComponent<LineColumnProps> =(
+export const Line1Column: React.FunctionComponent<Line1ColumnProps> =(
     {
-        elevation = "md",
         children,
-        switchPx=360,
-        ...other
-    }
-  ) => {
-    //const theme = useTheme();
-    const BREAKPOINTS = {
-        md: switchPx
-    }
-    //回调函数{SM, MD, LG, XL} ) => {}是按照从大到小排列if语句<><>，大的优先顺序触发。
-    //缺点：不能像Hook那样提前在函数体前面获得逻辑！只能直接做嵌套;
-    // 回调函数转成 大写字母。
-    //回调{( { MD } ) => {， 实际执行频率很低的，切换时可能 有MD=undefined状态。
-    const LayoutMediaQueryBootstrap = LayoutMediaQueryFactory(BREAKPOINTS)
-
-    return (
-      <LayoutMediaQueryBootstrap>
-          {( { MD } ) => {
-              console.log("伪LayoutMediaQueryBootstrap回调=MD=",MD);
-              return(
-                  <React.Fragment>
-                  {
-                      React.Children.map(children, (child, i) => {
-                          if (!React.isValidElement(child)) {
-                              return child;
-                          }
-                          return React.cloneElement(child as any, {
-                              fitable: MD
-                          });
-                      })
-                  }
-                 </React.Fragment>
-              )
-          }}
-      </LayoutMediaQueryBootstrap>
-    );
-  };
-
-
-Line1Column.displayName = "Line1Column";
-
-Line1Column.propTypes = {
-  elevation: PropTypes.oneOf(["xs", "sm", "md", "lg", "xl"]),
-  children: PropTypes.node
-};
-
-
-//第二版本 布局组件L2Column来配合。
-export const Line1ColumnR: React.FunctionComponent<LineColumnProps> =(
-    {
-        elevation = "md",
-        children,
-        switchPx=360,
+        switchPx=336,
         ...other
     }
 ) => {
@@ -113,10 +52,11 @@ export const Line1ColumnR: React.FunctionComponent<LineColumnProps> =(
     //必须加一层div{{ position: 'relative' }}，后面给出的宽度才对的。
     return (
         <div style={{ position: 'relative' }}>
-            <ResizeReporter  onWidthChanged={(width)=>{
-                        setFitable((width>=switchPx) );
-                    }
-                 }
+            <ResizeReporter reportInit onWidthChanged={(width)=>{
+                setFitable((width>=switchPx) );
+                ///console.log('zheli width=',width,"fitable=",fitable,"setFF=", (width>=switchPx));
+            }
+            }
             />
             {
                 React.Children.map(children, (child, i) => {
@@ -132,4 +72,111 @@ export const Line1ColumnR: React.FunctionComponent<LineColumnProps> =(
     );
 };
 
+Line1Column.displayName = "Line1Column";
+
+Line1Column.propTypes = {
+  children: PropTypes.node
+};
+
+
+interface Line5ColumnProps extends React.HTMLAttributes<HTMLDivElement> {
+    /** The size of the shadow to use */
+    column?: number;
+    /** The contents of the layer */
+    children: React.ReactNode;
+    //根据换行px数 ，来切换显示2个显示模式。 缺省>=360px 正常模式，否则紧凑模式。
+    //switchPx?  == breaks[0] : number;
+    //可自定义 列数调整实际的父窗口宽度px,每个列一个。
+    breaks?: number[];
+}
+
+const flexClPp=[100,50,33.333,25,20];
+//<Line5Column column={2} breaks={[288, 520]}
+const defaultBreakOf=[
+    [336,600],
+    [300,580,880],
+    [290,540,790,900],
+    [200,390,580,760,910],
+];
+/** 布局组件：最多5列的。
+ * 2列，3列，4列，5列。
+ * 父辈窗口屏幕宽度就算再大，也是只安排2 或3 或4 或5 个列的，布局思路。
+ * Line2Column,.3.4. Line5Column
+ */
+export const Line5Column: React.FunctionComponent<Line5ColumnProps> =(
+    {
+        column=2,
+        children,
+        breaks=defaultBreakOf[column-2],
+        ...other
+    }
+) => {
+    //const theme = useTheme();
+    const [fitable, setFitable] = React.useState(true);
+    //最适合搞几个列。
+    const [suitableCls, setSuitableCls] = React.useState(2);
+    console.log("Render fitable=",fitable,"suitableCls=",suitableCls);
+    //有效的儿子组件:
+    const kids =React.Children.toArray(children).filter(child =>{
+        if(!React.isValidElement(child))
+            throw new Error("literal text must be wrapped in <></> tag or Components");
+        return  child;
+        }
+    );
+    const sonCount= kids.length;
+    const lineSum= Math.ceil(sonCount/suitableCls);
+    console.log('断定的 breaks=',breaks,"lineSum=",lineSum,"suitableCls=",suitableCls);
+    if(column>5 || column<2)
+        throw new Error("number of columns must >=2 and <=5");
+    //必须加一层div{{ position: 'relative' }}，后面给出的宽度才对的。
+    return (
+        <div style={{ position: 'relative' }}>
+            <ResizeReporter reportInit onWidthChanged={(width)=>{
+                    let i=0;
+                    for(;i<column;i++)
+                        if(width<breaks[i])  break;
+                    setSuitableCls(i);
+                    setFitable( i>0 );
+                   //console.log('zheli width=',width,"fitable=",fitable,"suitableCls=",suitableCls);
+              } }
+            />
+
+            { suitableCls>1 ?
+                new Array(lineSum).fill(null).map((one,row) => (
+                    <div key={row}
+                         css={{
+                             display: 'flex',
+                             justifyContent: 'space-around',
+                             alignItems: 'center'
+                         }}
+                    >
+                    {
+                        new Array(suitableCls).fill(null).map((each,clm) => {
+                                if (kids[row * suitableCls + clm]) {
+                                    return React.cloneElement(kids[row * suitableCls + clm] as any, {
+                                        style: {flex: `1 1 ${flexClPp[suitableCls-1]}%` }
+                                    })
+                                }
+                                else
+                                  return <div key={clm}
+                                         css={{ flex: `1 1 ${flexClPp[suitableCls-1]}%` }}
+                                    />;
+                            }
+                        )
+                    }
+                    </div>
+                ))
+                :
+                kids.map((one,row) =>
+                     React.cloneElement(one as any, {
+                         fitable: fitable
+                        })
+                )
+            }
+        </div>
+    );
+};
+
+
+Line5Column.displayName = "Line5Column";
 

@@ -20,7 +20,7 @@ import { IconArrowRight, IconAlignCenter } from "../Icons";
 import { IconButton } from "../IconButton";
 import * as React from "react";
 import {ComboBoxDatalist} from "../ComboBox";
-import {Line1Column, Line1ColumnR} from "../Column";
+import {Line1Column, Line1ColumnR, Line5Column} from "../Column";
 
 
 
@@ -294,6 +294,7 @@ export const FormStories = storiesOf("Forms", module)
       const [query, setQuery] = React.useState('初始' );
       const [大修周期, set大修周期] = React.useState(`12`);
       const [isCar, setisCar] = React.useState(undefined);
+      const [船梯, set船梯] = React.useState(undefined);
       return(
           <div
               css={{
@@ -347,16 +348,22 @@ export const FormStories = storiesOf("Forms", module)
                       onChange={e => set大修周期( e.currentTarget.value||undefined ) }
                   >个月</SuffixInput>
                 </InputLine>
-                <Line1ColumnR switchPx={420}>
-
-                  <InputLineL  label='第二版本获得接报告,内部的:' >
+                <Line5Column column={5}
+                >
+                  <InputGroup label="Gender输入也可选">
+                    <Select>
+                      <option>Male</option>
+                      <option>Female</option>
+                      <option>Other</option>
+                    </Select>
+                  </InputGroup>
+                  <InputLineL  label='第二版本获得接报告,内部的:' helpText={'说明等等4从vv'}>
                     <SuffixInput
                         type="number"
                         value={ 大修周期 || ''}
                         onChange={e => set大修周期( e.currentTarget.value||undefined ) }
                     >个月</SuffixInput>
                   </InputLineL>
-
                   <InputLineL error="输入错" label="组合框">
                     <InputDatalist placeholder="可输入也可选择"
                                    value={ query }
@@ -367,7 +374,67 @@ export const FormStories = storiesOf("Forms", module)
                     </InputDatalist>
                   </InputLineL>
 
-                </Line1ColumnR>
+                  <InputLineL label="是不是船梯" helpText={'dfgf从vv'}>
+                    <CheckSwitch  checked= {船梯 || false}
+                                  onChange={e => set船梯(船梯? undefined:true) } />
+                  </InputLineL>
+                  <InputLineL  label='what about得接 报告,内部的:' helpText={'说明等等4从vv'}>
+                    <SuffixInput
+                        type="number"
+                        value={ 大修周期 || ''}
+                        onChange={e => set大修周期( e.currentTarget.value||undefined ) }
+                    >个月</SuffixInput>
+                  </InputLineL>
+                  <InputLineL error="输入错" label="qingkuan组合框">
+                    <InputDatalist placeholder="可输入也可选择"
+                                   value={ query }
+                                   onListChange={v => setQuery(v)}
+                                   datalist={["实际vals","22gle.com"]}
+
+                    >
+                    </InputDatalist>
+                  </InputLineL>
+
+                  <InputLineL error="This field is required" label="Gender">
+                    <Select multiple>
+                      <option>Male</option>
+                      <option>Female</option>
+                      <option>Other</option>
+                    </Select>
+                  </InputLineL>
+
+                  <InputLineL label="Look是船梯" helpText={'dfgf从vv'}>
+                    <CheckSwitch  checked= {船梯 || false}
+                                  onChange={e => set船梯(船梯? undefined:true) } />
+                  </InputLineL>
+                  <InputLineL label="Gender">
+                      <div css={[
+                        {
+                          flex: '1 1 60%',
+                        },
+                      ]}>
+                        <Check label="Male" checked readOnly />
+                        <Check label="Female" />
+                        <Check label="Other" />
+                      </div>
+                  </InputLineL>
+                  <InputLineL  label='第二版本获得接报告,内部的:' helpText={'说明等等4从vv'}>
+                    <SuffixInput
+                        type="number"
+                        value={ 大修周期 || ''}
+                        onChange={e => set大修周期( e.currentTarget.value||undefined ) }
+                    >个月</SuffixInput>
+                  </InputLineL>
+
+                  <InputLineL
+                      label="Example textarea"
+                      helpText="Please provide a brief description of yourself. This will go on your profile."
+                  >
+                    <TextArea placeholder="Something about me" />
+                  </InputLineL>
+
+
+                </Line5Column>
                 <div css={{ textAlign: "right", marginTop: `${theme.spaces.md}` }}>
                   <Button intent="primary">Submit</Button>
                 </div>

@@ -1050,6 +1050,7 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = (
     //布局子孙都是平等的，宽度都平均分配，预期高度在同一行排列也是均衡整齐或高度一致的，
     //输入Line组件的断线折腰宽度在布局组件上就的设置switchPx参数。
     //这外部还得搞个布局组件嵌套，布局组件来传递进来布局紧凑与否参数fitable。也就是遇到最小最小的父窗口宽度情形，在只安排单列元素场合下的，给输入Line组件紧凑提示。
+
     return (
         <div
             className="InputLine"
