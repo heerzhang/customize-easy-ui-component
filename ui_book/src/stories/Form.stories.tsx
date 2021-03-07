@@ -410,7 +410,8 @@ export const FormStories = storiesOf("Forms", module)
                                   onChange={e => set船梯(船梯? undefined:true) } />
                   </InputLineL>
                   <InputLineL label="报错的Gender">
-                    <div>
+                    <div style={{ padding: "0.73rem", textAlign: 'center' }}
+                         >
                         <Check label="Male" checked readOnly />
                         <Check label="Female" />
                         <Check label="Other" />

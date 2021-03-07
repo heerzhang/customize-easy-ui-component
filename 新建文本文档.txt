@@ -51,3 +51,7 @@ ListItem interactive=f 去掉bind(),可不报错，但是无hover效果;
           style as any
         ]}
     >
+css={{
+                      marginTop: 17,
+                      textAlign: 'right'
+                    }}
