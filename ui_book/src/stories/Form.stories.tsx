@@ -12,6 +12,7 @@ import {
   SuffixInput,
   InputLineL
 } from "../Form";
+import { Text } from "../Text";
 import { Button } from "../Button";
 import theme from "../Theme";
 import { Layer } from "../Layer";
@@ -350,13 +351,14 @@ export const FormStories = storiesOf("Forms", module)
                 </InputLine>
                 <Line5Column column={5}
                 >
-                  <InputGroup label="Gender输入也可选">
+                  <Text>任意的文本看，hkhdfgfdjkjh水电费水电费看</Text>
+                  <InputLineL label="Gender输入也可选">
                     <Select>
                       <option>Male</option>
                       <option>Female</option>
                       <option>Other</option>
                     </Select>
-                  </InputGroup>
+                  </InputLineL>
                   <InputLineL  label='第二版本获得接报告,内部的:' helpText={'说明等等4从vv'}>
                     <SuffixInput
                         type="number"
@@ -395,7 +397,7 @@ export const FormStories = storiesOf("Forms", module)
                     </InputDatalist>
                   </InputLineL>
 
-                  <InputLineL error="This field is required" label="Gender">
+                  <InputLineL error="This field is required" label="Gender multiple">
                     <Select multiple>
                       <option>Male</option>
                       <option>Female</option>
@@ -407,16 +409,12 @@ export const FormStories = storiesOf("Forms", module)
                     <CheckSwitch  checked= {船梯 || false}
                                   onChange={e => set船梯(船梯? undefined:true) } />
                   </InputLineL>
-                  <InputLineL label="Gender">
-                      <div css={[
-                        {
-                          flex: '1 1 60%',
-                        },
-                      ]}>
+                  <InputLineL label="报错的Gender">
+                    <div>
                         <Check label="Male" checked readOnly />
                         <Check label="Female" />
                         <Check label="Other" />
-                      </div>
+                    </div>
                   </InputLineL>
                   <InputLineL  label='第二版本获得接报告,内部的:' helpText={'说明等等4从vv'}>
                     <SuffixInput

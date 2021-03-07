@@ -80,28 +80,31 @@ Line1Column.propTypes = {
 
 
 interface Line5ColumnProps extends React.HTMLAttributes<HTMLDivElement> {
-    /** The size of the shadow to use */
+    /** 预计父窗口最大可以放下列数安排： must >=2 and <=5 */
     column?: number;
     /** The contents of the layer */
     children: React.ReactNode;
     //根据换行px数 ，来切换显示2个显示模式。 缺省>=360px 正常模式，否则紧凑模式。
-    //switchPx?  == breaks[0] : number;
-    //可自定义 列数调整实际的父窗口宽度px,每个列一个。
+    //switchPx == breaks[0] 假如父窗口太小 小于1个列的，小于breaks[0] 就是紧凑模式,
+    //自定义； 列数调整实际的父窗口宽度px,每个列一个。
     breaks?: number[];
 }
 
 const flexClPp=[100,50,33.333,25,20];
-//<Line5Column column={2} breaks={[288, 520]}
+//缺省breaks ： <Line5Column column={2} breaks={[288, 520]}
 const defaultBreakOf=[
-    [336,600],
-    [300,580,880],
-    [290,540,790,900],
-    [200,390,580,760,910],
+    [336,880],
+    [314,628,942],
+    [292,584,876,1168],
+    [240,480,720,960,1200],
 ];
-/** 布局组件：最多5列的。
+/**
+ * 布局组件：最多5列的。
  * 2列，3列，4列，5列。
  * 父辈窗口屏幕宽度就算再大，也是只安排2 或3 或4 或5 个列的，布局思路。
- * Line2Column,.3.4. Line5Column
+
+ * 特别注意！！ Line5Column底下的子组件第一个div或者<tag>的样式请不要使用padding和margin的设置px;
+ * 用InputLineL来代替InputGroup因为其内部section默认padding:48px 20px所以会导致布局宽度分配不一致。
  */
 export const Line5Column: React.FunctionComponent<Line5ColumnProps> =(
     {
@@ -137,7 +140,6 @@ export const Line5Column: React.FunctionComponent<Line5ColumnProps> =(
                         if(width<breaks[i])  break;
                     setSuitableCls(i);
                     setFitable( i>0 );
-                   //console.log('zheli width=',width,"fitable=",fitable,"suitableCls=",suitableCls);
               } }
             />
 

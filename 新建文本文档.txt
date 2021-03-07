@@ -43,7 +43,11 @@ FocusTrap.propTypes = {
 ListItem interactive=f 去掉bind(),可不报错，但是无hover效果;
 <ListItem onPress改成onClick={ async(e) => 也没作用；最后terminateOnScroll=false参数解决。
 
-
-react-resize-reporter
-
-InputLineL InputGroup section padding:48px 20px
+    <div
+        css={[
+          {
+            textAlign: 'left'
+          },
+          style as any
+        ]}
+    >

@@ -573,16 +573,19 @@ export interface SelectProps
  * ComboBox不允许multiple；但是Select不允许自主添加新的列表项目，Select允许列表附加label描述文字代替value;
  * 若触摸屏 不能支持multiple形态的的Select，只能单选。?浏览器版本升级，但是还会有返回的数据【】集合机制问题,value=[values1,2]。
  * multiple 只是摊开选择列表，onChange  .target.value无法提供多选数组，必须额外维护可以多选的被选中状态和数据数组。
- *本来该用 children 的这个 <option></option> 也能够用...other直接复制<select 的底下标签去。
+ * 原来版本是用这样复制 children 的这个 <option></option> 也能够用...other直接复制<select 的底下标签去。
+ * style?: React.CSSProperties;
  */
 
-export const Select: React.FunctionComponent<SelectProps> = ({
-                                                               multiple,
-                                                               inputSize = "md",
-                                                               divStyle,
-                                                               topDivStyle,
-                                                               ...other
-                                                             }) => {
+export const Select: React.FunctionComponent<SelectProps> = (
+{
+    multiple,
+    inputSize = "md",
+    divStyle,
+    topDivStyle,
+    style,
+    ...other
+}) => {
   const theme = useTheme();
   const inputSizes = getInputSizes(theme);
   const { uid, error } = React.useContext(InputGroupContext);
@@ -594,14 +597,15 @@ export const Select: React.FunctionComponent<SelectProps> = ({
   const dark = theme.colors.mode === "dark";
   const height = getHeight(inputSize);
   //因需要Select组件的max-width；导致Select若放InputGroupLine下在宽松模式一行内显示Label和Select的场景，在Select组件头层div设置宽度将会使得flex无法对齐两个项目；所以再套入一个div。
+  //使用<div style={ style } 注入的将会是独立的style样式；调试开闭是只能针对单一个元素开关。
+  //使用<div css={[style as any  注入的将会是class样式模组。调试开闭是可以开关多个相同class的元素。 两个模式都能有效果 style css。
+
   return (
-    <div  css={[
-      {
-        textAlign: 'left'
-      },
-      topDivStyle
-    ]}
-    >
+      <div css={{
+                textAlign: 'left',
+                ...style
+          }}
+      >
       <div
         className="Select"
         css={[
@@ -985,7 +989,7 @@ InputLine.propTypes = {
 
 /**
 一般<section>出现在文档文章大纲中。一般通过是否包含一个标题 <h1>-<h6>作为子节点 来辨识<section>。
-
+ 只能支持下面有唯一一个儿子组件的。
  */
 //第二版本： 回调函数转成 大写字母。
 //这是单个输入包裹组件，外部再多搞一层布局组件L2Column来配合。
@@ -1013,6 +1017,8 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = (
 
 
     //InputGroupLine包裹的下层的顶级组件的样式修改：下层顶级元素的display: block还算兼容可用; 但width: 100%影响较大。
+    //topDivStyle方式： 会不被识别认得，底下的<div>不懂得该如何处理。
+    //假如底下是div 加上 element.style {   flex: 1 1 60%;  }；
     const childNodeVar = (
         <InputGroupContext.Provider
             value={{
@@ -1021,10 +1027,16 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = (
             }}
         >
             {
-                React.cloneElement(children as React.ReactElement<any>, {
-                    topDivStyle: { flex: '1 1 60%' },
-                    //style: { flex: '1 1 60%' },      左边的项目文字描述　40%　右边输入框(含单位字符)占用60%
-                })
+                //只能支持一个儿子的。
+                //style: { flex: '1 1 60%' },      左边的项目文字描述　40%　右边输入框(含单位字符)占用60%
+                React.cloneElement(
+                    React.Children.only(children) as React.ReactElement<any>,
+                    {
+                        ///topDivStyle: { flex: '1 1 60%' },
+                        style: {flex: '1 1 60%' }
+                      ///  ...other
+                    }
+                )
             }
         </InputGroupContext.Provider>
     );
@@ -1050,6 +1062,7 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = (
     //布局子孙都是平等的，宽度都平均分配，预期高度在同一行排列也是均衡整齐或高度一致的，
     //输入Line组件的断线折腰宽度在布局组件上就的设置switchPx参数。
     //这外部还得搞个布局组件嵌套，布局组件来传递进来布局紧凑与否参数fitable。也就是遇到最小最小的父窗口宽度情形，在只安排单列元素场合下的，给输入Line组件紧凑提示。
+   // checkParent(React.Children.only(children) as any);
 
     return (
         <div
@@ -1272,4 +1285,60 @@ CheckSwitch.propTypes = {
     disabled: PropTypes.bool,
     hsize: PropTypes.oneOf(["xs", "sm", "md", "lg", "xl"])
 };
+
+
+//测试
+function checkParent(parent: Element | null) {
+    if (!parent) {
+        console.error(new Error('empty parent element'))
+        return
+    }
+
+    switch (parent.tagName) {
+        case 'area':
+        case 'base':
+        case 'br':
+        case 'col':
+        case 'embed':
+        case 'hr':
+        case 'img':
+        case 'input':
+        case 'keygen':
+        case 'link':
+        case 'menuitem':
+        case 'meta':
+        case 'param':
+        case 'source':
+        case 'track':
+        case 'wbr':
+        case 'script':
+        case 'style':
+        case 'textarea':
+        case 'title':
+            console.error(
+                new Error(
+                    'Unsupported parent tag name ' +
+                    parent.tagName.toLowerCase() +
+                    '.' +
+                    parent.className.replace(/\s+/, '.') +
+                    ' . Change the tag or wrap it in a supported tag(e.g. div).'
+                )
+            )
+    }
+
+    const parentStyles = window.getComputedStyle(parent)
+    if (parentStyles && parentStyles.getPropertyValue('position') === 'static') {
+        console.warn(
+            new Error(
+                'LineColumn: ' +
+                "The 'position' CSS property of element " +
+                parent.tagName.toLowerCase() +
+                '.' +
+                parent.className.replace(/\s+/, '.') +
+                " should not be 'static'."
+            )
+        )
+    }
+}
+
 

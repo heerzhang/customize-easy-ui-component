@@ -1,6 +1,6 @@
 {
   "name": "customize-easy-ui-storybook",
-  "version": "4.4.0",
+  "version": "4.5.0",
   "description": "前端的通用组件库-说明书,兼做UI测试调试工具",
   "author": "heerzhang <herzhang@163.com>",
   "license": "MIT",
@@ -101,7 +101,6 @@
     "@types/react-dom": "^17.0.0",
     "@types/prop-types": "15.7.3",
     "prop-types": "^15.7.2",
-    "@s-ui/react-layout-media-query": "^1.6.0",
     "react-resize-reporter": "^1.0.2"
   }
 }
