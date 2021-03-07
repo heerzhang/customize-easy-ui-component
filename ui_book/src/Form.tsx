@@ -989,7 +989,11 @@ InputLine.propTypes = {
 
 /**
 一般<section>出现在文档文章大纲中。一般通过是否包含一个标题 <h1>-<h6>作为子节点 来辨识<section>。
- 只能支持下面有唯一一个儿子组件的。
+ 只能支持下面有唯一一个儿子组件的。 可以使用<div>包裹多个孙子组件。 举例如下：
+     <div>
+         <Check label="Male" checked />
+         <Check label="Female" />
+     </div>
  */
 //第二版本： 回调函数转成 大写字母。
 //这是单个输入包裹组件，外部再多搞一层布局组件L2Column来配合。
@@ -1027,14 +1031,13 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = (
             }}
         >
             {
-                //只能支持一个儿子的。
+                //只能支持一个儿子的。 可以为底下的<div>自动添加样式。
                 //style: { flex: '1 1 60%' },      左边的项目文字描述　40%　右边输入框(含单位字符)占用60%
                 React.cloneElement(
                     React.Children.only(children) as React.ReactElement<any>,
                     {
                         ///topDivStyle: { flex: '1 1 60%' },
                         style: {flex: '1 1 60%' }
-                      ///  ...other
                     }
                 )
             }
