@@ -1,3 +1,4 @@
+这里没用ESlint工具，编辑器实时Ts/js代码检查工具。
 副作用钩子useEffect( ()=>{return () => unsubcribe();} , ? ) 第二参数null是每次都要执行第一个参数的功能，第二参数若是[]空数组的就是只做一次的，[a,b]依赖a/b变化触发。
     "@types/storybook__react": "^4.0.1",
    https://sancho-ui.com/components/icon/
@@ -51,7 +52,8 @@ ListItem interactive=f 去掉bind(),可不报错，但是无hover效果;
           style as any
         ]}
     >
-css={{
-                      marginTop: 17,
-                      textAlign: 'right'
-                    }}
+
+ 像这样style="enable-background:new 0 0 513.421 513.421;"是html底层样式表达法。
+ 而styles是变量名字。
+  labelStyle={css`margin: 1rem 2rem;`} >
+  labelStyle={css({ padding: "1rem 2rem" })} >

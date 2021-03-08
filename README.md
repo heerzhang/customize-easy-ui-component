@@ -88,6 +88,10 @@ yarn
 yarn run storybook
 ```
 
+## new Version Changelog
+
+[View the Changelog](https://github.com/heerzhang/customize-easy-ui-component/blob/master/CHANGELOG.md) for full details.
+
 ## License
 
 MIT

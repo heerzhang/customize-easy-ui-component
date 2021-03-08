@@ -597,6 +597,8 @@ export const Select: React.FunctionComponent<SelectProps> = (
   const dark = theme.colors.mode === "dark";
   const height = getHeight(inputSize);
   //因需要Select组件的max-width；导致Select若放InputGroupLine下在宽松模式一行内显示Label和Select的场景，在Select组件头层div设置宽度将会使得flex无法对齐两个项目；所以再套入一个div。
+  //像这样<div style="border:dotted 2px black; background-color:Yellow;height:100px;" 是html底层样式表达法,实际无法实现注入的。
+  //而styles=是变量名字。  style={{ padding: "0.43rem", textAlign: 'center' }}这是对象写法。
   //使用<div style={ style } 注入的将会是独立的style样式；调试开闭是只能针对单一个元素开关。
   //使用<div css={[style as any  注入的将会是class样式模组。调试开闭是可以开关多个相同class的元素。 两个模式都能有效果 style css。
 
@@ -989,11 +991,17 @@ InputLine.propTypes = {
 
 /**
 一般<section>出现在文档文章大纲中。一般通过是否包含一个标题 <h1>-<h6>作为子节点 来辨识<section>。
- 只能支持下面有唯一一个儿子组件的。 可以使用<div>包裹多个孙子组件。 举例如下：
+ InputLine只能支持下面有唯一的一个儿子组件的。 可以使用<div>包裹多个孙子组件。 举例如下：
      <div>
          <Check label="Male" checked />
          <Check label="Female" />
      </div>
+ 儿子若这样<div style={{border: `1px solid ${theme.colors.border.default}`}} > 实际style就将无法起作用；
+ 儿子像这样<div style="border:dotted 2px black; background-color:Yellow;height:100px;" 实际将无法起作用。 style={css`margin: 1rem 2rem;`} > style={css({ padding: "1rem 2rem" })} >将无法起作用;
+ 儿子像这样<div css={css({ padding: "1rem 2rem" })}，这样 css={css`margin: 1rem 2rem;`} 就会生效启用样式。
+ 儿子组件第一个div或tag若像这样 <div css={{marginTop: 19,backgroundColor: 'red'}} > 就会生效启用样式。
+ 儿子组件<div css={{flex: '1 1 20%',backgroundColor: 'red'}} 本组件从父辈修改注入style: {flex: '1 1 60%' }就会覆盖掉儿子div的flex: '1 1 20%'的原本样式。React.cloneElement(child模式 替换了。
+总之: 儿子组件必须用css={}；第三方独立组件也许要在外边加一层次div来调整样式。
  */
 //第二版本： 回调函数转成 大写字母。
 //这是单个输入包裹组件，外部再多搞一层布局组件L2Column来配合。
@@ -1165,13 +1173,19 @@ export interface InputDatalistProps 　 extends InputBaseProps {
  * InputDatalist对比ComboBox组件的弱点1非空编辑不能点击就显示所有列表2手机上列表展开位置与窗口大小太矮了3<option的label与value都显示出来感觉不好。
  * ，但比ComboBox有个有优势：1能够记住当前用户输入用过的以后再用。
  * 不过一般输入完成后再做点击修改的概率也不大，手机版本显示区域太小问题以后浏览器版本可能改进的。
+若组件附带参数这样的<InputDatalist css={{flex: '1 1 80%'}} > 将会导致...other实际接收这里的样式参数，样式不会作用于第一个div的。
+若组件附带参数这样的<InputDatalist style={{flex: '1 1 80%',backgroundColor: "pink"}}> 实际第一个div或者...other位置不会获得任何样式，也就是说style={{是无效的。
+ <InputDatalist style={{border: `1px solid ${theme.colors.border.default}`}} >  实际style就将无法起作用；
+ <InputDatalist style="border:dotted 2px black; background-color:Yellow;height:100px;"  实际将无法起作用。
+<InputDatalist 只能使用css来注入样式；<InputDatalist css={{ 方式注入的样式，只能在...other占位替换位置接收样式， 而不能用参数style参数css类似这样的声明参数方式引入的样式。
+但是若父辈采用React.cloneElement( React.Children.only(children),{style: {flex: '1 1 60%' } }这样模式，就能够注入style，而且是style参数获得的声明参数方式引入样式。
  */
 export const InputDatalist: React.FunctionComponent<InputDatalistProps> = (
     {
         autoComplete, autoFocus, inputSize = "md",
         fullWidth=true,
         datalist=[],
-        topDivStyle,
+        style,
         onListChange,
         ...other
     }
@@ -1186,21 +1200,20 @@ export const InputDatalist: React.FunctionComponent<InputDatalistProps> = (
     } = useSharedStyle();
     const height = getHeight(inputSize);
     //这个版本：不需要React.forwardRef(()=>{})的，注入ref性能损失， {...safeBind({ ref }, other)}
+    //这底下的 css={{  ...style ,位置必须放在最后一个， 否则...style可能被顺序排在后面的同样名字参数所覆盖。
     return (
-        <div  css={[
-            {
+        <div css={{
                 textAlign: 'left',
-                width: "100%"
-            },
-            topDivStyle
-        ]}
+                width: "100%",
+                ...style
+          }}
         >
-            <datalist id={`list${uid}`}>
+           <datalist id={`list${uid}`}>
                 { datalist.map((one,i) => {
                     return <option key={i} value={one} />;
                 }) }
-            </datalist>
-            <input
+           </datalist>
+          <input
                 id={uid}
                 className="Input"
                 autoComplete={autoComplete}
@@ -1219,7 +1232,7 @@ export const InputDatalist: React.FunctionComponent<InputDatalistProps> = (
                 {...other}
                 list={`list${uid}`}
                 onChange={e => onListChange( e.currentTarget.value||undefined ) }
-            />
+          />
         </div>
     );
 };

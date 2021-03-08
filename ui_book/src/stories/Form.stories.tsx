@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { jsx } from "@emotion/react";
 import {
   InputGroup,
   Select,
@@ -21,8 +20,8 @@ import { IconArrowRight, IconAlignCenter } from "../Icons";
 import { IconButton } from "../IconButton";
 import * as React from "react";
 import {ComboBoxDatalist} from "../ComboBox";
-import {Line1Column, Line1ColumnR, Line5Column} from "../Column";
-
+import {Line1Column,  Line5Column} from "../Column";
+import {  css } from "@emotion/react";
 
 
 export const FormStories = storiesOf("Forms", module)
@@ -392,7 +391,6 @@ export const FormStories = storiesOf("Forms", module)
                                    value={ query }
                                    onListChange={v => setQuery(v)}
                                    datalist={["实际vals","22gle.com"]}
-
                     >
                     </InputDatalist>
                   </InputLineL>
@@ -409,9 +407,13 @@ export const FormStories = storiesOf("Forms", module)
                     <CheckSwitch  checked= {船梯 || false}
                                   onChange={e => set船梯(船梯? undefined:true) } />
                   </InputLineL>
-                  <InputLineL label="报错的Gender">
-                    <div style={{ padding: "0.73rem", textAlign: 'center' }}
-                         >
+                  <InputLineL label="报错的Gender，进行样式测试用">
+                    <div css={{
+                        flex: '1 1 20%',
+                        backgroundColor: 'grey'
+                      }}
+                    >
+
                         <Check label="Male" checked readOnly />
                         <Check label="Female" />
                         <Check label="Other" />
