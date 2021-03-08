@@ -44,7 +44,7 @@ export * from "./AlertDialog";
 export * from "./Skeleton";
 export * from "./Stack";
 export * from "./ComboBox";
-export * from "./Column";
+export * from "./LineColumn";
 
 // Theme stuff
 export * from "./Theme";

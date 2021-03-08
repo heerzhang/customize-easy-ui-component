@@ -93,6 +93,7 @@ interface Line5ColumnProps extends React.HTMLAttributes<HTMLDivElement> {
 const flexClPp=[100,50,33.333,25,20];
 //缺省breaks ： <Line5Column column={2} breaks={[288, 520]}
 const defaultBreakOf=[
+    [336],
     [336,880],
     [314,628,942],
     [292,584,876,1168],
@@ -110,7 +111,7 @@ export const Line5Column: React.FunctionComponent<Line5ColumnProps> =(
     {
         column=2,
         children,
-        breaks=defaultBreakOf[column-2],
+        breaks=defaultBreakOf[column-1],
         ...other
     }
 ) => {
@@ -129,8 +130,8 @@ export const Line5Column: React.FunctionComponent<Line5ColumnProps> =(
     const sonCount= kids.length;
     const lineSum= Math.ceil(sonCount/suitableCls);
     console.log('断定的 breaks=',breaks,"lineSum=",lineSum,"suitableCls=",suitableCls);
-    if(column>5 || column<2)
-        throw new Error("number of columns must >=2 and <=5");
+    if(column>5 || column<1)
+        throw new Error("number of columns must >=1 and <=5");
     //必须加一层div{{ position: 'relative' }}，后面给出的宽度才对的。
     return (
         <div style={{ position: 'relative' }}>
@@ -138,7 +139,7 @@ export const Line5Column: React.FunctionComponent<Line5ColumnProps> =(
                     let i=0;
                     for(;i<column;i++)
                         if(width<breaks[i])  break;
-                    setSuitableCls(i);
+                    setSuitableCls(i<1? 1:i);
                     setFitable( i>0 );
               } }
             />
@@ -180,5 +181,5 @@ export const Line5Column: React.FunctionComponent<Line5ColumnProps> =(
 };
 
 
-Line5Column.displayName = "Line5Column";
+Line5Column.displayName = "LineColumn";
 

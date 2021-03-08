@@ -11,7 +11,8 @@ import {Layer, LayerRefComp} from "./Layer";
 import Highlighter from "react-highlight-words";
 import { InputBaseProps, InputRefBase} from "./Form";
 import { usePopper } from 'react-popper';
-import {CSSProperties, ElementType, HTMLAttributes} from "react";
+import {CSSProperties, ElementType, HTMLAttributes, JSXElementConstructor} from "react";
+import {MenuItem} from "./Menu";
 
 /**
  * Combobox context
@@ -42,7 +43,7 @@ interface ComboBoxContextType {
   query: string;
   autocomplete: boolean;
   //传递头一个div样式
-  topDivStyle: SerializedStyles | undefined;
+  //旧版本的 topDivStyle: SerializedStyles | undefined;
 }
 
 export const ComboBoxContext = React.createContext<ComboBoxContextType | null>(
@@ -68,6 +69,8 @@ export interface ComboBoxProps{
  * 虽然直接用W3C浏览器提供的<datalist标签？list做关联id,来做组合输入框，请到Form.tsx找InputDatalist组件代替本组件，
  * 但是还是这个定制的更好用。
  * ComboBox是内部使用 private的。
+ * 父辈组件注入style样式，然后传递给孙子组件ComboBoxInput。
+遇到嵌套组件<ComboBox> <ComboBoxInput； 照样能够把style传递给孙子儿子ComboBoxInput；
  */
 export const ComboBox: React.FunctionComponent<ComboBoxProps> = (
 {
@@ -260,10 +263,13 @@ export const ComboBox: React.FunctionComponent<ComboBoxProps> = (
     },
     [listId]
   );
+    //ComboBox底下的组件有 ComboBoxInput
+    const focusComponents = [ComboBoxInput];
+    //console.log("组合框找到focusableItems len=",focusableItems.length,"input=",focusableItems);
 
-  return (
-    <ComboBoxContext.Provider
-      value={{
+    return (
+     <ComboBoxContext.Provider
+       value={{
         listId,
         inputRef,
         listRef,
@@ -280,10 +286,23 @@ export const ComboBox: React.FunctionComponent<ComboBoxProps> = (
         inputSize: inputSize.bounds,
         query,
         autocomplete,
-        topDivStyle: style,
+        ///topDivStyle: style,
       }}
     >
-      {children}
+    {
+        React.Children.map(children, (child, i) => {
+            if(React.isValidElement(child) &&
+                            focusComponents.indexOf(child.type as any) > -1) {
+                return React.cloneElement(child as React.ReactElement<any>,
+                    {
+                            style
+                        }
+                );
+            }
+            else
+                return child;
+        })
+    }
     </ComboBoxContext.Provider>
   );
 };
@@ -326,7 +345,7 @@ export const ComboBoxInput: React.FunctionComponent<ComboBoxInputProps> = (
     onInputChange,
     listId,
     inputRef,
-    topDivStyle
+    //topDivStyle
   } = context;
 
   /** support autocomplete on selection */
@@ -360,7 +379,7 @@ export const ComboBoxInput: React.FunctionComponent<ComboBoxInputProps> = (
         {
           ...style
         },
-        topDivStyle
+       // topDivStyle
       ]}
       aria-activedescendant={selected ? makeHash(selected) : undefined}
       {...safeBind(

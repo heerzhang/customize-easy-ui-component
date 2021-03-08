@@ -20,7 +20,7 @@ import { IconArrowRight, IconAlignCenter } from "../Icons";
 import { IconButton } from "../IconButton";
 import * as React from "react";
 import {ComboBox, ComboBoxDatalist, ComboBoxInput, ComboBoxList, ComboBoxOption} from "../ComboBox";
-import {Line1Column,  Line5Column} from "../Column";
+import {Line1Column,  Line5Column} from "../LineColumn";
 import {  css } from "@emotion/react";
 
 
@@ -349,7 +349,7 @@ export const FormStories = storiesOf("Forms", module)
                       onChange={e => set大修周期( e.currentTarget.value||undefined ) }
                   >个月</SuffixInput>
                 </InputLine>
-                <Line5Column column={5}
+                <Line5Column column={1}
                 >
                   <Text>任意的文本看，hkhdfgfdjkjh水电费水电费看</Text>
                   <InputLineL label="Gender输入也可选">
