@@ -11,7 +11,7 @@ import {Layer, LayerRefComp} from "./Layer";
 import Highlighter from "react-highlight-words";
 import { InputBaseProps, InputRefBase} from "./Form";
 import { usePopper } from 'react-popper';
-import {ElementType} from "react";
+import {CSSProperties, ElementType, HTMLAttributes} from "react";
 
 /**
  * Combobox context
@@ -51,36 +51,32 @@ export const ComboBoxContext = React.createContext<ComboBoxContextType | null>(
 
 /**
  * Context provider / manager
+ * 手动添加的 style?: CSSProperties;
  */
-
-export interface ComboBoxProps {
+export interface ComboBoxProps{
+  style?: CSSProperties;
+  //无法做 extends React.InputHTMLAttributes<HTMLInputElement> 定义类型冲突； onSelect定义不一样！
   onSelect?: (selected: string) => void;
   query: string;
   onQueryChange: (value: string) => void;
   autocomplete?: boolean;
   //外部传入模式的样式，设置第一层的元素。
-  topDivStyle?: SerializedStyles;
+  //topDivStyle?: SerializedStyles;
 }
 
-/**
+/** 请用ComboBoxDatalist来代替 ComboBox；
  * 虽然直接用W3C浏览器提供的<datalist标签？list做关联id,来做组合输入框，请到Form.tsx找InputDatalist组件代替本组件，
  * 但是还是这个定制的更好用。
- * ComboBox
- * @param children
- * @param onSelect
- * @param autocomplete
- * @param query
- * @param onQueryChange
- * @param topDivStyle
- * @constructor
+ * ComboBox是内部使用 private的。
  */
-export const ComboBox: React.FunctionComponent<ComboBoxProps> = ({
+export const ComboBox: React.FunctionComponent<ComboBoxProps> = (
+{
   children,
   onSelect,
   autocomplete = false,
   query,
   onQueryChange,
-  topDivStyle
+  style
 }) => {
   const inputRef = React.useRef(null);
   const listRef = React.useRef(null);
@@ -284,7 +280,7 @@ export const ComboBox: React.FunctionComponent<ComboBoxProps> = ({
         inputSize: inputSize.bounds,
         query,
         autocomplete,
-        topDivStyle,
+        topDivStyle: style,
       }}
     >
       {children}
@@ -303,8 +299,12 @@ export interface ComboBoxInputProps extends React.HTMLAttributes<any> {
 }
 
 //分解配套的模式ComboBoxInput必需加到ComboBox底下的，ComboBox本身没有实际的div元素,靠context管理传递参数。
-export const ComboBoxInput: React.FunctionComponent<ComboBoxInputProps> = ({
+//本组件的上级直接用<ComboBoxInput css={{...style}}， 就能够传递样式到了 InputRefBase；不需要topDivStyle；
+//topDivStyle只是在旧的ComboBox需要多层嵌套场合才需要；
+export const ComboBoxInput: React.FunctionComponent<ComboBoxInputProps> = (
+{
   component: Component = InputRefBase,
+  style,
   ...other
 }) => {
   const context = React.useContext(ComboBoxContext);
@@ -358,6 +358,7 @@ export const ComboBoxInput: React.FunctionComponent<ComboBoxInputProps> = ({
       role="textbox"
       css={[
         {
+          ...style
         },
         topDivStyle
       ]}
@@ -520,6 +521,7 @@ export const ComboBoxOption: React.FunctionComponent<ComboBoxOptionProps> = ({
         boxSizing: "border-box",
         display: "block",
         listStyleType: "none",
+        wordBreak: 'break-all',
         margin: 0,
         padding: `0.5rem 0.75rem`,
         cursor: "pointer",
@@ -594,7 +596,7 @@ export interface ComboBoxDatalistProps  extends InputBaseProps {
 }
 
 /**类似InputDatalist组件，目的是：可以直接替换 repalce in files，能保持参数一致，移植修改简单切换。
- * 对比InputDatalist,定做组合框的版本。
+ * 对比InputDatalist,定做组合框的版本。 而且InputDatalist弹出列表无法自己定做样式。
  * 自主输入Enter完成就变空的。 ComboBoxInput无法使用safeBind({ ref }，单独有inputRef的；
  * readOnly?: boolean; disabled?: boolean;
  * onChange不能直接利用参数类型是event：e?.currentTarget，而ComboBox这都是string类型。
@@ -608,26 +610,30 @@ export const ComboBoxDatalist: React.FunctionComponent<ComboBoxDatalistProps>=
         inputSize = "md",
         fullWidth=true,
         datalist=[],
-        topDivStyle,
+        style,
         value,
         onListChange,
         ...other
       }
   ) => {
     //ComboBoxInput无法使用safeBind({ ref }，单独有inputRef的；
+    //这一层<ComboBox 实际只是加了个 context的；
   return (
       <ComboBox  autocomplete={false}
-                 topDivStyle={topDivStyle}
-                 query={value}
-                 onQueryChange={v => {
-                   onListChange(v);
-                 }}
-                 onSelect={v => {
-                   v && onListChange(v);
-                 }}
+             //不需要 topDivStyle={topDivStyle}
+             query={value}
+             onQueryChange={v => {
+               onListChange(v);
+             }}
+             onSelect={v => {
+               v && onListChange(v);
+             }}
       >
         <ComboBoxInput aria-label="Select add"
-                       {...other }
+             css={{
+               ...style
+             }}
+             { ...other }
         />
         <ComboBoxList >
            {datalist.length ? (

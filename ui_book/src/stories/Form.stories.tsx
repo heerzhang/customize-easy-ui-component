@@ -19,7 +19,7 @@ import { storiesOf } from "@storybook/react";
 import { IconArrowRight, IconAlignCenter } from "../Icons";
 import { IconButton } from "../IconButton";
 import * as React from "react";
-import {ComboBoxDatalist} from "../ComboBox";
+import {ComboBox, ComboBoxDatalist, ComboBoxInput, ComboBoxList, ComboBoxOption} from "../ComboBox";
 import {Line1Column,  Line5Column} from "../Column";
 import {  css } from "@emotion/react";
 
@@ -295,6 +295,7 @@ export const FormStories = storiesOf("Forms", module)
       const [大修周期, set大修周期] = React.useState(`12`);
       const [isCar, setisCar] = React.useState(undefined);
       const [船梯, set船梯] = React.useState(undefined);
+      const toRender = ["实际vals","asdsafasdcomfsdfdffsdfsdf"];
       return(
           <div
               css={{
@@ -365,11 +366,11 @@ export const FormStories = storiesOf("Forms", module)
                         onChange={e => set大修周期( e.currentTarget.value||undefined ) }
                     >个月</SuffixInput>
                   </InputLineL>
-                  <InputLineL error="输入错" label="组合框">
+                  <InputLineL error="输入错" label="InputDatalist组合框">
                     <InputDatalist placeholder="可输入也可选择"
                                    value={ query }
                                    onListChange={v => setQuery(v)}
-                                   datalist={["实际vals","22gle.com"]}
+                                   datalist={["实际vals","asdsafasdcomfsdfdffsdfsdf"]}
 
                     >
                     </InputDatalist>
@@ -386,13 +387,13 @@ export const FormStories = storiesOf("Forms", module)
                         onChange={e => set大修周期( e.currentTarget.value||undefined ) }
                     >个月</SuffixInput>
                   </InputLineL>
-                  <InputLineL error="输入错" label="qingkuan组合框">
-                    <InputDatalist placeholder="可输入也可选择"
+                  <InputLineL error="输入错" label="第二种两个做法ComboBoxDatalist的组合框">
+                    <ComboBoxDatalist placeholder="可输入也可选择"
                                    value={ query }
                                    onListChange={v => setQuery(v)}
-                                   datalist={["实际vals","22gle.com"]}
+                                   datalist={["说得好","asdsafasdcomfsdfdffsdfsdf"]}
                     >
-                    </InputDatalist>
+                    </ComboBoxDatalist>
                   </InputLineL>
 
                   <InputLineL error="This field is required" label="Gender multiple">
@@ -431,9 +432,60 @@ export const FormStories = storiesOf("Forms", module)
                       label="Example textarea"
                       helpText="Please provide a brief description of yourself. This will go on your profile."
                   >
-                    <TextArea placeholder="Something about me" />
+                    <TextArea placeholder="Something textarea" />
+                  </InputLineL>
+                  <InputLineL label="进行样式测试用">
+                      <Check label="单独一个的" />
                   </InputLineL>
 
+                  <InputLineL error="最早版本的能兼容" label="原版本的的组合框ComboBox">
+                    <ComboBox
+                        autocomplete={false}
+                        query={query||''}
+                        onQueryChange={v => {
+                          setQuery(v);
+                        }}
+                        onSelect={v => {
+                          v&&setQuery(v);
+                        }}
+                    >
+                      <ComboBoxInput
+                          aria-label="Query users"
+                          placeholder="Search for users"
+                          readOnly={false}
+                      />
+
+                      {query && (
+                          <ComboBoxList aria-label="Query users">
+                            {toRender.length ? (
+                                toRender.map((entry,i) => {
+                                  return (
+                                      <ComboBoxOption value={entry} key={i} >
+                                      </ComboBoxOption>
+                                  );
+                                })
+                            ) : (
+                                <div>
+                                  <Text
+                                      muted
+                                      css={{ display: "block", padding: "0.5rem 0.75rem" }}
+                                  >
+                                    {query && toRender.length === 0 ? (
+                                        <span>No entries found.</span>
+                                    ) : (
+                                        <span>Try searching for users by email or name.</span>
+                                    )}
+                                  </Text>
+                                </div>
+                            )}
+                          </ComboBoxList>
+                      )}
+                    </ComboBox>
+                  </InputLineL>
+
+                  <InputLineL helpText="Required field" label="Email yourselfdescriptionaddress profile">
+                    <Input type={'file'} placeholder="最基本的 input" />
+                  </InputLineL>
 
                 </Line5Column>
                 <div css={{ textAlign: "right", marginTop: `${theme.spaces.md}` }}>

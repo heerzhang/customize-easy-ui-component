@@ -65,7 +65,9 @@ const InputGroupContext = React.createContext<InputGroupContextType>({
   uid: undefined,
   error: undefined
 });
-
+/**
+原来版本的输入分组项目；    新版本使用InputLine
+ */
 export const InputGroup: React.FunctionComponent<InputGroupProps> = ({
                                                                        id,
                                                                        label,
@@ -255,7 +257,7 @@ export interface InputBaseProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   /** The size of the input element */
   inputSize?: InputSize;
-  topDivStyle?: SerializedStyles;
+  //topDivStyle?: SerializedStyles;
 }
 
 /**
@@ -266,7 +268,7 @@ export interface InputBaseProps
 
 export const InputRefBase = React.forwardRef(
     (
-        { autoComplete, autoFocus, inputSize = "md",topDivStyle, ...other }: InputBaseProps,
+        { autoComplete, autoFocus, inputSize = "md", ...other }: InputBaseProps,
         ref: React.Ref<HTMLInputElement>
     ) => {
         const { uid, error } = React.useContext(InputGroupContext);
@@ -309,7 +311,6 @@ export const InputBase: React.FunctionComponent<InputBaseProps>=
         autoComplete,
         autoFocus,
         inputSize = "md",
-        topDivStyle,
         ...other
     }
 ) => {
@@ -358,14 +359,15 @@ export interface InputProps 　 extends InputBaseProps {
 
 /**
  * Input 比起InputBase，外面多包裹一个div以便于控制宽度和对齐。
+ * style是父辈注入的样式: 父辈采用React.cloneElement(children, { style: {flex: '1 1 60%' } }注入样式。
  */
 export const Input: React.FunctionComponent<InputProps> =
 (
     {
-    autoComplete, autoFocus,
+        autoComplete, autoFocus,
         inputSize = "md",
-    fullWidth=true,
-    topDivStyle,
+        fullWidth=true,
+        style,
         ...other
     }
 ) => {
@@ -380,13 +382,11 @@ export const Input: React.FunctionComponent<InputProps> =
     const height = getHeight(inputSize);
 
     return (
-      <div  css={[
-        {
-          textAlign: 'left',
-          width: "100%"
-        },
-        topDivStyle
-      ]}
+      <div  css={{
+              textAlign: 'left',
+              width: "100%",
+              ...style
+            }}
       >
         <input
           id={uid}
@@ -418,7 +418,8 @@ export const InputRefComp = React.forwardRef(
     (
         { autoComplete, autoFocus, inputSize = "md",
             fullWidth=true,
-            topDivStyle, ...other }: InputProps,
+            style,
+            ...other }: InputProps,
         ref: React.Ref<HTMLInputElement>
     ) => {
         const { uid, error } = React.useContext(InputGroupContext);
@@ -431,13 +432,13 @@ export const InputRefComp = React.forwardRef(
         } = useSharedStyle();
         const height = getHeight(inputSize);
         return (
-            <div  css={[
+            <div  css={
                 {
                     textAlign: 'left',
-                    width: "100%"
-                },
-                topDivStyle
-            ]}
+                    width: "100%",
+                    ...style
+                }
+                }
             >
                 <input
                     id={uid}
@@ -468,18 +469,19 @@ export interface TextAreaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   /** The size of the textarea element */
   inputSize?: InputSize;
-  topDivStyle?: SerializedStyles;
+  //topDivStyle?: SerializedStyles;
 }
 
 /**
  * Textarea version of InputBase
  */
 
-export const TextArea: React.FunctionComponent<TextAreaProps> = ({
-                                                                   inputSize = "md",
-                                                                   topDivStyle,
-                                                                   ...other
-                                                                 }) => {
+export const TextArea: React.FunctionComponent<TextAreaProps> = (
+{
+    inputSize = "md",
+    style,
+    ...other
+}) => {
   const { bind, active } = useActiveStyle();
   const {
     baseStyles,
@@ -503,7 +505,7 @@ export const TextArea: React.FunctionComponent<TextAreaProps> = ({
         },
         active && activeBackground,
         error && errorStyles,
-        topDivStyle
+        {...style}
       ]}
       {...other}
     />
@@ -562,8 +564,9 @@ export interface SelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
   /** The size of the select box */
   inputSize?: InputSize;
+  //内部第二层的Div的样式
   divStyle?: SerializedStyles;
-  topDivStyle?: SerializedStyles;
+  //topDivStyle?: SerializedStyles;
 }
 
 /**
@@ -582,7 +585,6 @@ export const Select: React.FunctionComponent<SelectProps> = (
     multiple,
     inputSize = "md",
     divStyle,
-    topDivStyle,
     style,
     ...other
 }) => {
@@ -705,16 +707,17 @@ export interface CheckProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   /** A label for the checkmark. */
   label: string;
-  topDivStyle?: SerializedStyles;
+  //topDivStyle?: SerializedStyles;
 }
 
-export const Check: React.FunctionComponent<CheckProps> = ({
-                                                             label,
-                                                             id,
-                                                             disabled,
-                                                             topDivStyle,
-                                                             ...other
-                                                           }) => {
+export const Check: React.FunctionComponent<CheckProps> = (
+{
+    label,
+    id,
+    disabled,
+    style,
+    ...other
+}) => {
   const uid = useUid(id);
   const theme = useTheme();
 
@@ -722,14 +725,11 @@ export const Check: React.FunctionComponent<CheckProps> = ({
     <div  className="Check"
           css={[
             {
-              //  textAlign: 'left',
               display: "flex",
               alignItems: "center",
-              //  width: "100%",
-            },
-            topDivStyle
+                ...style
+            }
           ]}
-          {...other}
     >
       <input
         disabled={disabled}
@@ -785,20 +785,19 @@ export const SuffixInput: React.FunctionComponent<SuffixInputProps> = (
         children,
         textStyle,
         inputSize,
-        topDivStyle,
+        style,
         ...other
     }
 ) => {
   //const theme = useTheme();
   //children可以是非字符串的, 按钮等。
   return (
-    <div  css={[
-      {
-        textAlign: 'left'
-        //display: "inline-block",
-      },
-      topDivStyle
-    ]}
+    <div  css={
+          {
+            textAlign: 'left',
+            //display: "inline-block",
+            ...style
+          }}
     >
         <InputBase inputSize={inputSize}
              css={{
@@ -878,8 +877,8 @@ export const InputLine: React.FunctionComponent<InputGroupLineProps> = ({
         >
             {
                 React.cloneElement(children as React.ReactElement<any>, {
-                    topDivStyle: { flex: '1 1 60%' },
-                    //style: { flex: '1 1 60%' },      左边的项目文字描述　40%　右边输入框(含单位字符)占用60%
+                    //topDivStyle: { flex: '1 1 60%' },    左边的项目文字描述　40%　右边输入框(含单位字符)占用60%
+                    style: {flex: '1 1 60%' }
                 })
             }
         </InputGroupContext.Provider>
@@ -1061,7 +1060,8 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = (
                                textAlign: fitable? "right" : "left",
                                flex: '1 1 40%',
                                paddingRight: '0.8rem',
-                               marginBottom: hideLabel ? 0 : theme.spaces.sm
+                               marginBottom: hideLabel ? 0 : theme.spaces.sm,
+                               wordBreak: 'break-word'
                            },
                            labelTextStyle
                        ]}
@@ -1201,6 +1201,8 @@ export const InputDatalist: React.FunctionComponent<InputDatalistProps> = (
     const height = getHeight(inputSize);
     //这个版本：不需要React.forwardRef(()=>{})的，注入ref性能损失， {...safeBind({ ref }, other)}
     //这底下的 css={{  ...style ,位置必须放在最后一个， 否则...style可能被顺序排在后面的同样名字参数所覆盖。
+    //但是无法修改弹出的列表的样式。 <datalist 无法设置样式，浏览器自动设置的样式。
+    //死活都改不了； 弹出列表datalist无法自己定做样式。
     return (
         <div css={{
                 textAlign: 'left',
@@ -1248,7 +1250,7 @@ const getSwitchHeight = (size: ButtonSize) => {
 
 export interface CheckSwitchProps
     extends React.InputHTMLAttributes<HTMLInputElement> {
-    topDivStyle?: SerializedStyles;
+   // topDivStyle?: SerializedStyles;
     /** The size of the Switch. 多大高度方向的尺寸 */
     hsize?: ButtonSize;
 }
@@ -1261,7 +1263,7 @@ export interface CheckSwitchProps
 export const CheckSwitch: React.FunctionComponent<CheckSwitchProps> = ({
         id,
         disabled,
-        topDivStyle,
+       style,
         checked,
         onChange,
         hsize = "md" as ButtonSize,
@@ -1276,13 +1278,14 @@ export const CheckSwitch: React.FunctionComponent<CheckSwitchProps> = ({
 
     return (
         <div  className="Switch"
-              css={[
+              css={
                   {
-                      display: "flex",
+                      //display: "flex",  若加上这"flex",导致textAlign会失去作用了。
                       alignItems: "center",
-                  },
-                  topDivStyle
-              ]}
+                      textAlign: 'left',
+                      ...style
+                  }
+              }
               {...other}
         >
             <Switch id={uid}
