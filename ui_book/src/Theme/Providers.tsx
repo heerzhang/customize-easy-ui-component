@@ -1,6 +1,6 @@
 import * as React from "react";
 import defaultTheme, { Theme, ThemeColors } from ".";
-import {ToggleDarkModeProps} from "../stories/ToggleDarkMode";
+
 
 /**
  * API:
@@ -58,6 +58,7 @@ export function useTheme() {
 
 /**
  * Switch color modes (typically between light (default) and dark)
+ 儿子是 函数式儿子组件；
  */
 
 type RenderCallbackType = (theme: Theme) => React.ReactNode;
@@ -76,9 +77,15 @@ export interface ColorRefModeProps {
 /**
  * 去掉forwardRef，改成普通函数组件。
  */
-const ColorMode: React.FunctionComponent<ColorModeProps> =({ colors, children, ...other }) => {
+const ColorMode: React.FunctionComponent<ColorModeProps> =(
+{
+  colors,
+  children,
+  ...other
+}
+) => {
   const theme = useTheme();
-  // memo is necessary to prevent unnecessary rerenders
+  //依照colors参数调整Theme结果； memo is necessary to prevent unnecessary rerenders
   // https://reactjs.org/docs/context.html#caveats
   const adjustedTheme = React.useMemo(() => mergeColors(theme, colors), [
     theme,
@@ -87,11 +94,14 @@ const ColorMode: React.FunctionComponent<ColorModeProps> =({ colors, children, .
 
   //其实这里向.Children.only(children)传递的 ref 实际没有用处；
   //本组件ThemeContext才是核心，把组件包裹下的子孙组件提供一致的 colors Theme;
+  //这个版本调用 ? children(adjustedTheme) 就会报错？ 仅仅是编译器报错?
+  //只能在forwardRef版本中才能使用? children(adjustedTheme)这样的 函数式儿子。
+  //本组件底下包裹的子组件是 函数式儿子举例说明  {(theme: Theme) => (  <div  theme.colors >  )}  这样子的，非正常儿孙组件。
 
   return (
     <ThemeContext.Provider value={adjustedTheme}>
       {typeof children === "function"
-        ? children(adjustedTheme)
+        ? (children as RenderCallbackType)(adjustedTheme)
         : React.cloneElement(
             React.Children.only(children) as React.ReactElement<any>,
             {
@@ -105,7 +115,13 @@ const ColorMode: React.FunctionComponent<ColorModeProps> =({ colors, children, .
 /**
  * 旧版传递 ref , 这里Ref只是接续传递，非自身必须要的；
  */
-const ColorRefMode = React.forwardRef(({ colors, children, ...other }: ColorModeProps, ref) => {
+const ColorRefMode = React.forwardRef(
+(
+        {
+          colors, children, ...other
+        }: ColorRefModeProps,
+        ref
+) => {
   const theme = useTheme();
   // memo is necessary to prevent unnecessary rerenders
   // https://reactjs.org/docs/context.html#caveats
@@ -113,6 +129,10 @@ const ColorRefMode = React.forwardRef(({ colors, children, ...other }: ColorMode
     theme,
     colors
   ]);
+
+  //这个forwardRef版本才能调用 ? children(adjustedTheme)   函数式儿子；
+  //本组件底下包裹的子组件是 函数式儿子举例说明  {(theme: Theme) => (  <div  theme.colors >  )}  这样子的，非正常儿孙组件。
+  //非Ref版本,只能添加类型转换 ? (children as RenderCallbackType)(adjustedTheme) ;仅仅是编译器报错?
 
   return (
       <ThemeContext.Provider value={adjustedTheme}>
@@ -164,7 +184,7 @@ export const LightMode: React.FunctionComponent<ModeProps> = ({ children, ...oth
 /**
  * 旧版传递 ref, 这里Ref只是接续传递，非自身必须要的；
  */
-export const LightRefMode = React.forwardRef(({ children, ...other }: ModeProps, ref) => {
+export const LightRefMode = React.forwardRef(({ children, ...other }: ModeRefProps, ref) => {
   const theme = useTheme();
   return (
       <ColorRefMode colors={theme.modes.light} ref={ref} {...other}>
@@ -190,7 +210,7 @@ export const DarkMode: React.FunctionComponent<ModeProps> =({ children, ...other
 /**
  * 旧版传递 ref, 这里Ref只是接续传递，非自身必须要的；
  */
-export const DarkRefMode = React.forwardRef(({ children, ...other }: ModeProps, ref) => {
+export const DarkRefMode = React.forwardRef(({ children, ...other }: ModeRefProps, ref) => {
   const theme = useTheme();
   return (
       <ColorRefMode colors={theme.modes.dark} ref={ref} {...other}>
@@ -201,3 +221,4 @@ export const DarkRefMode = React.forwardRef(({ children, ...other }: ModeProps, 
 
 
 DarkMode.displayName = "DarkMode";
+

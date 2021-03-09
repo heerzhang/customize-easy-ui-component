@@ -17,7 +17,7 @@ import {
 } from "../Icons";
 import {useLocation} from "wouter";
 import {useToast} from "../Toast";
-import {DarkMode, DarkRefMode} from "../Theme/Providers";
+import {DarkMode, DarkRefMode, LightRefMode} from "../Theme/Providers";
 
 interface LinkProps {
   href: string;
@@ -236,15 +236,53 @@ export const PopoverStories = storiesOf("Popover", module)
                         icon={<IconMoreHorizontal />}
                         label="show more"
                     />
-                    <DarkRefMode>
+                </ResponsivePopover>
+            </div>
+        );
+    }).add("Popover传递DarkRefMode", () => {
+        const toast = useToast();
+        const [, setLocation] = useLocation();
+        return (
+            <div css={{ padding: "1rem" }}>
+                <ResponsivePopover
+                    content={
+                        <MenuList>
+                            <MenuItem contentBefore={<IconPackage />}
+                                      onPress={async () => {
+                                          await toast({title: "提交一个网页链接"});
+                                          setLocation(`/?path=/story/popover--positions`);
+                                      } }
+                            >
+                                提交审核
+                            </MenuItem>
+                            <MenuDivider />
+                            <MenuItem
+                                contentBefore={<IconUser />}
+                                onPress={() => alert("Hello 1")}
+                            >
+                                Drink coffee
+                            </MenuItem>
+                            <MenuItem contentBefore={<IconPackage />}>Eat pancakes</MenuItem>
+                            <MenuDivider />
+                            <MenuItem contentBefore={<IconMapPin />}>Make pizza</MenuItem>
+                            <MenuItem contentBefore={<IconActivity />}>
+                                Dance my heart out
+                            </MenuItem>
+                            <MenuItem contentBefore={<IconArrowUpRight />}>
+                                Anything you ask
+                            </MenuItem>
+                        </MenuList>
+                    }
+                >
+                    <LightRefMode>
                         <ButtonRefComp
-                            size="md"
+                            size="md" intent={'danger'}
                             iconAfter={<IconChevronDown />}
-                            variant="ghost"
+                            variant="default"
                         >
                             {"show more"}
                         </ButtonRefComp>
-                    </DarkRefMode>
+                    </LightRefMode>
                 </ResponsivePopover>
             </div>
         );

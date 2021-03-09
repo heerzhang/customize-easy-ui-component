@@ -13,10 +13,6 @@ import { IconAlertCircle, IconChevronDown } from "./Icons";
 import { safeBind } from "./Hooks/compose-bind";
 import { useMedia } from "use-media";
 import  Switch from "react-switch";
-import {Touchable} from "./Touchable";
-import { LayoutMediaQueryFactory } from '@s-ui/react-layout-media-query'
-import ResizeReporter from 'react-resize-reporter'
-
 
 
 
@@ -830,14 +826,15 @@ SuffixInput.propTypes = {
 };
 
 
-export interface InputGroupLineProps extends InputGroupProps {
+export interface InputLineProps extends InputGroupProps {
   //对一整行的控制
   lineStyle?: SerializedStyles;
   //根据换行px数 ，来切换显示2个显示模式。 缺省>=360px 正常模式，否则紧凑模式。
-  switchPx?: number;
+  //switchPx?: number;
   //是否开启宽度紧凑模式的局部布局，意味着无法满足最小宽度要求了。
-    fitable?: boolean;
+  fitable?: boolean;
 }
+
 /**
 自适应屏幕flexBox布局：不要设置固定的width和min-width，可以设置max-width；根据屏幕宽策划1列2列还是更多列的并列，或是更高层次嵌套或隐藏或显示一小半边天区域。
 不要对InputGroupLine的上一级div定义固定宽度，自适应和固定width: px只能二者选其一；宽度定了对小屏幕场景就有滚动条，而不是自适应缩小flexBox布局。
@@ -845,150 +842,7 @@ export interface InputGroupLineProps extends InputGroupProps {
  性能优化，旧版本InputGroupLine=680ms; 新的InputLine=600ms;
 这两个布局占位参数 error, helpText感觉意义不大。
  InputGroupContext才是最关键的，子孙组件uid和LabelText标签挂接。
-*/
-export const InputLine: React.FunctionComponent<InputGroupLineProps> = ({
-    id,
-    label,
-    children,
-    error,
-    helpText,
-    hideLabel,
-    labelTextStyle,
-    lineStyle,
-    switchPx=360,
-    ...other
-}) => {
-    const uid = useUid(id);
-    const theme = useTheme();
-    const isDark = theme.colors.mode === "dark";
-    const danger = isDark
-        ? theme.colors.intent.danger.light
-        : theme.colors.intent.danger.base;
 
-    //根据外部程序制定的px数，来决定用哪一个模式布局。紧凑的是2行显示；宽松的是并列在同一行。
-    const fitable = useMedia({ minWidth: `${switchPx}px` });
-    //InputGroupLine包裹的下层的顶级组件的样式修改：下层顶级元素的display: block还算兼容可用; 但width: 100%影响较大。
-    const childNodeVar = (
-        <InputGroupContext.Provider
-            value={{
-                uid,
-                error
-            }}
-        >
-            {
-                React.cloneElement(children as React.ReactElement<any>, {
-                    //topDivStyle: { flex: '1 1 60%' },    左边的项目文字描述　40%　右边输入框(含单位字符)占用60%
-                    style: {flex: '1 1 60%' }
-                })
-            }
-        </InputGroupContext.Provider>
-    );
-
-    //这里htmlFor={uid}，标签label 和 input很可能分别属于不同div底下的。
-    const titleVar = (
-        <LabelText className="Label__text"  htmlFor={uid}
-                   css={[
-                       {
-                           //display: "inline-flex",
-                           textAlign: fitable? "right" : "left",
-                           flex: '1 1 40%',
-                           paddingRight: '0.8rem',
-                           marginBottom: hideLabel ? 0 : theme.spaces.sm
-                       },
-                       labelTextStyle
-                   ]}
-        >
-            {label}
-        </LabelText>
-    );
-
-    return (
-        <section
-            className="InputLine"
-            css={{
-                marginTop: theme.spaces.md,
-                "&.InputLine:first-of-type": {
-                    marginTop: 0
-                },
-                textAlign: 'center'
-            }}
-            {...other}
-        >
-            <div  css={[
-                {
-                    alignItems: "center",
-                    justifyContent: "space-around",
-                    display: "flex",
-                    // flexWrap: 'wrap',
-                    maxWidth: '950px',
-                    margin: '0 auto',
-                    paddingRight: fitable? '0.5rem' :  'unset',
-                },
-                lineStyle
-            ]}
-            >
-                {hideLabel ? <VisuallyHidden>{titleVar}</VisuallyHidden> : titleVar}
-
-                { fitable &&   childNodeVar  }
-            </div>
-
-            { !fitable &&   childNodeVar  }
-
-            {error && typeof error === "string" ? (
-                <div
-                    className="InputGroup__error"
-                    css={{
-                        alignItems: "center",
-                        marginTop: theme.spaces.sm,
-                        display: "flex",
-                        justifyContent: 'center'
-                    }}
-                >
-                    <IconAlertCircle size="sm" color={danger} />
-                    <Text
-                        css={{
-                            display: "block",
-                            marginLeft: theme.spaces.xs,
-                            fontSize: theme.fontSizes[0],
-                            color: danger
-                        }}
-                    >
-                        {error}
-                    </Text>
-                </div>
-            ) : (
-                error
-            )}
-
-            {helpText && (
-                <Text
-                    className="InputGroup__help"
-                    css={{
-                        display: "inline-flex",
-                        marginTop: theme.spaces.xs,
-                        color: theme.colors.text.muted,
-                        fontSize: theme.fontSizes[0]
-                    }}
-                    variant="body"
-                >
-                    {helpText}
-                </Text>
-            )}
-        </section>
-    );
-};
-
-InputLine.propTypes = {
-  label: PropTypes.string.isRequired,
-  hideLabel: PropTypes.bool,
-  helpText: PropTypes.string,
-  error: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  id: PropTypes.string,
-  switchPx: PropTypes.number,
-  children: PropTypes.node
-};
-
-/**
 一般<section>出现在文档文章大纲中。一般通过是否包含一个标题 <h1>-<h6>作为子节点 来辨识<section>。
  InputLine只能支持下面有唯一的一个儿子组件的。 可以使用<div>包裹多个孙子组件。 举例如下：
      <div>
@@ -1001,11 +855,10 @@ InputLine.propTypes = {
  儿子组件第一个div或tag若像这样 <div css={{marginTop: 19,backgroundColor: 'red'}} > 就会生效启用样式。
  儿子组件<div css={{flex: '1 1 20%',backgroundColor: 'red'}} 本组件从父辈修改注入style: {flex: '1 1 60%' }就会覆盖掉儿子div的flex: '1 1 20%'的原本样式。React.cloneElement(child模式 替换了。
 总之: 儿子组件必须用css={}；第三方独立组件也许要在外边加一层次div来调整样式。
+ InputLine是单个输入包裹组件，外部再多搞一层布局组件LineColumn来配合。
  */
-//第二版本： 回调函数转成 大写字母。
-//这是单个输入包裹组件，外部再多搞一层布局组件L2Column来配合。
 
-export const InputLineL: React.FunctionComponent<InputGroupLineProps> = (
+export const InputLine: React.FunctionComponent<InputLineProps> = (
 {
     id,
     label,
@@ -1015,7 +868,7 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = (
     hideLabel,
     labelTextStyle,
     lineStyle,
-     fitable=true,
+    fitable=true,
     ...other
 }) => {
     const uid = useUid(id);
@@ -1074,6 +927,7 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = (
     //输入Line组件的断线折腰宽度在布局组件上就的设置switchPx参数。
     //这外部还得搞个布局组件嵌套，布局组件来传递进来布局紧凑与否参数fitable。也就是遇到最小最小的父窗口宽度情形，在只安排单列元素场合下的，给输入Line组件紧凑提示。
    // checkParent(React.Children.only(children) as any);
+    //上级组件注入的style样式，这里实际在 ...other所接纳了。 上一级控制本组件的第一层div或tag, 其它层次其它参数来控制样式。
 
     return (
         <div
@@ -1153,6 +1007,15 @@ export const InputLineL: React.FunctionComponent<InputGroupLineProps> = (
     );
 };
 
+
+InputLine.propTypes = {
+    label: PropTypes.string.isRequired,
+    hideLabel: PropTypes.bool,
+    helpText: PropTypes.string,
+    error: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    id: PropTypes.string,
+    children: PropTypes.node
+};
 
 
 export interface InputDatalistProps 　 extends InputBaseProps {

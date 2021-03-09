@@ -2,10 +2,10 @@
 import { jsx } from "@emotion/react";
 import { storiesOf } from "@storybook/react";
 import {
-  useTheme,
-  DarkMode,
-  LightMode,
-  ThemeProvider
+    useTheme,
+    DarkMode,
+    LightMode,
+    ThemeProvider, LightRefMode
 } from "../Theme/Providers";
 import defaultTheme, { Theme } from "../Theme";
 import { Layer } from "../Layer";
@@ -82,7 +82,7 @@ function Basic() {
         <div css={{ border: "1px solid", padding: "1rem" }}>
           <Example>
             <div>
-              <LightMode>
+              <LightRefMode>
                 {(theme: Theme) => (
                   <div
                     css={{
@@ -93,7 +93,7 @@ function Basic() {
                     Using render callback, LightMode mode
                   </div>
                 )}
-              </LightMode>
+              </LightRefMode>
               This will be in DarkMode mode
               <LightMode>
                 <Example>

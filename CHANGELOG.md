@@ -1,5 +1,5 @@
 ## 4.5.0
-引入列式布局:LineColumn组件，删除topDivStyle注入样式参数的方式;
+引入列式布局:LineColumn组件；删除以 topDivStyle参数 注入子组件首层div/tag样式的方式。
 ## 4.4.0
 React.forwardRef有性能负担，部分呈现数量较多的组件改成不传递ref的普通组件，原版本可注入ref的组件就改名字；
 注意ResponsivePopover/Popover/Tooltip组件唯一儿子须用能传入ref的按钮,比如IconButton改成IconRefButton，Button改成ButtonRefComp;

@@ -3,7 +3,7 @@ import { jsx, Global } from "@emotion/react";
 import * as React from "react";
 import { Button } from "../Button";
 import theme from "../Theme";
-import { DarkMode, LightMode } from "../Theme/Providers";
+import {DarkMode, DarkRefMode, LightMode, LightRefMode} from "../Theme/Providers";
 import { Toolbar } from "../Toolbar";
 
 export interface ToggleDarkModeProps {
@@ -14,7 +14,7 @@ export const ToggleDarkMode: React.FunctionComponent<ToggleDarkModeProps> = ({
   children
 }) => {
   const [mode, setMode] = React.useState("light");
-  const Component = mode === "dark" ? DarkMode : LightMode;
+  const Component = mode === "dark" ? DarkRefMode : LightRefMode;
 
   return (
     <Component>

@@ -18,6 +18,7 @@ https://twitter.com/intent/follow?screen_name=benmcmahen
 </div>
 
 ## Features
+- 专门做测试的，配合上级工程目录的UI 组件库。调试请用storybook debug， 然后浏览器http://localhost:6006/ 看报错。
 - This package is modified based on the previous Sancho migration；该包是基于前人的sancho移植来修改的。
 - Beautiful, generic components that you can make your own.
 - Highly responsive. Sancho takes mobile seriously, with built in support for gestures.

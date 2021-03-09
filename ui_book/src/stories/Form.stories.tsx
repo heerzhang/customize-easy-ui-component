@@ -7,9 +7,8 @@ import {
   Check,
   InputDatalist,
   CheckSwitch,
-  InputLine,
   SuffixInput,
-  InputLineL
+  InputLine
 } from "../Form";
 import { Text } from "../Text";
 import { Button } from "../Button";
@@ -352,21 +351,21 @@ export const FormStories = storiesOf("Forms", module)
                 <LineColumn column={3}
                 >
                   <Text>任意的文本看，hkhdfgfdjkjh水电费水电费看</Text>
-                  <InputLineL label="Gender输入也可选">
+                  <InputLine label="Gender输入也可选">
                     <Select>
                       <option>Male</option>
                       <option>Female</option>
                       <option>Other</option>
                     </Select>
-                  </InputLineL>
-                  <InputLineL  label='第二版本获得接报告,内部的:' helpText={'说明等等4从vv'}>
+                  </InputLine>
+                  <InputLine  label='第二版本获得接报告,内部的:' helpText={'说明等等4从vv'}>
                     <SuffixInput
                         type="number"
                         value={ 大修周期 || ''}
                         onChange={e => set大修周期( e.currentTarget.value||undefined ) }
                     >个月</SuffixInput>
-                  </InputLineL>
-                  <InputLineL error="输入错" label="InputDatalist组合框">
+                  </InputLine>
+                  <InputLine error="输入错" label="InputDatalist组合框">
                     <InputDatalist placeholder="可输入也可选择"
                                    value={ query }
                                    onListChange={v => setQuery(v)}
@@ -374,41 +373,41 @@ export const FormStories = storiesOf("Forms", module)
 
                     >
                     </InputDatalist>
-                  </InputLineL>
+                  </InputLine>
 
-                  <InputLineL label="是不是船梯" helpText={'dfgf从vv'}>
+                  <InputLine label="是不是船梯" helpText={'dfgf从vv'}>
                     <CheckSwitch  checked= {船梯 || false}
                                   onChange={e => set船梯(船梯? undefined:true) } />
-                  </InputLineL>
-                  <InputLineL  label='what about得接 报告,内部的:' helpText={'说明等等4从vv'}>
+                  </InputLine>
+                  <InputLine  label='what about得接 报告,内部的:' helpText={'说明等等4从vv'}>
                     <SuffixInput
                         type="number"
                         value={ 大修周期 || ''}
                         onChange={e => set大修周期( e.currentTarget.value||undefined ) }
                     >个月</SuffixInput>
-                  </InputLineL>
-                  <InputLineL error="输入错" label="第二种两个做法ComboBoxDatalist的组合框">
+                  </InputLine>
+                  <InputLine error="输入错" label="第二种两个做法ComboBoxDatalist的组合框">
                     <ComboBoxDatalist placeholder="可输入也可选择"
                                    value={ query }
                                    onListChange={v => setQuery(v)}
                                    datalist={["说得好","asdsafasdcomfsdfdffsdfsdf"]}
                     >
                     </ComboBoxDatalist>
-                  </InputLineL>
+                  </InputLine>
 
-                  <InputLineL error="This field is required" label="Gender multiple">
+                  <InputLine error="This field is required" label="Gender multiple">
                     <Select multiple>
                       <option>Male</option>
                       <option>Female</option>
                       <option>Other</option>
                     </Select>
-                  </InputLineL>
+                  </InputLine>
 
-                  <InputLineL label="Look是船梯" helpText={'dfgf从vv'}>
+                  <InputLine label="Look是船梯" helpText={'dfgf从vv'}>
                     <CheckSwitch  checked= {船梯 || false}
                                   onChange={e => set船梯(船梯? undefined:true) } />
-                  </InputLineL>
-                  <InputLineL label="报错的Gender，进行样式测试用">
+                  </InputLine>
+                  <InputLine label="报错的Gender，进行样式测试用">
                     <div css={{
                         flex: '1 1 20%',
                         backgroundColor: 'grey'
@@ -419,26 +418,26 @@ export const FormStories = storiesOf("Forms", module)
                         <Check label="Female" />
                         <Check label="Other" />
                     </div>
-                  </InputLineL>
-                  <InputLineL  label='第二版本获得接报告,内部的:' helpText={'说明等等4从vv'}>
+                  </InputLine>
+                  <InputLine  label='第二版本获得接报告,内部的:' helpText={'说明等等4从vv'}>
                     <SuffixInput
                         type="number"
                         value={ 大修周期 || ''}
                         onChange={e => set大修周期( e.currentTarget.value||undefined ) }
                     >个月</SuffixInput>
-                  </InputLineL>
+                  </InputLine>
 
-                  <InputLineL
+                  <InputLine
                       label="Example textarea"
                       helpText="Please provide a brief description of yourself. This will go on your profile."
                   >
                     <TextArea placeholder="Something textarea" />
-                  </InputLineL>
-                  <InputLineL label="进行样式测试用">
+                  </InputLine>
+                  <InputLine label="进行样式测试用">
                       <Check label="单独一个的" />
-                  </InputLineL>
+                  </InputLine>
 
-                  <InputLineL error="最早版本的能兼容" label="原版本的的组合框ComboBox">
+                  <InputLine error="最早版本的能兼容" label="原版本的的组合框ComboBox">
                     <ComboBox
                         autocomplete={false}
                         query={query||''}
@@ -481,11 +480,11 @@ export const FormStories = storiesOf("Forms", module)
                           </ComboBoxList>
                       )}
                     </ComboBox>
-                  </InputLineL>
+                  </InputLine>
 
-                  <InputLineL helpText="Required field" label="Email yourselfdescriptionaddress profile">
+                  <InputLine helpText="Required field" label="Email yourselfdescriptionaddress profile">
                     <Input type={'file'} placeholder="最基本的 input" />
-                  </InputLineL>
+                  </InputLine>
 
                 </LineColumn>
                 <div css={{ textAlign: "right", marginTop: `${theme.spaces.md}` }}>

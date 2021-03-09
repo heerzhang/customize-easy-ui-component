@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { jsx } from "@emotion/react";
 import * as React from "react";
 import {
   Manager,
@@ -8,7 +7,6 @@ import {
   ReferenceChildrenProps,
   PopperChildrenProps
 } from "react-popper";
-import * as PopperJS from '@popperjs/core';
 import { Portal } from "./Portal";
 import { useTransition } from "react-spring";
 import PropTypes from "prop-types";
@@ -30,14 +28,13 @@ export type Placements =
   | "left"
   | "left-start";
 
-
 interface PositionsProps {
   /** Whether the item being positioned is visible */
   isOpen?: boolean;
   /** The placement of children */
-  placement?: PopperJS.Placement;
-  /** Use fixed positioning strategy= "absolute" | "fixed"; */
-  strategy?: PopperJS.PositioningStrategy;
+  placement?: Placements;
+  /** Use fixed positioning */
+ // positionFixed?: boolean;
   /** The element our positioner is targetting (eg, Button) */
   target: (props: ReferenceChildrenProps) => React.ReactNode;
   /** The render callback which contains positioning and animation info */
@@ -49,7 +46,6 @@ interface PositionsProps {
 
 export const Positioner: React.FunctionComponent<PositionsProps> = ({
   target,
-  strategy,
   isOpen = true,
   children,
   placement
@@ -68,7 +64,7 @@ export const Positioner: React.FunctionComponent<PositionsProps> = ({
       {transitions((style, item) => {
         return (
           item &&  <Portal key={1}>
-            <Popper placement={placement} strategy={strategy}>
+            <Popper placement={placement} >
               {props => children(props, style as any)}
             </Popper>
           </Portal>
@@ -80,7 +76,7 @@ export const Positioner: React.FunctionComponent<PositionsProps> = ({
         ({ item, key, props: animatedProps }) =>
           item && (
             <Portal key={key}>
-              <Popper placement={placement} strategy={strategy}>
+              <Popper placement={placement} positionFixed={positionFixed}>
                 {props => children(props, animatedProps as any)}
               </Popper>
             </Portal>
@@ -111,7 +107,6 @@ Positioner.propTypes = {
     "left",
     "left-start"
   ] as Placements[]),
- // strategy: PropTypes.bool, PopperJS.PositioningStrategy;= "absolute" | "fixed";
   target: PropTypes.func,
   children: PropTypes.func
 };

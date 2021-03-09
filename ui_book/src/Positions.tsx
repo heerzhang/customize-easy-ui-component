@@ -34,7 +34,7 @@ interface PositionsProps {
   /** The placement of children */
   placement?: Placements;
   /** Use fixed positioning */
-  positionFixed?: boolean;
+ // positionFixed?: boolean;
   /** The element our positioner is targetting (eg, Button) */
   target: (props: ReferenceChildrenProps) => React.ReactNode;
   /** The render callback which contains positioning and animation info */
@@ -46,7 +46,6 @@ interface PositionsProps {
 
 export const Positioner: React.FunctionComponent<PositionsProps> = ({
   target,
-  positionFixed,
   isOpen = true,
   children,
   placement
@@ -65,7 +64,7 @@ export const Positioner: React.FunctionComponent<PositionsProps> = ({
       {transitions((style, item) => {
         return (
           item &&  <Portal key={1}>
-            <Popper placement={placement} positionFixed={positionFixed}>
+            <Popper placement={placement} >
               {props => children(props, style as any)}
             </Popper>
           </Portal>
@@ -108,7 +107,6 @@ Positioner.propTypes = {
     "left",
     "left-start"
   ] as Placements[]),
-  positionFixed: PropTypes.bool,
   target: PropTypes.func,
   children: PropTypes.func
 };
