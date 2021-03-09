@@ -77,3 +77,9 @@ const enabledIndexes = React.Children.map(
     ).filter(index => index != null);
 应该是@babel从7.12升级7.13无法成功。
     "@babel/plugin-transform-runtime": "^7.13.9",
+删除
+    "babel-core": "^6.26.3",
+    "babel-jest": "^26.6.3",
+    "babel-loader": "^8.2.2",
+    "babel-plugin-require-context-hook": "^1.0.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
